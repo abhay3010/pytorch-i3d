@@ -1,0 +1,52 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: myapp
+spec:
+  template:
+    spec:
+      containers:
+      - name: demo
+        image: gitlab-registry.nautilus.optiputer.net/prp/jupyterlab
+        command:
+        - "python"
+        args:
+        - "/home/my_script.py"
+        - "--data=/mnt/data/..."
+        volumeMounts:
+        - name: data
+          mountPath: /mnt/data
+        resources:
+          limits:
+            memory: 8Gi
+            cpu: "6"
+            nvidia.com/gpu: "1"
+            ephemeral-storage: 100Gi
+          requests:
+            memory: 4Gi
+            cpu: "1"
+            nvidia.com/gpu: "1"    
+            ephemeral-storage: 100Gi
+      initContainers:
+      - name: init-data
+        image: gitlab-registry.nautilus.optiputer.net/prp/gsutil
+        args:
+          - gsutil
+          - "-m"
+          - rsync
+          - "-erP"
+          - /mnt/source/
+          - /mnt/dest/
+        volumeMounts:
+          - name: source
+            mountPath: /mnt/source
+          - name: data
+            mountPath: /mnt/dest
+      volumes:
+      - name: data
+        emptyDir: {}
+      - name: source
+        persistentVolumeClaim:
+            claimName: examplevol
+      restartPolicy: Never
+  backoffLimit: 5

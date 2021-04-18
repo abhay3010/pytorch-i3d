@@ -16,15 +16,34 @@ spec:
                  nvidia.com/gpu: 2
                  memory: "18Gi"
                  cpu: "10"
+                 ephemeral-storage: 100Gi
                 requests:
                  nvidia.com/gpu: 2
                  memory: "16Gi"
                  cpu: "8" 
+                 ephemeral-storage: 100Gi
               volumeMounts:
                 - mountPath: /virat-vr
                   name: virat-vr 
                 - mountPath: /dev/shm
                   name: dshm
+                - mountPath: /mnt/data
+                  name: data
+          initContainers:
+            - name : init-data
+              image: gitlab-registry.nautilus.optiputer.net/prp/gsutil
+              args:
+                - gsutil
+                - "-m"
+                - rsync
+                - "-erP"
+                - /mnt/source/
+                - /mnt/dest/
+              volumeMounts:
+                - name: virat-vr
+                  mountPath: /mnt/source
+                - name: data
+                  mountPath: /mnt/dest
           restartPolicy: Never
           volumes:
            - name: virat-vr
@@ -33,4 +52,6 @@ spec:
            - name: dshm
              emptyDir:
                medium: Memory
+           - name: data
+             emptyDir: {}
   backoffLimit: 5
