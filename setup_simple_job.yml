@@ -23,9 +23,14 @@ spec:
               volumeMounts:
                 - mountPath: /virat-vr
                   name: virat-vr 
+                - mountPath: /dev/shm
+                  name: dshm
           restartPolicy: Never
           volumes:
            - name: virat-vr
              persistentVolumeClaim:
                claimName: virat-vr
+           - name: dshm
+             emptyDir:
+               medium: Memory
   backoffLimit: 5
