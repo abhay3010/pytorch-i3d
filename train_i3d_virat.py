@@ -145,4 +145,4 @@ if __name__ == '__main__':
     root = "/virat-vr/TinyVIRAT/"
     max_steps = 320.0
     save_model='/virat-vr/models/pytorch-i3d/v1'
-    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=2 )
+    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=32 )
