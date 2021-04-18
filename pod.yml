@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: virat-pytorchpod
+spec:
+  containers:
+  - name: virat-pytorchpod
+    image: pytorch/pytorch:1.0.1-cuda10.0-cudnn7-runtime
+    args: ["sleep", "infinity"]
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+        memory: "8Gi"
+        cpu: "2000m"
+      requests:
+        nvidia.com/gpu: 1
+        memory: "8Gi"
+        cpu: "2000m"
+
+
+    volumeMounts:
+    - mountPath: /virat-vr
+      name: virat-vr
+  restartPolicy: Never
+  volumes:
+    - name: virat-vr
+      persistentVolumeClaim:
+        claimName: virat-vr

@@ -51,12 +51,12 @@ def make_dataset(root, data_type,num_frames, labels_file):
         } for v in dataset if v['dim'][0] >=num_frames]
     return processed_dataset, labels_map
     
-def load_rgb_frames(root_path,start_frame, num_frames,  resize=False, resize_shape=(60, 60)):
+def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(60, 60)):
     vpath = Path(root_path)
     parent_path = vpath.parents[0]
     #look for the frames filepath
     frames_folder = parent_path.joinpath(vpath.stem + '_frames')
-    if frames_folder.exists() and frames_folder.is_dir():
+    if frames_folder.exists() and frames_folder.is_dir() and len(get_frames(str(frames_folder)) == total_frames) :
         print("loading from existing frames")
         array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape)
         return array_from_frames
@@ -82,6 +82,12 @@ def load_rgb_frames(root_path,start_frame, num_frames,  resize=False, resize_sha
         saved_frames = load_from_frames(str(frames_folder),start_frame,num_frames, resize, resize_shape)
         return saved_frames
 
+def get_frames(p):
+    y = list()
+    for x in os.path.listdir(p):
+        if x.endswith('.jpg'):
+            y.add(x)
+    return y
 
 
 class Virat(data_util.Dataset):
@@ -98,7 +104,7 @@ class Virat(data_util.Dataset):
     def __getitem__(self, index):
         details = self.data[index]
         start_f = random.randint(1,details['frames']-self.num_frames-1)
-        imgs = load_rgb_frames(details['path'],start_f, self.num_frames, self.resize, self.resize_shape)
+        imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape)
         imgs = self.transforms(imgs)
         y = np.zeros(len(self.labels_map), dtype=np.float32)
         for c in details['label']:
