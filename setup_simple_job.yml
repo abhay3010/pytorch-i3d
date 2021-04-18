@@ -1,0 +1,31 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: virat-vr-motion-job
+spec:
+  template:
+    spec:
+          containers:
+            - name: virat-vr-container
+              image:  pytorch/pytorch:1.0.1-cuda10.0-cudnn7-runtime
+              imagePullPolicy: Always 
+              command: ["/virat-vr/repo/code/pytorch-i3d/setup.sh"]
+              args: [ "/virat-vr/repo/code/pytorch-i3d/train_i3d_virat.py", "/brain-hemorrag-v2/repo/code-repo/" ]
+              resources:
+                limits:
+                 nvidia.com/gpu: 2
+                 memory: "18Gi"
+                 cpu: "10000m"
+                requests:
+                 nvidia.com/gpu: 2
+                 memory: "16Gi"
+                 cpu: "8000m" 
+              volumeMounts:
+                - mountPath: /virat-vr
+                  name: virat-vr 
+          restartPolicy: Never
+          volumes:
+           - name: virat-vr
+             persistentVolumeClaim:
+               claimName: virat-vr
+  backoffLimit: 5

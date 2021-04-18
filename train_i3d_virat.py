@@ -32,39 +32,43 @@ from virat_dataset import Virat as Dataset
 
 
 def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d_rgb_charades.pt', root='/ssd/Charades_v1_rgb', classes_file="classes.txt",
- batch_size=2, save_model=''):
+ batch_size=8*5, save_model='', start_from=None):
     
     # setup dataset remember to change the crop size here.
-    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
     test_transforms = transforms.Compose([videotransforms.CenterCrop(112)])
 
     dataset = Dataset(root, "train",classes_file, transforms=train_transforms)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataset = Dataset(root, "test",classes_file, transforms=train_transforms)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=2, pin_memory=True)    
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     datasets = {'train': dataset, 'val': val_dataset}
 
     
     # setup the model
-    y = torch.load('models/rgb_charades.pt')
-    y_new = dict()
-    for k,v in y.items():
-        if k not in ['logits.conv3d.weight', 'logits.conv3d.bias'] :
-            y_new['model.'+k] = v
-        else:
-            y_new[k] = v
-    print(len(y.keys()))
     i3d = InceptionI3d(157, in_channels=3)
     print(len(i3d.state_dict()))
-    i3d.load_state_dict(y_new)
-    i3d.replace_logits(26)
-    #i3d.load_state_dict(torch.load('/ssd/models/000920.pt'))
+    if start_from:
+        i3d.replace_logits(26)
+        i3d.load_state_dict(torch.load(start_from))
+    else:
+        y = torch.load('models/rgb_charades.pt')
+        y_new = dict()
+        for k,v in y.items():
+            if k not in ['logits.conv3d.weight', 'logits.conv3d.bias'] :
+                y_new['model.'+k] = v
+            else:
+                y_new[k] = v
+        i3d.load_state_dict(y_new)
+        i3d.replace_logits(26)
     i3d.to(device)
+    if torch.cuda.device._count()>1:
+        i3d = nn.DataParallel(i3d)
     
 
     lr = init_lr
@@ -72,7 +76,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     lr_sched = optim.lr_scheduler.MultiStepLR(optimizer, [300, 1000])
 
 
-    num_steps_per_update = 2 # accum gradient
+    num_steps_per_update = 50 # accum gradient
     steps = 0
     # train it
     while steps < max_steps:#for epoch in range(num_epochs):
@@ -93,7 +97,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
             optimizer.zero_grad()
             
             # Iterate over data.
-            for data in dataloaders[phase]:x
+            for data in dataloaders[phase]:
                 num_iter += 1
                 # get the inputs
                 inputs, labels = data
@@ -116,7 +120,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                 cls_loss = F.binary_cross_entropy_with_logits(torch.max(per_frame_logits, dim=2)[0], torch.max(labels, dim=2)[0])
                 tot_cls_loss += cls_loss.item()
 
-                loss = (0.5*loc_loss + 0.5*cls_loss)/num_steps_per_update
+                loss = (0.01*loc_loss + 0.99*cls_loss)/num_steps_per_update
                 tot_loss += loss.item()
                 loss.backward()
                 if num_iter == num_steps_per_update and phase == 'train':
@@ -138,4 +142,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
 if __name__ == '__main__':
     # need to add argparse
     #run(mode=args.mode, root=args.root, save_model=args.save_model)
-    run(root='/workspaces/pytorch-i3d/TinyVIRAT')
+    root = "/virat-vr/TinyVIRAT/"
+    max_steps = 320.0
+    save_model='/virat-vr/models/pytorch-i3d/v1'
+    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
