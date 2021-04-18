@@ -98,6 +98,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
             
             # Iterate over data.
             for data in dataloaders[phase]:
+                print("Iter {0}".format(num_iter))
                 num_iter += 1
                 # get the inputs
                 inputs, labels = data
@@ -145,4 +146,4 @@ if __name__ == '__main__':
     root = "/virat-vr/TinyVIRAT/"
     max_steps = 320.0
     save_model='/virat-vr/models/pytorch-i3d/v1'
-    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=32 )
+    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=8 )
