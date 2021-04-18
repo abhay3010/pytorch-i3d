@@ -56,7 +56,7 @@ def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=Fals
     parent_path = vpath.parents[0]
     #look for the frames filepath
     frames_folder = parent_path.joinpath(vpath.stem + '_frames')
-    if frames_folder.exists() and frames_folder.is_dir() and len(get_frames(str(frames_folder))) == total_frames) :
+    if frames_folder.exists() and frames_folder.is_dir() and len(get_frames(str(frames_folder))) == total_frames :
         print("loading from existing frames")
         array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape)
         return array_from_frames
