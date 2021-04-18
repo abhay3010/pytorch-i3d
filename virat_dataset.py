@@ -63,7 +63,7 @@ def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=Fals
     else:
         if not vpath.exists():
             raise ValueError("filepath not found {0}".format(root_path))
-        frames_folder.mkdir()
+        frames_folder.mkdir(exist_ok=True)
         cap = cv2.VideoCapture(str(vpath))
         count = 0
         save_path = frames_folder
