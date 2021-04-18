@@ -67,7 +67,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
         i3d.load_state_dict(y_new)
         i3d.replace_logits(26)
     i3d.to(device)
-    if torch.cuda.device._count()>1:
+    if torch.cuda.device_count()>1:
         i3d = nn.DataParallel(i3d)
     
 
