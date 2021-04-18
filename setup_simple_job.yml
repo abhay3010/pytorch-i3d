@@ -9,8 +9,8 @@ spec:
             - name: virat-vr-container
               image:  pytorch/pytorch:1.0.1-cuda10.0-cudnn7-runtime
               imagePullPolicy: Always 
-              command: ["/virat-vr/repo/code/pytorch-i3d/setup.sh"]
-              args: [ "/virat-vr/repo/code/pytorch-i3d/train_i3d_virat.py", "/brain-hemorrag-v2/repo/code-repo/" ]
+              command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
+              args: [ "/virat-vr/code/pytorch-i3d/train_i3d_virat.py", "/virat-vr/code/pytorch-i3d/" ]
               resources:
                 limits:
                  nvidia.com/gpu: 2
