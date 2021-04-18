@@ -41,10 +41,10 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     test_transforms = transforms.Compose([videotransforms.CenterCrop(112)])
 
     dataset = Dataset(root, "train",classes_file, transforms=train_transforms)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataset = Dataset(root, "test",classes_file, transforms=train_transforms)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True)    
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     datasets = {'train': dataset, 'val': val_dataset}
@@ -145,4 +145,4 @@ if __name__ == '__main__':
     root = "/virat-vr/TinyVIRAT/"
     max_steps = 320.0
     save_model='/virat-vr/models/pytorch-i3d/v1'
-    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
+    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=2 )
