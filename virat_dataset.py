@@ -84,9 +84,9 @@ def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=Fals
 
 def get_frames(p):
     y = list()
-    for x in os.path.listdir(p):
+    for x in os.listdir(p):
         if x.endswith('.jpg'):
-            y.add(x)
+            y.append(x)
     return y
 
 
