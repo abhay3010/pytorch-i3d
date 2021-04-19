@@ -41,10 +41,10 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     test_transforms = transforms.Compose([videotransforms.CenterCrop(112)])
 
     dataset = Dataset(root, "train",classes_file, transforms=train_transforms)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True)
 
     val_dataset = Dataset(root, "test",classes_file, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=6, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     datasets = {'train': dataset, 'val': val_dataset}
@@ -76,7 +76,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     lr_sched = optim.lr_scheduler.MultiStepLR(optimizer, [300, 1000])
 
 
-    num_steps_per_update = 500 # accum gradient
+    num_steps_per_update = 50 # accum gradient
     steps = 0
     # train it
     while steps < max_steps:#for epoch in range(num_epochs):
@@ -104,7 +104,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                 inputs, labels = data
 
                 # wrap them in Variable
-                print(inputs.shape)
+                # print(inputs.shape)
                 inputs = Variable(inputs.to(device))
                 t = inputs.size(2)
                 labels = Variable(labels.to(device))
@@ -130,7 +130,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                     optimizer.step()
                     optimizer.zero_grad()
                     lr_sched.step()
-                    if steps % 10 == 0:
+                    if steps % 100 == 0:
                         print ('{} Loc Loss: {:.4f} Cls Loss: {:.4f} Tot Loss: {:.4f}'.format(phase, tot_loc_loss/(10*num_steps_per_update), tot_cls_loss/(10*num_steps_per_update), tot_loss/10))
                         # save model
                         torch.save(i3d.module.state_dict(), save_model+str(steps).zfill(6)+'.pt')
@@ -144,7 +144,7 @@ if __name__ == '__main__':
     # need to add argparse
     #run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
-    max_steps = 320.0
+    max_steps = 3200.0
     save_model='/virat-vr/models/pytorch-i3d/v2'
     start_from = '/virat-vr/models/pytorch-i3d/v1000050.pt'
     run(root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )

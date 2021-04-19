@@ -59,7 +59,7 @@ def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=Fals
     #look for the frames filepath
     frames_folder = parent_path.joinpath(vpath.stem + '_frames')
     if frames_folder.exists() and frames_folder.is_dir() and len(get_frames(str(frames_folder))) == total_frames :
-        print("loading from existing frames")
+        #print("loading from existing frames")
         array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape)
         return array_from_frames
     else:
@@ -113,7 +113,7 @@ class Virat(data_util.Dataset):
         for c in details['label']:
             y[self.labels_map[c]] = 1
         Y = np.array([y]*imgs.shape[0])
-        print(imgs.shape, Y.shape)
+        #print(imgs.shape, Y.shape)
         return video_to_tensor(imgs), torch.from_numpy(Y.transpose([1,0]))
 
     def __len__(self):
