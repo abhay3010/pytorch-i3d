@@ -107,7 +107,8 @@ class Virat(data_util.Dataset):
         details = self.data[index]
         start_f = random.randint(1,details['frames']-self.num_frames-1)
         imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape)
-        imgs = self.transforms(imgs)
+        if self.transforms:
+            imgs = self.transforms(imgs)
         y = np.zeros(len(self.labels_map), dtype=np.float32)
         for c in details['label']:
             y[self.labels_map[c]] = 1
