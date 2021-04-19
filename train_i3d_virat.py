@@ -76,7 +76,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     lr_sched = optim.lr_scheduler.MultiStepLR(optimizer, [300, 1000])
 
 
-    num_steps_per_update = 50 # accum gradient
+    num_steps_per_update = 5 # accum gradient
     steps = 0
     # train it
     while steps < max_steps:#for epoch in range(num_epochs):
@@ -98,7 +98,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
             
             # Iterate over data.
             for data in dataloaders[phase]:
-                print("Iter {0}".format(num_iter))
+                # print("Iter {0}".format(num_iter))
                 num_iter += 1
                 # get the inputs
                 inputs, labels = data
@@ -130,7 +130,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                     optimizer.step()
                     optimizer.zero_grad()
                     lr_sched.step()
-                    if steps % 100 == 0:
+                    if steps % 10 == 0:
                         print ('{} Loc Loss: {:.4f} Cls Loss: {:.4f} Tot Loss: {:.4f}'.format(phase, tot_loc_loss/(10*num_steps_per_update), tot_cls_loss/(10*num_steps_per_update), tot_loss/10))
                         # save model
                         torch.save(i3d.module.state_dict(), save_model+str(steps).zfill(6)+'.pt')
@@ -144,7 +144,7 @@ if __name__ == '__main__':
     # need to add argparse
     #run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
-    max_steps = 3200.0
+    max_steps = 32000.0
     save_model='/virat-vr/models/pytorch-i3d/v2'
     start_from = '/virat-vr/models/pytorch-i3d/v1000050.pt'
     run(root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
