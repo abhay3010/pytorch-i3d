@@ -121,7 +121,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                 cls_loss = F.binary_cross_entropy_with_logits(torch.max(per_frame_logits, dim=2)[0], torch.max(labels, dim=2)[0])
                 tot_cls_loss += cls_loss.item()
 
-                loss = (0.01*loc_loss + 0.99*cls_loss)/num_steps_per_update
+                loss = (0.5*loc_loss + 0.5*cls_loss)/num_steps_per_update
                 tot_loss += loss.item()
                 loss.backward()
                 if num_iter == num_steps_per_update and phase == 'train':
