@@ -7,6 +7,7 @@ from pathlib import Path
 import cv2
 import os
 import torch
+#from joblib import Parallel, delayed
 def video_to_tensor(pic):
     """Convert a ``numpy.ndarray`` to tensor.
     Converts a numpy.ndarray (T x H x W x C)
@@ -51,6 +52,18 @@ def make_dataset(root, data_type,num_frames, labels_file):
         'label': v['label'],
         'dims': v['dim']
         } for v in dataset if v['dim'][0] >=num_frames]
+    
+    # # for details in processed_dataset:
+    # #     print("expanding", details['path'])
+    # #     load_rgb_frames(details['path'],0, details['frames'], details['frames'])
+    # def expand(details):
+    #     print(details['path'])
+    #     try:
+    #         load_rgb_frames(details['path'],0, details['frames'], details['frames'])
+    #     except:
+    #         print("could not uncompress ", details['path'])
+    #     return True
+    # y = Parallel(n_jobs=8)(delayed(expand)(d)for d in processed_dataset)
     return processed_dataset, labels_map
     
 def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(60, 60)):
@@ -118,5 +131,7 @@ class Virat(data_util.Dataset):
 
     def __len__(self):
         return len(self.data)
+
+
 
 
