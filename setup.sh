@@ -6,7 +6,7 @@ pip install --upgrade pip
 pip install torchvision
 pip install opencv-python
 cd /mnt/data 
-tzr -xvzf TinyViratWithClasses.tar.gz
+tar -xvzf TinyViratWithClasses.tar.gz
 cd $2
 git pull
 python $1
