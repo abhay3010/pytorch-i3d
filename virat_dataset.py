@@ -26,7 +26,7 @@ def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape):
     frames = []
     for fn in fnames:
         img = cv2.imread(fn, cv2.IMREAD_UNCHANGED)
-        if not img:
+        if  None == img:
             print("Failed to read file {0}, will exit", fn)
         if resize and (img.shape[0], img.shape[1]) != resize_shape:
             img = cv2.resize(img, resize_shape, interpolation=cv2.INTER_CUBIC)
