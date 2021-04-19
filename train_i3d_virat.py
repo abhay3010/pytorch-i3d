@@ -51,7 +51,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
 
     
     # setup the model
-    i3d = InceptionI3d(157, in_channels=3)
+    i3d = InceptionI3d(157,mode="32x112", in_channels=3)
     print(len(i3d.state_dict()))
     if start_from:
         i3d.replace_logits(26)
@@ -77,6 +77,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
 
 
     num_steps_per_update = 5 # accum gradient
+    # num_steps_per_update = 1
     steps = 0
     # train it
     while steps < max_steps:#for epoch in range(num_epochs):
@@ -91,8 +92,6 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                 i3d.train(False)  # Set model to evaluate mode
                 
             tot_loss = 0.0
-            tot_loc_loss = 0.0
-            tot_cls_loss = 0.0
             num_iter = 0
             optimizer.zero_grad()
             
@@ -109,19 +108,18 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                 t = inputs.size(2)
                 labels = Variable(labels.to(device))
 
-                per_frame_logits = i3d(inputs)
+                per_video_logits = i3d(inputs)
                 # upsample to input size
-                per_frame_logits = F.upsample(per_frame_logits, t, mode='linear')
+                #print(per_video_logits.shape, labels.shape)
+                #print(per_frame_logits)
+                #print(labels)
+                #print(per_video_logits.shape)
+                
+                 
 
                 # compute localization loss
-                loc_loss = F.binary_cross_entropy_with_logits(per_frame_logits, labels)
-                tot_loc_loss += loc_loss.item()
-
-                # compute classification loss (with max-pooling along time B x C x T)
-                cls_loss = F.binary_cross_entropy_with_logits(torch.max(per_frame_logits, dim=2)[0], torch.max(labels, dim=2)[0])
-                tot_cls_loss += cls_loss.item()
-
-                loss = (0.5*loc_loss + 0.5*cls_loss)/num_steps_per_update
+                class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels)
+                loss = class_loss/num_steps_per_update
                 tot_loss += loss.item()
                 loss.backward()
                 if num_iter == num_steps_per_update and phase == 'train':
@@ -131,12 +129,12 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                     optimizer.zero_grad()
                     lr_sched.step()
                     if steps % 10 == 0:
-                        print ('{} Loc Loss: {:.4f} Cls Loss: {:.4f} Tot Loss: {:.4f}'.format(phase, tot_loc_loss/(10*num_steps_per_update), tot_cls_loss/(10*num_steps_per_update), tot_loss/10))
+                        print ('{} Loss: {:.4f}'.format(phase, tot_loss/10))
                         # save model
-                        torch.save(i3d.module.state_dict(), save_model+str(steps).zfill(6)+'.pt')
-                        tot_loss = tot_loc_loss = tot_cls_loss = 0.
+                        torch.save(i3d.state_dict(), save_model+str(steps).zfill(6)+'.pt')
+                        tot_loss  = 0.
             if phase == 'val':
-                print ('{} Loc Loss: {:.4f} Cls Loss: {:.4f} Tot Loss: {:.4f}'.format(phase, tot_loc_loss/num_iter, tot_cls_loss/num_iter, (tot_loss*num_steps_per_update)/num_iter))
+                print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
     
 
 
@@ -145,6 +143,10 @@ if __name__ == '__main__':
     #run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 32000.0
-    save_model='/virat-vr/models/pytorch-i3d/v2'
-    start_from = '/virat-vr/models/pytorch-i3d/v1000050.pt'
-    run(root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
+    save_model='/virat-vr/models/pytorch-i3d/v3'
+    start_from = None
+    # root = "TinyVIRAT/"
+    # max_steps = 32000.0
+    # save_model=''
+    # start_from = None
+    run(init_lr=0.01, root=root, max_steps=max_steps,save_model=save_model, batch_size=2 )

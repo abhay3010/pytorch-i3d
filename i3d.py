@@ -12,7 +12,7 @@ from collections import OrderedDict
 
 
 class InceptionI3d(nn.Module):
-    def __init__(self, num_classes=157, mode='16x225', spatial_squeeze=True, name='inception_i3d', in_channels=3, dropout_keep_prob=0.5):
+    def __init__(self, num_classes=157, mode='16x112', spatial_squeeze=True, name='inception_i3d', in_channels=3, dropout_keep_prob=0.5):
         super(InceptionI3d, self).__init__()
         self.num_classes = num_classes
         self.spatial_squeeze = spatial_squeeze

@@ -112,9 +112,9 @@ class Virat(data_util.Dataset):
         y = np.zeros(len(self.labels_map), dtype=np.float32)
         for c in details['label']:
             y[self.labels_map[c]] = 1
-        Y = np.array([y]*imgs.shape[0])
-        #print(imgs.shape, Y.shape)
-        return video_to_tensor(imgs), torch.from_numpy(Y.transpose([1,0]))
+        Y = np.array(y)
+        # print(imgs.shape, Y.shape)
+        return video_to_tensor(imgs), torch.from_numpy(Y)
 
     def __len__(self):
         return len(self.data)
