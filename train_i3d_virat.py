@@ -43,7 +43,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     dataset = Dataset(root, "train",classes_file, transforms=train_transforms)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True)
 
-    val_dataset = Dataset(root, "test",classes_file, transforms=train_transforms)
+    val_dataset = Dataset(root, "test",classes_file, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=8, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
