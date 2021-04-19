@@ -40,7 +40,7 @@ spec:
                 - /mnt/source/
                 - /mnt/dest/
               volumeMounts:
-                - name: virat-vr
+                - name: virat-vr-small
                   mountPath: /mnt/source
                 - name: data
                   mountPath: /mnt/dest
@@ -49,6 +49,9 @@ spec:
            - name: virat-vr
              persistentVolumeClaim:
                claimName: virat-vr
+           - name: virat-vr-small
+             persistentVolumeClaim:
+               claimName: virat-vr-small
            - name: dshm
              emptyDir:
                medium: Memory
