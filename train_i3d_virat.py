@@ -141,7 +141,7 @@ if __name__ == '__main__':
     # need to add argparse
     # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
-    max_steps = 32000.0
+    max_steps = 320000.0
     save_model='/virat-vr/models/pytorch-i3d/v5'
     start_from = None
     # root = "TinyVIRAT/"
