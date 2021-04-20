@@ -75,7 +75,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     #lr_sched = optim.lr_scheduler.MultiStepLR(optimizer, [800, 1600, 3200, 6400])
 
 
-    num_steps_per_update = 50 # accum gradient
+    num_steps_per_update = 10 # accum gradient
     # num_steps_per_update = 1
     steps = 0
     # train it
@@ -142,10 +142,10 @@ if __name__ == '__main__':
     # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 32000.0
-    save_model='/virat-vr/models/pytorch-i3d/v4'
+    save_model='/virat-vr/models/pytorch-i3d/v5'
     start_from = None
     # root = "TinyVIRAT/"
     # max_steps = 32000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.1, root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
+    run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
