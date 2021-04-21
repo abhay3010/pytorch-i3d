@@ -129,9 +129,10 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
                     # lr_sched.step()
                     if steps % 10 == 0:
                         print ('{} Loss: {:.4f}'.format(phase, tot_loss/10))
-                        # save model
-                        torch.save(i3d.state_dict(), save_model+str(steps).zfill(6)+'.pt')
+                        # save model                        
                         tot_loss  = 0.
+                        if steps %100 == 0:
+                            torch.save(i3d.state_dict(), save_model+str(steps).zfill(6)+'.pt')
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
     
@@ -141,9 +142,9 @@ if __name__ == '__main__':
     # need to add argparse
     # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
-    max_steps = 320000.0
-    save_model='/virat-vr/models/pytorch-i3d/v5'
-    start_from = None
+    max_steps = 32000.0
+    save_model='/virat-vr/models/pytorch-i3d/v6'
+    start_from = '/virat-vr/models/pytorch-i3d/v5004080.pt'
     # root = "TinyVIRAT/"
     # max_steps = 32000.0
     # save_model=''
