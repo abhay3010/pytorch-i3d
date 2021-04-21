@@ -80,7 +80,7 @@ def main():
     model_list = ['v5001600.pt', 'v5001810.pt', 'v5002500.pt', 'v5002840.pt', 'v5002870.pt', 'v5003250.pt']
     
     for model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model,"/virat-vr/models/pytorch-i3d/v5004080.pt", "/mnt/data/TinyVIRAT/", "classes.txt")
+       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt")
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 if __name__ == '__main__':
     main()
