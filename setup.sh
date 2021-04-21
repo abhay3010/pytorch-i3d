@@ -6,6 +6,7 @@ pip install --upgrade pip
 # conda install torchvision
 pip install torchvision
 pip install opencv-python
+pip install sklearn
 cd /mnt/data 
 tar -xzf TinyViratWithClasses.tar.gz
 cd $2

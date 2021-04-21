@@ -10,7 +10,7 @@ spec:
               image:  pytorch/pytorch:1.0.1-cuda10.0-cudnn7-runtime
               imagePullPolicy: Always 
               command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-              args: [ "/virat-vr/code/pytorch-i3d/pytorch_evaluate.py", "/virat-vr/code/pytorch-i3d/" ]
+              args: [ "/virat-vr/code/pytorch-i3d/pytorch_eval.py", "/virat-vr/code/pytorch-i3d/" ]
               resources:
                 limits:
                  nvidia.com/gpu: 2
