@@ -149,4 +149,4 @@ if __name__ == '__main__':
     # max_steps = 32000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=4 )
+    run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=4, start_from=start_from )
