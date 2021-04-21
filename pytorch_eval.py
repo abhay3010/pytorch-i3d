@@ -66,14 +66,19 @@ def eval(model_path, root, classes_file):
         print(count)
     
 
-    print(trues, predictions)
+    #print(trues, predictions)
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
     accuracy = accuracy_score(trues, predictions)
     confusion_matris = multilabel_confusion_matrix(trues, predictions)
-    np.save(root+'confusion', confusion_matris)
+    
 
     print(f1_macro, f1_micro, accuracy)
     return f1_macro, f1_micro, accuracy
 
-eval("/virat-vr/models/pytorch-i3d/v5004080.pt", "/mnt/data/TinyVIRAT/", "classes.txt")
+def main():
+    model_list = ['v5001600.pt', 'v5001810.pt', 'v5002500.pt', 'v5002840.pt', 'v5002870.pt', 'v5003250.pt']
+    ]
+    for model in model_list:
+       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model,"/virat-vr/models/pytorch-i3d/v5004080.pt", "/mnt/data/TinyVIRAT/", "classes.txt")
+       print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accua))
