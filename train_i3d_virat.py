@@ -54,8 +54,15 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
     i3d = InceptionI3d(157,mode="32x112", in_channels=3)
     print(len(i3d.state_dict()))
     if start_from:
+        state_dict = torch.load(start_from)
+        new_dict = dict()
+    for k, v in state_dict.items():
+        if k.startswith("module."):
+            new_dict[k[7:]] = v
+        else:
+            new_dict[k] = v
         i3d.replace_logits(26)
-        i3d.load_state_dict(torch.load(start_from))
+        i3d.load_state_dict(new_dict)
     else:
         y = torch.load('models/rgb_charades.pt')
         y_new = dict()
