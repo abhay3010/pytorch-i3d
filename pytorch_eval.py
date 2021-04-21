@@ -40,7 +40,7 @@ def eval(model_path, root, classes_file):
     val_dataset = Dataset(root, "test",classes_file, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=0)   
     i3d = InceptionI3d(26,mode="32x112", in_channels=3)
-    state_dict = torch.load(model_path, map_location=torch.device('cpu'))
+    state_dict = torch.load(model_path)
     new_dict = dict()
     for k, v in state_dict.items():
         if k.startswith("module."):
@@ -56,17 +56,14 @@ def eval(model_path, root, classes_file):
 
     count = 0
     for batch, labels in val_dataloader:
-        try:
-            count+=1
-            inputs = Variable(batch.to(device))
-            v = torch.sigmoid(i3d(batch))
-            for y_t, y_p in zip(labels, v):
-                p = np.array([1 if z >=0.5 else 0 for z in y_p])
-                predictions.append(p)
-                trues.append(y_t.numpy())
-            print(count)
-        except:
-            print("Unable to predict on batch",count)
+        count+=1
+        inputs = Variable(batch.to(device))
+        v = torch.sigmoid(i3d(batch))
+        for y_t, y_p in zip(labels, v):
+            p = np.array([1 if z >=0.5 else 0 for z in y_p])
+            predictions.append(p)
+            trues.append(y_t.numpy())
+        print(count)
     
 
     print(trues, predictions)
@@ -79,4 +76,4 @@ def eval(model_path, root, classes_file):
     print(f1_macro, f1_micro, accuracy)
     return f1_macro, f1_micro, accuracy
 
-eval("eval_models/v5004080.pt", "TinyVIRAT/", "classes.txt")
+eval("/virat-vr/models/pytorch-i3d/v5004080.pt", "/virat-vr/TinyVIRAT", "classes.txt")
