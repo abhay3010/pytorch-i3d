@@ -62,15 +62,12 @@ def eval(model_path, root, classes_file):
         for y_t, y_p in zip(labels, v):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
             predictions.append(p)
-            trues.append(y_t.numpy())
-        print(count)
-    
+            trues.append(y_t.numpy())    
 
     #print(trues, predictions)
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
     accuracy = accuracy_score(trues, predictions)
-    confusion_matris = multilabel_confusion_matrix(trues, predictions)
     
 
     print(f1_macro, f1_micro, accuracy)
