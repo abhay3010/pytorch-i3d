@@ -38,7 +38,7 @@ def eval(model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=0)   
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=6)   
     i3d = InceptionI3d(26,mode="32x112", in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()
@@ -76,4 +76,4 @@ def eval(model_path, root, classes_file):
     print(f1_macro, f1_micro, accuracy)
     return f1_macro, f1_micro, accuracy
 
-eval("/virat-vr/models/pytorch-i3d/v5004080.pt", "/virat-vr/TinyVIRAT", "classes.txt")
+eval("/virat-vr/models/pytorch-i3d/v5004080.pt", "/mnt/data/TinyVIRAT/", "classes.txt")
