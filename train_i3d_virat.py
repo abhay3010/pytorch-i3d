@@ -57,7 +57,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
         state_dict = torch.load(start_from)
         i3d.replace_logits(26)
         new_dict = dict()
-        for k, v in state_dict.keys():
+        for k, v in state_dict.items():
             if k.startswith("module"):
                 new_dict[k[7:]] = v
             else:
