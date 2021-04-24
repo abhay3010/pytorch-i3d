@@ -152,8 +152,8 @@ if __name__ == '__main__':
     max_steps = 32000.0
     save_model='/virat-vr/models/pytorch-i3d/v7_bilinear_32_112'
     start_from = None
-    root = "TinyVIRAT/"
-    max_steps = 320000.0
+    # root = "TinyVIRAT/"
+    # max_steps = 320000.0
     # save_model=''
     # start_from = None
     run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=4, start_from=start_from )
