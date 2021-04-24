@@ -34,7 +34,7 @@ from virat_dataset import Virat as Dataset
 
 def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.01 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     i3d = InceptionI3d(26,mode=v_mode, in_channels=3)
     i3d = load_module_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
@@ -101,7 +101,10 @@ def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_si
                     tot_loss  = 0.
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
-        torch.save(i3d.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
+        if isinstance(resizer, nn.DataParallel):
+            torch.save(resizer.module.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
+        else:
+            torch.save(resizer.state_dict(), save_model+str(epoch).zfill(6)+'.pt' )
 
 def main():
     # Local parameters
