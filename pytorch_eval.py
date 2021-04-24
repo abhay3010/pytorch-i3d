@@ -74,7 +74,7 @@ def eval(model_path, root, classes_file):
     return f1_macro, f1_micro, accuracy
 
 def main():
-    model_list = ['v6000200.pt', 'v6000300.pt', 'v6000400.pt']
+    model_list = ['v7_bilinear_32_112001700.pt', 'v7_bilinear_32_112001600.pt', 'v7_bilinear_32_112001500.pt']
     
     for model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt")
