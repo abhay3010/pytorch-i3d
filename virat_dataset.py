@@ -7,6 +7,8 @@ from pathlib import Path
 import cv2
 import os
 import torch
+import torch.nn.functional as F
+
 #from joblib import Parallel, delayed
 def video_to_tensor(pic):
     """Convert a ``numpy.ndarray`` to tensor.
@@ -30,7 +32,8 @@ def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape):
         if  img is None:
             print("Failed to read file {0}, will exit", fn)
         if resize and (img.shape[0], img.shape[1]) != resize_shape:
-            img = cv2.resize(img, resize_shape, interpolation=cv2.INTER_CUBIC)
+            #this will need to change for the final results
+            img = cv2.resize(img, resize_shape, interpolation=cv2.INTER_LINEAR)
         img = (img/255.)*2 - 1
         frames.append(img)
     return np.asarray(frames, dtype=np.float32)
@@ -53,20 +56,10 @@ def make_dataset(root, data_type,num_frames, labels_file):
         'dims': v['dim']
         } for v in dataset if v['dim'][0] >=num_frames]
     
-    # # for details in processed_dataset:
-    # #     print("expanding", details['path'])
-    # #     load_rgb_frames(details['path'],0, details['frames'], details['frames'])
-    # def expand(details):
-    #     print(details['path'])
-    #     try:
-    #         load_rgb_frames(details['path'],0, details['frames'], details['frames'])
-    #     except:
-    #         print("could not uncompress ", details['path'])
-    #     return True
-    # y = Parallel(n_jobs=8)(delayed(expand)(d)for d in processed_dataset)
+    
     return processed_dataset, labels_map
     
-def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(60, 60)):
+def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(112, 112)):
     vpath = Path(root_path)
     parent_path = vpath.parents[0]
     #look for the frames filepath
@@ -106,7 +99,7 @@ def get_frames(p):
 
 
 class Virat(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), transforms=None):
+    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False,transforms=None):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
@@ -114,11 +107,14 @@ class Virat(data_util.Dataset):
         self.resize_shape = resize_shape
         self.transforms = transforms
         self.num_frames = num_frames
+        self.shuffule = shuffle
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
     
     def __getitem__(self, index):
         details = self.data[index]
-        start_f = random.randint(1,details['frames']-self.num_frames-1)
+        start_f = 0
+        if self.shuffule:
+            start_f = random.randint(1,details['frames']-self.num_frames-1)
         imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape)
         if self.transforms:
             imgs = self.transforms(imgs)
@@ -131,6 +127,23 @@ class Virat(data_util.Dataset):
 
     def __len__(self):
         return len(self.data)
+def test_interpolate():
+    frame_path = 'TinyVIRAT/videos/train/VIRAT_S_000203_07_001341_001458/0.mp4'
+    total_frames = 77
+    shape = (70,70)
+    unresized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=False)
+    print(unresized_frames.shape)
+    resized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=True, resize_shape=(112, 112)).transpose([3, 0, 1, 2])
+    torch_frames = torch.from_numpy(unresized_frames.transpose([3, 0, 1, 2]))
+    print("torch unresized frames", torch_frames.shape)
+    torch_resized_frames = F.interpolate(torch_frames.unsqueeze(0),size=(77,112,112), mode='trilinear', align_corners = False).numpy().squeeze()
+    print(resized_frames.shape, torch_resized_frames.shape)
+    print(np.all(np.abs(resized_frames - torch_resized_frames) < .01))
+
+
+if __name__ == '__main__':
+    test_interpolate()
+
 
 
 
