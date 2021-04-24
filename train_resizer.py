@@ -22,7 +22,7 @@ from torch.autograd import Variable
 import torchvision
 from torchvision import datasets, transforms
 import videotransforms
-from model_utils import load_params_from_file
+from model_utils import *
 
 
 import numpy as np
