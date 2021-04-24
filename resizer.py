@@ -134,9 +134,9 @@ class ResizerMainNetwork(nn.Module):
         out = self.residual_blocks(out)
         out = self.c3(out)
         out+=residual_skip
-        print(out.shape)        
+        # print(out.shape)        
         out = self.c4(out)
-        print(out.shape)
+        # print(out.shape)
         out+=residual
         return out
 

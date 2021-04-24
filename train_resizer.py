@@ -83,9 +83,9 @@ def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_si
                 inputs = Variable(inputs.to(device))
                 t = inputs.size(2)
                 labels = Variable(labels.to(device))
-                print("original input shape", inputs.shape)
+                # print("original input shape", inputs.shape)
                 resized_image = resizer(inputs)
-                print("resized input shape", resized_image.shape)
+                # print("resized input shape", resized_image.shape)
                 per_video_logits = i3d(resized_image)
                 class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels)
                 loss = class_loss/num_steps_per_update
