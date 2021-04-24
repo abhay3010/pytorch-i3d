@@ -36,7 +36,7 @@ def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_si
     #load the virat model. Freeze its layers. (check how to do so)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     i3d = InceptionI3d(26,mode=v_mode, in_channels=3)
-    i3d = load_params_from_file(i3d, virat_model_path, device)
+    i3d = load_module_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
     resizer = ResizerMainNetwork(3, int(v_mode.split('x')[0]), model_input_shape)
     #load the virat dataset
