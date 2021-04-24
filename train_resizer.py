@@ -34,8 +34,11 @@ from virat_dataset import Virat as Dataset
 
 def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.01 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
+    print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    print("torch device",device)
     i3d = InceptionI3d(26,mode=v_mode, in_channels=3)
+    print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
     resizer = ResizerMainNetwork(3, int(v_mode.split('x')[0]), model_input_shape)
@@ -43,10 +46,10 @@ def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_si
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
     dataset = Dataset(data_root, "train",classes_file,resize_shape=data_input_shape, transforms=train_transforms)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,  shuffle=True, num_workers=0, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataset = Dataset(data_root, "test",classes_file,resize_shape=data_input_shape, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=0, pin_memory=True)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True)
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     #Move both models to devices
     i3d.to(device)
