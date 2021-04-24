@@ -11,6 +11,7 @@ def load_params_from_file(model, params_file, device):
         if k.startswith("module."):
             new_dict[k[7:]] = v
         else:
+            print(k)
             new_dict[k] = v
     model.load_state_dict(new_dict)
     return model
