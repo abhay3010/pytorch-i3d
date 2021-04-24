@@ -105,20 +105,20 @@ def run(data_root,data_input_shape, model_input_shape, virat_model_path,batch_si
 
 def main():
     # Local parameters
-    data_root = 'TinyVIRAT'
-    data_input_shape= (14, 14)
-    model_input_shape = (112, 112)
-    virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
-    batch_size = 1
-    save_model = 'v9_resizer'
+    # data_root = 'TinyVIRAT'
+    # data_input_shape= (14, 14)
+    # model_input_shape = (112, 112)
+    # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
+    # batch_size = 1
+    # save_model = 'bilinear_32_resizer_v1'
 
     #GPU parameters
-    # data_root = 
-    # data_input_shape= 
-    # model_input_shape = 
-    # virat_model_path = 
-    # batch_size = 
-    # save_model = 
+    data_root = '/mnt/data/TinyVIRAT/'
+    data_input_shape= (14, 14)
+    model_input_shape = (112, 112)
+    virat_model_path = 'v7_bilinear_32_112004400.pt'
+    batch_size = 4
+    save_model = 'bilinear_32_resizer_v1'
     run(data_root, data_input_shape, model_input_shape, virat_model_path, batch_size, save_model)
 
 if __name__ == '__main__':
