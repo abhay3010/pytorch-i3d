@@ -34,6 +34,7 @@ from i3d import InceptionI3d
 from resizer import ResizerMainNetwork
 
 from virat_dataset import Virat as Dataset
+from torchsummary import summary
 
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -91,5 +92,3 @@ def main():
     for model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
-if __name__ == '__main__':
-    main()  

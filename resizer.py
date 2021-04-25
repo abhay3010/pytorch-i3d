@@ -164,7 +164,7 @@ def make_residuals(r, in_channels):
 
 def main():
     resizer_network = ResizerMainNetwork(3,32, (112,112) )
-    summary(resizer_network, (3, 32, 14, 14))
+    summary(resizer_network, (3, 32, 28, 28))
 if __name__ == '__main__':
     main()
     

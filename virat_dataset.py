@@ -140,6 +140,16 @@ def test_interpolate():
     print(resized_frames.shape, torch_resized_frames.shape)
     print(np.all(np.abs(resized_frames - torch_resized_frames) < .01))
 
+def collate_tensors(tensor_list):
+    #tensors have shape CxTxHxW
+    d1 = max([t.shape[2] for t,_ in tensor_list ])
+    d2 = max([t.shape[3]) for t, _ in tensor_list])
+    tensor_list = [(resize_video(t, (d1, d2)) , l) if (t.shape[2], t.shape[3]) != (d1,d2) else t,l for t,l in tensor_list]
+    return default_collate(tensor_list)
+    
+def resize_video(t, shape):
+    return F.interpolate(t,size=shape, mode='bilinear', align_corners = False)
+
 
 if __name__ == '__main__':
     test_interpolate()

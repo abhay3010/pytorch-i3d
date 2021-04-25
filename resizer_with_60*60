@@ -1,0 +1,17 @@
+Hit:1 http://archive.ubuntu.com/ubuntu bionic InRelease
+Get:2 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Get:3 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Get:4 http://archive.ubuntu.com/ubuntu bionic-backports InRelease [74.6 kB]
+Fetched 252 kB in 1s (209 kB/s)
+Reading package lists...
+Already up to date.
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_60x60000010.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.023770263266633816 0.35424504321301475 0.20247773906310493
+bilinear_32_resizer_v2_60x60000010.pt , f1_macro : 0.023770263266633816, f1_micro 0.35424504321301475, Accuracy 0.20247773906310493
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_60x60000015.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.025808150992443414 0.3905384006334125 0.2313201703445606
+bilinear_32_resizer_v2_60x60000015.pt , f1_macro : 0.025808150992443414, f1_micro 0.3905384006334125, Accuracy 0.2313201703445606
