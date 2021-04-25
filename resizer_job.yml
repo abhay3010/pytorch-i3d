@@ -16,12 +16,12 @@ spec:
                  nvidia.com/gpu: 2
                  memory: "18Gi"
                  cpu: "10"
-                 ephemeral-storage: 40Gi
+                 ephemeral-storage: 30Gi
                 requests:
                  nvidia.com/gpu: 2
                  memory: "16Gi"
                  cpu: "8" 
-                 ephemeral-storage: 40Gi
+                 ephemeral-storage: 30Gi
               volumeMounts:
                 - mountPath: /virat-vr
                   name: virat-vr 
