@@ -119,11 +119,9 @@ class ResizerMainNetwork(nn.Module):
         
     def forward(self, x):
         # print("input shape", x.shape)
-        out = self.skip_resizer(x)
+        residual = self.skip_resizer(x)
         # print("resizer_shape", out.shape)
-        residual = out
-
-        out = self.c1(out)
+        out = self.c1(x)
         # print("conv shape", out.shape)
 
         out = self.c2(out)
