@@ -39,11 +39,11 @@ def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file,resize_shape=(60,60), transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=6) 
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=2) 
     resizer = ResizerMainNetwork(3, 32, (112, 112))
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
-    resizer.train(False)
+   
     i3d = InceptionI3d(26,mode="32x112", in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()
@@ -55,11 +55,16 @@ def eval(resizer_model, model_path, root, classes_file):
             new_dict[k] = v
     i3d.load_state_dict(new_dict)
     i3d.to(device)
+    if torch.cuda.device_count()>1:
+        i3d = nn.DataParallel(i3d)
+        resizer = nn.DataParallel(resizer)
     i3d.train(False)
+    resizer.train(False)
     predictions = list()
     trues = list()
 
     count = 0
+    print("Beginning evaluation for resizer model ", resizer_model, "code model ", model_path)
     for batch, labels in val_dataloader:
         count+=1
         inputs = Variable(batch.to(device))
