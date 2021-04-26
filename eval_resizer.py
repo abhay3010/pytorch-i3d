@@ -35,11 +35,11 @@ from resizer import ResizerMainNetwork
 
 from virat_dataset import Virat as Dataset
 from torchsummary import summary
-from virat_dataset import collate_tensors 
+from virat_dataset import collate_tensors, load_rgb_frames
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, normalize=False)
+    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, normalize=False, sample=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True,  collate_fn=collate_tensors) 
     resizer = ResizerMainNetwork(3, 32, (112, 112), skip=True)
     # resizer.load_state_dict(torch.load(resizer_model))
@@ -94,5 +94,20 @@ def main():
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 
 
+def test_resizer():
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    resizer = ResizerMainNetwork(3, 32, (112, 112), skip=True)
+    #load unnormalized image and then resized image and resizer network should give the same output
+    frame_path = 'TinyVIRAT/videos/train/VIRAT_S_000203_07_001341_001458/0.mp4'
+    total_frames = 77
+    shape = (70,70)
+    unresized_frames = load_rgb_frames(frame_path, 0, 32, total_frames, resize=False, normalize=False).transpose([3,0,1,2])
+    print(unresized_frames.shape)
+    resized_frames = load_rgb_frames(frame_path, 0, 32, total_frames, resize=True, resize_shape=(112, 112), normalize=False).transpose([3, 0, 1, 2])
+    print(resized_frames.shape)
+    from_network = resizer(torch.from_numpy(unresized_frames).unsqueeze(0)).squeeze(0).numpy()
+    print(from_network.shape)
+    print(np.min(np.abs(from_network - resized_frames)))
+
 if __name__ == '__main__':
-     main()
+    main()

@@ -102,7 +102,7 @@ def get_frames(p):
 
 
 class Virat(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None):
+    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
@@ -113,6 +113,8 @@ class Virat(data_util.Dataset):
         self.shuffule = shuffle
         self.normalize = normalize
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
+        if sample:
+            self.data = self.data[:500]
     
     def __getitem__(self, index):
         details = self.data[index]
