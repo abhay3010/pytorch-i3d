@@ -39,8 +39,8 @@ from virat_dataset import collate_tensors, load_rgb_frames
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None,sample=True)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True,  collate_fn=collate_tensors) 
+    val_dataset = Dataset(root, "test",classes_file, resize=True, transforms=None,sample=True)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True) 
     resizer = ResizerMainNetwork(3, 32, (112, 112), skip=True)
     # resizer.load_state_dict(torch.load(resizer_model))
     # resizer.to(device)
@@ -69,8 +69,8 @@ def eval(resizer_model, model_path, root, classes_file):
     for batch, labels in val_dataloader:
         count+=1
         inputs = Variable(batch.to(device))
-        out = resizer(inputs)
-        v = torch.sigmoid(i3d(out))
+        # out = resizer(inputs)
+        v = torch.sigmoid(i3d(inputs))
         for y_t, y_p in zip(labels, v):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
             predictions.append(p)
