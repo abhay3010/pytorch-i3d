@@ -87,10 +87,12 @@ def eval(resizer_model, model_path, root, classes_file):
 
 def main():
     i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    model_list = ['bilinear_32_resizer_v3000004.pt', 'bilinear_32_resizer_v3000005.pt', 'bilinear_32_resizer_v3000004.pt']
+    model_list = ['bilinear_32_resizer_v3000004.pt', 'bilinear_32_resizer_v3000005.pt', 'bilinear_32_resizer_v3000006.pt', 'bilinear_32_resizer_v3000007.pt', 'bilinear_32_resizer_v3000008.pt']
     
     for model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
- if __name__ == '__main__':
+
+
+if __name__ == '__main__':
      main()
