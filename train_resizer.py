@@ -124,7 +124,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size = 4
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v3'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v4'
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
 

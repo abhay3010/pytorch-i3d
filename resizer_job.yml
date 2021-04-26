@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resizer-job
+  name: virat-vr-resizer-job-version2
 spec:
   template:
     spec:
@@ -14,14 +14,14 @@ spec:
               resources:
                 limits:
                  nvidia.com/gpu: 1
-                 memory: "18Gi"
-                 cpu: "10"
-                 ephemeral-storage: 30Gi
+                 memory: "12Gi"
+                 cpu: "8"
+                 ephemeral-storage: 15Gi
                 requests:
                  nvidia.com/gpu: 1
-                 memory: "16Gi"
-                 cpu: "8" 
-                 ephemeral-storage: 30Gi
+                 memory: "12Gi"
+                 cpu: "6" 
+                 ephemeral-storage: 15Gi
               volumeMounts:
                 - mountPath: /virat-vr
                   name: virat-vr 
