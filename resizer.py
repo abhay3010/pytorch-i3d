@@ -109,7 +109,7 @@ class ResizerMainNetwork(nn.Module):
         self.skip = skip
         super(ResizerMainNetwork, self).__init__()
         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
-        if not skip:
+        if not self.skip:
             self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=self.nframes, kernel_shape=[7, 7, 7],  norm=None)
             #revisit size of this unit as it is inconsitent between paper and diagram
             self.c2 = ConvUnit(in_channels=self.nframes, kernel_shape = [1,1,1], output_channels=self.nframes)
