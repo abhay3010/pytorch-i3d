@@ -121,7 +121,7 @@ class ResizerMainNetwork(nn.Module):
     def forward(self, x):
         # print("input shape", x.shape)
         residual = self.skip_resizer(x)
-        if skip:
+        if self.skip:
             return residual
         else:
 
