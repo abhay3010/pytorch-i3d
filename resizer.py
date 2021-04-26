@@ -90,14 +90,14 @@ class ResizerBlock(nn.Module):
         if len(output_shape) != 3:
             raise ValueError("Expects output dimension of shape 3*3*3 of the format TxWxL")
         self.output_shape = output_shape
-        self.normalize
+        self.normalize = normalize
         
         super(ResizerBlock, self).__init__()
     def forward(self, x):
         """Given input x , resize the input using the given mode to the output shape:
         """
         y = F.interpolate(x, size=self.output_shape,mode='trilinear', align_corners=True) #Setting align corners as true as we want the corners of our image aligned. 
-        if normalize:
+        if self.normalize:
             y = y*2. - 1
         return y
 class ResizerMainNetwork(nn.Module):
