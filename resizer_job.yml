@@ -14,12 +14,12 @@ spec:
               resources:
                 limits:
                  nvidia.com/gpu: 1
-                 memory: "12Gi"
+                 memory: "8Gi"
                  cpu: "8"
                  ephemeral-storage: 15Gi
                 requests:
                  nvidia.com/gpu: 1
-                 memory: "12Gi"
+                 memory: "8Gi"
                  cpu: "6" 
                  ephemeral-storage: 15Gi
               volumeMounts:
@@ -45,6 +45,8 @@ spec:
                 - name: data
                   mountPath: /mnt/dest
           restartPolicy: Never
+          nodeSelector:
+            nautilus.io/disktype: nvme
           volumes:
            - name: virat-vr
              persistentVolumeClaim:
