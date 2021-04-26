@@ -39,11 +39,11 @@ from virat_dataset import collate_tensors
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
+    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, normalize=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True,  collate_fn=collate_tensors) 
-    resizer = ResizerMainNetwork(3, 32, (112, 112))
-    resizer.load_state_dict(torch.load(resizer_model))
-    resizer.to(device)
+    resizer = ResizerMainNetwork(3, 32, (112, 112), skip=True)
+    # resizer.load_state_dict(torch.load(resizer_model))
+    # resizer.to(device)
    
     i3d = InceptionI3d(26,mode="32x112", in_channels=3)
     state_dict = torch.load(model_path)

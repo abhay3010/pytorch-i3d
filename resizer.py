@@ -7,10 +7,6 @@ import numpy as np
 """
 Resizer module class to add to the video network
 """
-class ResizerNetwork(nn.Module):
-    def __init__(self, output_shape):
-        self.output_shape = output_shape
-        self.first_skip_block = ResizerBlock(output_shape)
 
 #No learnable parameters in the ResizerBlock
 
@@ -90,53 +86,62 @@ class ConvUnit(nn.Module):
         return x
 
 class ResizerBlock(nn.Module):
-    def __init__(self, output_shape):
+    def __init__(self, output_shape, normalize):
         if len(output_shape) != 3:
             raise ValueError("Expects output dimension of shape 3*3*3 of the format TxWxL")
         self.output_shape = output_shape
+        self.normalize
         
         super(ResizerBlock, self).__init__()
     def forward(self, x):
         """Given input x , resize the input using the given mode to the output shape:
         """
         y = F.interpolate(x, size=self.output_shape,mode='trilinear', align_corners=True) #Setting align corners as true as we want the corners of our image aligned. 
+        if normalize:
+            y = y*2. - 1
         return y
 class ResizerMainNetwork(nn.Module):
-    def __init__(self, in_channels,n_frames, scale_shape,num_resblocks=1):
+    def __init__(self, in_channels,n_frames, scale_shape,num_resblocks=1, skip=False):
         self.in_channels = in_channels
         self.r = num_resblocks
         self.scale_shape = scale_shape
         self.nframes = n_frames
+        self.skip = skip
         super(ResizerMainNetwork, self).__init__()
-        self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape)
-        self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=self.nframes, kernel_shape=[7, 7, 7],  norm=None)
-        #revisit size of this unit as it is inconsitent between paper and diagram
-        self.c2 = ConvUnit(in_channels=self.nframes, kernel_shape = [1,1,1], output_channels=self.nframes)
-        self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape)
-        self.residual_blocks = make_residuals(num_resblocks, self.nframes)
-        self.c3 = ConvUnit(in_channels=self.nframes, kernel_shape=[3,3,3], output_channels=self.nframes, lru=False)
-        self.c4 = ConvUnit(in_channels=self.nframes, kernel_shape=[1,3,3], output_channels=self.in_channels, lru=False, norm=None)
+        self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, True)
+        if not skip:
+            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=self.nframes, kernel_shape=[7, 7, 7],  norm=None)
+            #revisit size of this unit as it is inconsitent between paper and diagram
+            self.c2 = ConvUnit(in_channels=self.nframes, kernel_shape = [1,1,1], output_channels=self.nframes)
+            self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
+            self.residual_blocks = make_residuals(num_resblocks, self.nframes)
+            self.c3 = ConvUnit(in_channels=self.nframes, kernel_shape=[3,3,3], output_channels=self.nframes, lru=False)
+            self.c4 = ConvUnit(in_channels=self.nframes, kernel_shape=[1,3,3], output_channels=self.in_channels, lru=False, norm=None)
         
     def forward(self, x):
         # print("input shape", x.shape)
         residual = self.skip_resizer(x)
-        # print("resizer_shape", out.shape)
-        out = self.c1(x)
-        # print("conv shape", out.shape)
+        if skip:
+            return residual
+        else:
 
-        out = self.c2(out)
-        # print("conv2 shape", out.shape)
-        out =  self.resizer_first(out)
-        # print("in resizer shape", out.shape)
-        residual_skip = out
-        out = self.residual_blocks(out)
-        out = self.c3(out)
-        out+=residual_skip
-        # print(out.shape)        
-        out = self.c4(out)
-        # print(out.shape)
-        out+=residual
-        return out
+        # print("resizer_shape", out.shape)
+            out = self.c1(x)
+            # print("conv shape", out.shape)
+
+            out = self.c2(out)
+            # print("conv2 shape", out.shape)
+            out =  self.resizer_first(out)
+            # print("in resizer shape", out.shape)
+            residual_skip = out
+            out = self.residual_blocks(out)
+            out = self.c3(out)
+            out+=residual_skip
+            # print(out.shape)        
+            out = self.c4(out)
+            # print(out.shape)
+            out+=residual
+            return out
 
 class ResidualBlock(nn.Module):
     def __init__(self,num_channels):

@@ -21,7 +21,7 @@ def video_to_tensor(pic):
          Tensor: Converted video.
     """
     return torch.from_numpy(pic.transpose([3,0,1,2]))
-def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape):
+def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape, normalize):
     fnames = []
     for i in range(start_frame, start_frame + num_frames):
             fnames.append(os.path.join(frame_root, 'frame_{0}.jpg'.format(i)))
@@ -34,7 +34,10 @@ def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape):
         if resize and (img.shape[0], img.shape[1]) != resize_shape:
             #this will need to change for the final results
             img = cv2.resize(img, resize_shape, interpolation=cv2.INTER_LINEAR)
-        img = (img/255.)*2 - 1
+        if normalize:
+            img = (img/255.)*2 - 1
+        else:
+            img = img/255.
         frames.append(img)
     return np.asarray(frames, dtype=np.float32)
     
@@ -59,14 +62,14 @@ def make_dataset(root, data_type,num_frames, labels_file):
     
     return processed_dataset, labels_map
     
-def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(112, 112)):
+def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(112, 112), normalize=True):
     vpath = Path(root_path)
     parent_path = vpath.parents[0]
     #look for the frames filepath
     frames_folder = parent_path.joinpath(vpath.stem + '_frames')
     if frames_folder.exists() and frames_folder.is_dir() and len(get_frames(str(frames_folder))) == total_frames :
         #print("loading from existing frames")
-        array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape)
+        array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape, normalize)
         return array_from_frames
     else:
         if not vpath.exists():
@@ -87,7 +90,7 @@ def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=Fals
                 frames.append(frame)
         finally:
             cap.release()
-        saved_frames = load_from_frames(str(frames_folder),start_frame,num_frames, resize, resize_shape)
+        saved_frames = load_from_frames(str(frames_folder),start_frame,num_frames, resize, resize_shape, normalize)
         return saved_frames
 
 def get_frames(p):
@@ -99,7 +102,7 @@ def get_frames(p):
 
 
 class Virat(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False,transforms=None):
+    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
@@ -108,6 +111,7 @@ class Virat(data_util.Dataset):
         self.transforms = transforms
         self.num_frames = num_frames
         self.shuffule = shuffle
+        self.normalize = normalize
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
     
     def __getitem__(self, index):
@@ -115,7 +119,7 @@ class Virat(data_util.Dataset):
         start_f = 0
         if self.shuffule:
             start_f = random.randint(1,details['frames']-self.num_frames-1)
-        imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape)
+        imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
         if self.transforms:
             imgs = self.transforms(imgs)
         y = np.zeros(len(self.labels_map), dtype=np.float32)
@@ -131,14 +135,14 @@ def test_interpolate():
     frame_path = 'TinyVIRAT/videos/train/VIRAT_S_000203_07_001341_001458/0.mp4'
     total_frames = 77
     shape = (70,70)
-    unresized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=False)
+    unresized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=False, normalize=False)
     print(unresized_frames.shape)
-    resized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=True, resize_shape=(112, 112)).transpose([3, 0, 1, 2])
+    resized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=True, resize_shape=(112, 112), normalize=False).transpose([3, 0, 1, 2])
     torch_frames = torch.from_numpy(unresized_frames.transpose([3, 0, 1, 2]))
     print("torch unresized frames", torch_frames.shape)
     torch_resized_frames = F.interpolate(torch_frames.unsqueeze(0),size=(77,112,112), mode='trilinear', align_corners = False).numpy().squeeze()
     print(resized_frames.shape, torch_resized_frames.shape)
-    print(np.all(np.abs(resized_frames - torch_resized_frames) < .01))
+    print(np.all(np.abs(resized_frames - torch_resized_frames) < 0.7))
 
 def collate_tensors(tensor_list):
     #tensors have shape CxTxHxW
