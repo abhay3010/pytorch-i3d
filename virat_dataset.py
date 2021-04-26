@@ -146,13 +146,14 @@ def test_interpolate():
 
 def collate_tensors(tensor_list):
     #tensors have shape CxTxHxW
+    d0 = max([t.shape[1] for t,_ in tensor_list])
     d1 = max([t.shape[2] for t,_ in tensor_list ])
     d2 = max([t.shape[3] for t, _ in tensor_list])
-    tensor_list = [(resize_video(t, (d1, d2)) , l) if (t.shape[2], t.shape[3]) != (d1,d2) else (t,l) for t,l in tensor_list]
+    tensor_list = [(resize_video(t, (d0, d1, d2)) , l) if (t.shape[2], t.shape[3]) != (d1,d2) else (t,l) for t,l in tensor_list]
     return default_collate(tensor_list)
     
 def resize_video(t, shape):
-    return F.interpolate(t,size=shape, mode='bilinear', align_corners = False)
+    return F.interpolate(t.unsqueeze(0),size=shape, mode='trilinear', align_corners = False).squeeze(0)
 
 
 if __name__ == '__main__':
