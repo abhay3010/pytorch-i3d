@@ -10,11 +10,11 @@ spec:
     resources:
       limits:
         nvidia.com/gpu: 1
-        memory: "8Gi"
+        memory: "4Gi"
         cpu: "2000m"
       requests:
         nvidia.com/gpu: 1
-        memory: "8Gi"
+        memory: "4Gi"
         cpu: "2000m"
 
 

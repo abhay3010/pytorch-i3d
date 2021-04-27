@@ -39,7 +39,7 @@ from virat_dataset import collate_tensors, load_rgb_frames
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=True, transforms=None,sample=True)
+    val_dataset = Dataset(root, "test",classes_file, resize=True, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True) 
     resizer = ResizerMainNetwork(3, 32, (112, 112), skip=False)
     resizer.load_state_dict(torch.load(resizer_model))
@@ -87,7 +87,7 @@ def eval(resizer_model, model_path, root, classes_file):
 
 def main():
     i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    model_list = ['bilinear_32_resizer_v4000000.pt']
+    model_list = ['bilinear_32_resizer_v4000000.pt', 'bilinear_32_resizer_v4000003.pt', 'bilinear_32_resizer_v4000004.pt', 'bilinear_32_resizer_v4000005.pt']
     
     for model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
