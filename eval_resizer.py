@@ -31,7 +31,7 @@ import numpy as np
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetwork
+from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 from torchsummary import summary
@@ -41,7 +41,7 @@ def eval(resizer_model, model_path, root, classes_file):
 
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
-    resizer = ResizerMainNetwork(3, 32, (112, 112), skip=False)
+    resizer = ResizerMainNetworkV2(3, 32, (112, 112), skip=False)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
