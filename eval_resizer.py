@@ -69,7 +69,7 @@ def eval(resizer_model, model_path, root, classes_file):
     for batch, labels in val_dataloader:
         count+=1
         inputs = Variable(batch.to(device))
-        # out = resizer(inputs)
+        out = resizer(inputs)
         v = torch.sigmoid(i3d(inputs))
         for y_t, y_p in zip(labels, v):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
