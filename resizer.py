@@ -200,6 +200,7 @@ class ResizerMainNetworkV3(nn.Module):
             #revisit size of this unit as it is inconsitent between paper and diagram
             self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
             self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
+            self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[7,7,7], output_channels=self.in_channels, lru=False, norm=None)
         
     def forward(self, x):
@@ -219,7 +220,7 @@ class ResizerMainNetworkV3(nn.Module):
             # print("in resizer shape", out.shape)
             # residual_skip = out
             # out = self.residual_blocks(out)
-            # out = self.c3(out)
+            out = self.c3(out)
             # out+=residual_skip
             # print(out.shape)        
             out = self.c4(out)
