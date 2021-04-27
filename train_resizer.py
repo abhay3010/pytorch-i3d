@@ -61,7 +61,9 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     lr = init_lr
     num_steps_per_update = 10
     #Only passing the resizer parameters to the optimizer
-    optimizer = optim.Adam(resizer.parameters(), lr=lr)   
+    optimizer = optim.Adam(resizer.parameters(), lr=lr)
+    print("optimizer parameters, ", resizer.parameters())
+    print("resizer network", resizer)   
     for epoch in range(num_epochs):
         print ('Epoch {}/{}'.format(epoch, num_epochs))
         print ('-' * 10)
