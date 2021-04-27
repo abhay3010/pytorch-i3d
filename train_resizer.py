@@ -29,7 +29,7 @@ from virat_dataset import collate_tensors
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV3
+from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 
@@ -42,11 +42,11 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = ResizerMainNetworkV3(3, int(v_mode.split('x')[0]), model_input_shape)
+    resizer = ResizerMainNetworkV2(3, int(v_mode.split('x')[0]), model_input_shape)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, )
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms )
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
 
     val_dataset = Dataset(data_root, "test",classes_file,resize=False, transforms=None)
@@ -61,9 +61,11 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     lr = init_lr
     num_steps_per_update = 10
     #Only passing the resizer parameters to the optimizer
-    optimizer = optim.Adam(resizer.parameters(), lr=lr)
-    print("optimizer parameters, ", resizer.parameters())
-    print("resizer network", resizer)   
+
+    
+    optimizer = optim.Adam(list(resizer.parameters()) + [list(i3d.parameters())[-1]], lr=lr)
+    print("resizer network", resizer)
+    print("i3d", i3d)
     for epoch in range(num_epochs):
         print ('Epoch {}/{}'.format(epoch, num_epochs))
         print ('-' * 10)
@@ -109,8 +111,10 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
         if isinstance(resizer, nn.DataParallel):
             torch.save(resizer.module.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
+            torch.save(i3d.module.state_dict(), save_model + 'i3d' + str(epoch).zfill(6)+'.pt')
         else:
             torch.save(resizer.state_dict(), save_model+str(epoch).zfill(6)+'.pt' )
+            torch.save(i3d.state_dict(), save_model + 'i3d' + str(epoch).zfill(6)+'.pt')
 
 def main():
     # Local parameters
@@ -126,7 +130,8 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size = 4
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v7'
+
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
 

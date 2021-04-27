@@ -1,0 +1,59 @@
+Get:1 http://security.ubuntu.com/ubuntu bionic-security InRelease [88.7 kB]
+Hit:2 http://archive.ubuntu.com/ubuntu bionic InRelease
+Get:3 http://archive.ubuntu.com/ubuntu bionic-updates InRelease [88.7 kB]
+Get:4 http://security.ubuntu.com/ubuntu bionic-security/main amd64 Packages [2116 kB]
+Get:5 http://archive.ubuntu.com/ubuntu bionic-backports InRelease [74.6 kB]
+Get:6 http://security.ubuntu.com/ubuntu bionic-security/universe amd64 Packages [1410 kB]
+Get:7 http://archive.ubuntu.com/ubuntu bionic-updates/multiverse amd64 Packages [31.6 kB]
+Get:8 http://archive.ubuntu.com/ubuntu bionic-updates/restricted amd64 Packages [426 kB]
+Get:9 http://archive.ubuntu.com/ubuntu bionic-updates/universe amd64 Packages [2181 kB]
+Get:10 http://archive.ubuntu.com/ubuntu bionic-updates/main amd64 Packages [2546 kB]
+Fetched 8962 kB in 2s (3927 kB/s)
+Reading package lists...
+From https://github.com/abhay3010/pytorch-i3d
+   6cbc22f..3033be0  master     -> origin/master
+Updating 6cbc22f..3033be0
+Fast-forward
+ eval_resizer.py      | 4 ++--
+ job_eval_resizer.yml | 2 +-
+ 2 files changed, 3 insertions(+), 3 deletions(-)
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000008.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.028697956589081565 0.4565458579881656 0.2940379403794038
+bilinear_32_resizer_v2_v6000008.pt , f1_macro : 0.028697956589081565, f1_micro 0.4565458579881656, Accuracy 0.2940379403794038
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000009.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.027612493129734513 0.43632587557821206 0.27371273712737126
+bilinear_32_resizer_v2_v6000009.pt , f1_macro : 0.027612493129734513, f1_micro 0.43632587557821206, Accuracy 0.27371273712737126
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000010.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.026352826983741806 0.4140297369424323 0.25493612078977934
+bilinear_32_resizer_v2_v6000010.pt , f1_macro : 0.026352826983741806, f1_micro 0.4140297369424323, Accuracy 0.25493612078977934
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000011.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.027860370010272636 0.441352259992529 0.2742934572202865
+bilinear_32_resizer_v2_v6000011.pt , f1_macro : 0.027860370010272636, f1_micro 0.441352259992529, Accuracy 0.2742934572202865
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000012.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.02895162719991357 0.47340757238307346 0.3132017034456059
+bilinear_32_resizer_v2_v6000012.pt , f1_macro : 0.02895162719991357, f1_micro 0.47340757238307346, Accuracy 0.3132017034456059
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000013.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.028500869145449564 0.46032178892827924 0.29926442121564073
+bilinear_32_resizer_v2_v6000013.pt , f1_macro : 0.028500869145449564, f1_micro 0.46032178892827924, Accuracy 0.29926442121564073
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000014.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.02822568730631273 0.456369744846999 0.2938443670150987
+bilinear_32_resizer_v2_v6000014.pt , f1_macro : 0.02822568730631273, f1_micro 0.456369744846999, Accuracy 0.2938443670150987
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+Beginning evaluation for resizer model  /virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v6000015.pt code model  /virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt
+0.02728085867620751 0.42925066565233927 0.2667440960123887
+bilinear_32_resizer_v2_v6000015.pt , f1_macro : 0.02728085867620751, f1_micro 0.42925066565233927, Accuracy 0.2667440960123887

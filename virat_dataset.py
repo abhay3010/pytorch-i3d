@@ -114,7 +114,7 @@ class Virat(data_util.Dataset):
         self.normalize = normalize
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
         if sample:
-            self.data = self.data[:2000]
+            self.data = self.data[:200]
     
     def __getitem__(self, index):
         details = self.data[index]

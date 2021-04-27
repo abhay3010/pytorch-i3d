@@ -97,7 +97,7 @@ def main():
 
 def test_resizer():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    resizer = ResizerMainNetwork(3, 32, (112, 112), skip=True)
+    resizer = ResizerMainNetworkV2(3, 32, (112, 112), skip=True)
     #load unnormalized image and then resized image and resizer network should give the same output
     frame_path = 'TinyVIRAT/videos/train/VIRAT_S_000203_07_001341_001458/0.mp4'
     total_frames = 77
