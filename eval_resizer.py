@@ -70,7 +70,7 @@ def eval(resizer_model, model_path, root, classes_file):
         count+=1
         inputs = Variable(batch.to(device))
         out = resizer(inputs)
-        v = torch.sigmoid(i3d(inputs))
+        v = torch.sigmoid(i3d(out))
         for y_t, y_p in zip(labels, v):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
             predictions.append(p)
