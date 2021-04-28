@@ -88,11 +88,11 @@ def eval(resizer_model, model_path, root, classes_file):
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     model_list = [
-        ('bilinear_32_resizer_v2_v7000005.pt', 'bilinear_32_resizer_v2_v7i3d000005.pt '),
-        ('bilinear_32_resizer_v2_v7000006.pt', 'bilinear_32_resizer_v2_v7i3d000006.pt '),
-        ('bilinear_32_resizer_v2_v7000007.pt', 'bilinear_32_resizer_v2_v7i3d000007.pt '),
-        ('bilinear_32_resizer_v2_v7000008.pt', 'bilinear_32_resizer_v2_v7i3d000008.pt '),
-        ('bilinear_32_resizer_v2_v7000009.pt', 'bilinear_32_resizer_v2_v7i3d000009.pt ')
+        ('bilinear_32_resizer_v2_v7000005.pt', 'bilinear_32_resizer_v2_v7i3d000005.pt'),
+        ('bilinear_32_resizer_v2_v7000006.pt', 'bilinear_32_resizer_v2_v7i3d000006.pt'),
+        ('bilinear_32_resizer_v2_v7000007.pt', 'bilinear_32_resizer_v2_v7i3d000007.pt'),
+        ('bilinear_32_resizer_v2_v7000008.pt', 'bilinear_32_resizer_v2_v7i3d000008.pt'),
+        ('bilinear_32_resizer_v2_v7000009.pt', 'bilinear_32_resizer_v2_v7i3d000009.pt')
         
     ]
     
