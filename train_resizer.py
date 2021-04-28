@@ -33,7 +33,7 @@ from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.02 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -46,7 +46,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms )
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
 
     val_dataset = Dataset(data_root, "test",classes_file,resize=False, transforms=None)
@@ -63,7 +63,11 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #Only passing the resizer parameters to the optimizer
 
     
-    optimizer = optim.Adam(list(resizer.parameters()) + [list(i3d.parameters())[-1]], lr=lr)
+    for name, param in i3d.named_parameters():
+        if "logits" not in name:
+            param.requires_grad= False
+    optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
+
     print("resizer network", resizer)
     print("i3d", i3d)
     for epoch in range(num_epochs):
@@ -89,7 +93,6 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                 # wrap them in Variable
                 # print(inputs.shape)
                 inputs = Variable(inputs.to(device))
-                t = inputs.size(2)
                 labels = Variable(labels.to(device))
                 # print("original input shape", inputs.shape)
                 resized_image = resizer(inputs)
@@ -122,7 +125,7 @@ def main():
     # data_input_shape= (14, 14)
     # model_input_shape = (112, 112)
     # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
-    # batch_size = 1
+    # batch_size = 2
     # save_model = 'bilinear_32_resizer_v1'
 
     #GPU parameters
@@ -130,7 +133,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size = 4
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v7'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v2_v8'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
