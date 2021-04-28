@@ -97,7 +97,7 @@ def main():
     ]
     
     for model, i3d_model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
+       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 
 
