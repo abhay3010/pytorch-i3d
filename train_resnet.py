@@ -41,7 +41,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                 running_loss += loss.item() * inputs.size(0)
                 counter+=1
                 if counter%100 == 0:
-                    print("step ", counter, running_loss/(counter*inputs.size(0))
+                    print("step ", counter, running_loss/(counter*inputs.size(0)))
         epoch_loss = running_loss /len(dataloaders[phase].dataset)
         print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
         if phase == 'val':
