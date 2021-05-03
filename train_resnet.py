@@ -89,15 +89,15 @@ def set_parameters_requires_grad(model):
 
 def main():
     #Local parameters
-    root = "TinyVIRAT/"
-    classes_file =  "classes.txt"
-    save_path = ''
+    # root = "TinyVIRAT/"
+    # classes_file =  "classes.txt"
+    # save_path = ''
 
 
     #gpu paramaeters
-    # root = "/mnt/data/TinyVIRAT/"
-    # classes_file =  "classes.txt"
-    # save_path = ''
+    root = "/mnt/data/TinyVIRAT/"
+    classes_file =  "classes.txt"
+    save_path = '/virat-vr/models/pytorch-i3d/resnet_v1'
 
     run(root,classes_file,save_path)
 
