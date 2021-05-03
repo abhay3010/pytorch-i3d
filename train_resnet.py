@@ -45,7 +45,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 torch.save(model.state_dict(), model_prefix + 'i3d' + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=16, lr=0.001):
+def run(root, classes_file,save_path, batch_size=128, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
@@ -62,10 +62,10 @@ def run(root, classes_file,save_path, batch_size=16, lr=0.001):
 
     ])
     dataset = Dataset(root, "train",classes_file, resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=True)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataset = Dataset(root, "test",classes_file,resize=True, resize_shape=(224,224), transforms=val_transforms)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)    
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
@@ -119,7 +119,7 @@ def test_dataset():
 
 
 if __name__ == '__main__':
-    test_dataset()
+    main()
 
 
 
