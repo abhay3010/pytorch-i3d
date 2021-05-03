@@ -27,8 +27,8 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                 model.eval()
             running_loss = 0.0
             for inputs, labels in dataloaders[phase]:
-                inputs.to(device)
-                labels.to(device)
+                inputs = inputs.to(device)
+                labels = labels.to(device)
                 with torch.set_grad_enabled(phase=='train'):
 
                     outputs = model(inputs)
