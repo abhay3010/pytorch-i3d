@@ -16,18 +16,36 @@ spec:
         nvidia.com/gpu: 1
         memory: "4Gi"
         cpu: "2000m"
-
-
     volumeMounts:
     - mountPath: /virat-vr
       name: virat-vr
     - mountPath: /dev/shm
       name: dshm
+  initContainers:
+  - name : init-data
+    image: gitlab-registry.nautilus.optiputer.net/prp/gsutil
+    args:
+      - gsutil
+      - "-m"
+      - rsync
+      - "-erP"
+      - /mnt/source/
+      - /mnt/dest/
+    volumeMounts:
+      - name: virat-vr-small
+        mountPath: /mnt/source
+      - name: data
+        mountPath: /mnt/dest
   restartPolicy: Never
   volumes:
-    - name: virat-vr
-      persistentVolumeClaim:
-        claimName: virat-vr
-    - name: dshm
-      emptyDir:
-        medium: Memory
+  - name: virat-vr
+    persistentVolumeClaim:
+      claimName: virat-vr
+  - name: virat-vr-small
+    persistentVolumeClaim:
+      claimName: virat-vr-small
+  - name: dshm
+    emptyDir:
+      medium: Memory
+  - name: data
+    emptyDir: {}

@@ -104,7 +104,7 @@ def main():
 
     run(root,classes_file,save_path)
 def test_dataset():
-    root = "TinyVIRAT/"
+    root = "/mnt/data/TinyVIRAT/"
     train_transforms = transforms.Compose([ 
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
