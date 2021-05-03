@@ -17,7 +17,7 @@ from per_frame_image_dataset import ViratImages as Dataset
 def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_epochs=25  ):
 
 
-
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs))
         for phase in ['train', 'val']:
@@ -27,7 +27,10 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                 model.eval()
             running_loss = 0.0
             for inputs, labels in dataloaders[phase]:
+                inputs.to(device)
+                labesl.to(device)
                 with torch.set_grad_enabled(phase=='train'):
+
                     outputs = model(inputs)
                     loss = criterion(outputs, labels)
                     if phase == 'train':

@@ -59,13 +59,13 @@ spec:
                medium: Memory
            - name: data
            emptyDir: {}
-  affinity:
-    nodeAffinity:
-      requiredDuringSchedulingIgnoredDuringExecution:
-        nodeSelectorTerms:
-        - matchExpressions:
-          - key: gpu-type
-            operator: In
-            values:
-            - 1080Ti
+  # affinity:
+  #   nodeAffinity:
+  #     requiredDuringSchedulingIgnoredDuringExecution:
+  #       nodeSelectorTerms:
+  #       - matchExpressions:
+  #         - key: gpu-type
+  #           operator: In
+  #           values:
+  #           - 1080Ti
   backoffLimit: 5
