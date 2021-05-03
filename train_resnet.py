@@ -69,7 +69,7 @@ def run(root, classes_file,save_path, batch_size=128, lr=0.001):
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
-    set_parameters_requires_grad(model_ft)
+    set_parameters_requires_grad(model_ft, False)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
     params_to_update = []
@@ -86,9 +86,10 @@ def run(root, classes_file,save_path, batch_size=128, lr=0.001):
     train_model(model_ft, dataloaders,criterion, optimizer_ft, model_prefix=save_path )
 
 
-def set_parameters_requires_grad(model):
-    for param in model.parameters():
-        param.requires_grad = False
+def set_parameters_requires_grad(model, deactivate):
+    if deactivate:
+        for param in model.parameters():
+            param.requires_grad = False
 
 def main():
     #Local parameters
