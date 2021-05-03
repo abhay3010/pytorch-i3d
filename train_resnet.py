@@ -1,0 +1,109 @@
+from virat_dataset import Virat as Dataset
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+import torch.optim as optim
+from torch.optim import lr_scheduler
+from torch.autograd import Variable
+
+import torchvision
+from torchvision import datasets, transforms, models
+import videotransforms
+from per_frame_image_dataset import ViratImages as Dataset
+
+
+
+
+def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_epochs=25  ):
+
+
+
+    for epoch in range(num_epochs):
+        print('Epoch {}/{}'.format(epoch, num_epochs))
+        for phase in ['train', 'val']:
+            if phase == 'train':
+                model.train()
+            else:
+                model.eval()
+            running_loss = 0.0
+            for inputs, labels in dataloaders[phase]:
+                with torch.set_grad_enabled(phase=='train'):
+                    outputs = model(inputs)
+                    loss = criterion(outputs, labels)
+                    if phase == 'train':
+                        loss.backward()
+                        optimizer.step()
+                running_loss += loss.item() + inputs.size(0)
+        epoch_loss = running_loss /len(dataloaders[phase].dataset)
+        print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
+        if phase == 'val':
+            if isinstance(model, nn.DataParallel):
+                torch.save(model.module.state_dict(), model_prefix+str(epoch).zfill(6)+'.pt')
+            else:
+                torch.save(model.state_dict(), model_prefix + 'i3d' + str(epoch).zfill(6)+'.pt')
+
+def run(root, classes_file,save_path, batch_size=16, lr=0.001):
+    #Initialise the dataset, loaders and model with the right set of parameters. 
+    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    train_transforms = transforms.Compose([ 
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+
+    ])
+    val_transforms = transforms.Compose([ 
+        transforms.ToTensor(),
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        
+
+    ])
+    dataset = Dataset(root, "train",classes_file, resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
+
+    val_dataset = Dataset(root, "test",classes_file,resize=True, resize_shape=(224,224), transforms=val_transforms)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)    
+
+    dataloaders = {'train': dataloader, 'val': val_dataloader}
+    model_ft = models.resnet50(pretrained=True)
+    set_parameters_requires_grad(model_ft)
+    num_ftrs = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
+    params_to_update = []
+    for name,param in model_ft.named_parameters():
+        if param.requires_grad == True:
+            params_to_update.append(param)
+            print("\t",name)
+    optimizer_ft = optim.Adam(params_to_update, lr=lr)
+    ## define the criteria
+    criterion  = nn.BCEWithLogitsLoss()
+    model_ft.to(device)
+    if torch.cuda.device_count()>1:
+        model_ft = nn.DataParallel(model_ft)
+    train_model(model_ft, dataloaders,criterion, optimizer_ft, model_prefix=save_path )
+
+
+def set_parameters_requires_grad(model):
+    for param in model.parameters():
+        param.requires_grad = False
+
+def main():
+    #Local parameters
+    root = "TinyVIRAT/"
+    classes_file =  "classes.txt"
+    save_path = ''
+
+
+    #gpu paramaeters
+    # root = "/mnt/data/TinyVIRAT/"
+    # classes_file =  "classes.txt"
+    # save_path = ''
+
+    run(root,classes_file,save_path)
+
+
+if __name__ == '__main__':
+    main()
+
+
+
