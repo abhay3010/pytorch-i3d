@@ -13,15 +13,15 @@ spec:
               args: [ "/virat-vr/code/pytorch-i3d/train_resnet.py", "/virat-vr/code/pytorch-i3d/" ]
               resources:
                 limits:
-                 nvidia.com/gpu: 1
-                 memory: "6Gi"
+                 nvidia.com/gpu: 2
+                 memory: "8Gi"
                  cpu: "3"
-                 ephemeral-storage: 10Gi
+                 ephemeral-storage: 12Gi
                 requests:
-                 nvidia.com/gpu: 1
-                 memory: "6Gi"
+                 nvidia.com/gpu: 2
+                 memory: "8Gi"
                  cpu: "3" 
-                 ephemeral-storage: 10Gi
+                 ephemeral-storage: 12Gi
               volumeMounts:
                 - mountPath: /virat-vr
                   name: virat-vr 

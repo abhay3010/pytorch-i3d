@@ -26,9 +26,11 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 model.eval()
             running_loss = 0.0
+            counter = 0
             for inputs, labels in dataloaders[phase]:
                 inputs = inputs.to(device)
                 labels = labels.to(device)
+                optimizer.zero_grad()
                 with torch.set_grad_enabled(phase=='train'):
 
                     outputs = model(inputs)
@@ -37,6 +39,9 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                         loss.backward()
                         optimizer.step()
                 running_loss += loss.item() + inputs.size(0)
+                counter+=1
+                if counter%100 == 0:
+                    print("step ", counter)
         epoch_loss = running_loss /len(dataloaders[phase].dataset)
         print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
         if phase == 'val':
