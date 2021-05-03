@@ -103,10 +103,23 @@ def main():
     save_path = '/virat-vr/models/pytorch-i3d/resnet_v1'
 
     run(root,classes_file,save_path)
+def test_dataset():
+    root = "TinyVIRAT/"
+    train_transforms = transforms.Compose([ 
+        transforms.RandomHorizontalFlip(),
+        transforms.ToTensor(),
+
+        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+
+    ])
+    dataset = Dataset(root, "train","classes.txt", resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=False)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False, num_workers=0, pin_memory=True)
+    for img, label in dataloader:
+        print(img.shape)
 
 
 if __name__ == '__main__':
-    main()
+    test_dataset()
 
 
 
