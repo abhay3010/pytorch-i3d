@@ -41,7 +41,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                 running_loss += loss.item() + inputs.size(0)
                 counter+=1
                 if counter%100 == 0:
-                    print("step ", counter)
+                    print("step ", counter, running_loss/(counter*inputs.shape[0]))
         epoch_loss = running_loss /len(dataloaders[phase].dataset)
         print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
         if phase == 'val':
@@ -50,7 +50,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 torch.save(model.state_dict(), model_prefix + 'i3d' + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=128, lr=0.001):
+def run(root, classes_file,save_path, batch_size=64, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
