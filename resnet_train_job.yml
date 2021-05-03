@@ -58,14 +58,14 @@ spec:
              emptyDir:
                medium: Memory
            - name: data
-           emptyDir: {}
-  # affinity:
-  #   nodeAffinity:
-  #     requiredDuringSchedulingIgnoredDuringExecution:
-  #       nodeSelectorTerms:
-  #       - matchExpressions:
-  #         - key: gpu-type
-  #           operator: In
-  #           values:
-  #           - 1080Ti
+             emptyDir: {}
+          # affinity:
+          #   nodeAffinity:
+          #     requiredDuringSchedulingIgnoredDuringExecution:
+          #       nodeSelectorTerms:
+          #       - matchExpressions:
+          #         - key: gpu-type
+          #           operator: In
+          #           values:
+          #           - 2080Ti
   backoffLimit: 5
