@@ -17,7 +17,7 @@ from per_frame_image_dataset import ViratImages as Dataset
 def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_epochs=25  ):
 
 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs))
         for phase in ['train', 'val']:
@@ -48,11 +48,11 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             if isinstance(model, nn.DataParallel):
                 torch.save(model.module.state_dict(), model_prefix+str(epoch).zfill(6)+'.pt')
             else:
-                torch.save(model.state_dict(), model_prefix + 'i3d' + str(epoch).zfill(6)+'.pt')
+                torch.save(model.state_dict(), model_prefix  + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=64, lr=0.001):
+def run(root, classes_file,save_path, batch_size=256, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+    device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
@@ -73,7 +73,7 @@ def run(root, classes_file,save_path, batch_size=64, lr=0.001):
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
-    model_ft = models.resnet50(pretrained=True)
+    model_ft = models.resnet18(pretrained=True)
     set_parameters_requires_grad(model_ft, False)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
@@ -119,7 +119,7 @@ def test_dataset():
 
     ])
     dataset = Dataset(root, "train","classes.txt", resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=False)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False, num_workers=0, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False, num_workers=4, pin_memory=True)
     for img, label in dataloader:
         print(img.shape)
 
