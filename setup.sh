@@ -19,7 +19,7 @@ cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3410_frames/f
 cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3410_frames/frame_105.jpg /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3410_frames/frame_106.jpg
 cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3410_frames/frame_106.jpg /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3410_frames/frame_107.jpg
 cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_108.jpg /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_109.jpg
-cp  /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_109.jpg  /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_110.jpg
+cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_109.jpg  /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_110.jpg
 cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_110.jpg /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_111.jpg
 cd $2
 git pull
