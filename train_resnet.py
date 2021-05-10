@@ -35,15 +35,15 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
 
                     outputs = model(inputs)
                     loss = criterion(outputs, labels)
-                    if phase == 'train':
-                        loss.backward()
+                    if phase == 'train':    
+                        loss.backward()     
                         optimizer.step()
                 running_loss += loss.item() * inputs.size(0)
                 counter+=1
                 if counter%100 == 0:
                     print("step ", counter, running_loss/(counter*inputs.size(0)))
-        epoch_loss = running_loss /len(dataloaders[phase].dataset)
-        print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
+            epoch_loss = running_loss /len(dataloaders[phase].dataset)
+            print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
         if phase == 'val':
             if isinstance(model, nn.DataParallel):
                 torch.save(model.module.state_dict(), model_prefix+str(epoch).zfill(6)+'.pt')
@@ -74,7 +74,7 @@ def run(root, classes_file,save_path, batch_size=256, lr=0.001):
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet18(pretrained=True)
-    set_parameters_requires_grad(model_ft, False)
+    set_parameters_requires_grad(model_ft, True)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
     params_to_update = []
