@@ -50,7 +50,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 torch.save(model.state_dict(), model_prefix  + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=256, lr=0.001):
+def run(root, classes_file,save_path, batch_size=256, lr=0.0005):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
@@ -73,7 +73,7 @@ def run(root, classes_file,save_path, batch_size=256, lr=0.001):
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
-    model_ft = models.resnet18(pretrained=True)
+    model_ft = models.resnet50(pretrained=True)
     set_parameters_requires_grad(model_ft, True)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
@@ -106,7 +106,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet18_v1'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_v1'
 
     run(root,classes_file,save_path)
 def test_dataset():

@@ -13,12 +13,12 @@ spec:
               args: [ "/virat-vr/code/pytorch-i3d/train_resnet.py", "/virat-vr/code/pytorch-i3d/" ]
               resources:
                 limits:
-                 nvidia.com/gpu: 2
+                 nvidia.com/gpu: 1
                  memory: "8Gi"
                  cpu: "3"
                  ephemeral-storage: 10Gi
                 requests:
-                 nvidia.com/gpu: 2
+                 nvidia.com/gpu: 1
                  memory: "8Gi"
                  cpu: "3" 
                  ephemeral-storage: 10Gi
@@ -67,5 +67,5 @@ spec:
           #         - key: gpu-type
           #           operator: In
           #           values:
-          #           - 2080Ti
+          #           - A40
   backoffLimit: 5
