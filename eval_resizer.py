@@ -3,6 +3,7 @@ import os
 #os.environ["CUDA_VISIBLE_DEVICES"]='0,1,2,3'
 import sys
 import argparse
+from torchvision.utils import save_image
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument('-mode', type=str, help='rgb or flow')
@@ -36,6 +37,7 @@ from resizer import ResizerMainNetworkV2
 from virat_dataset import Virat as Dataset
 from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
+
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
@@ -117,5 +119,40 @@ def test_resizer():
     print(from_network.shape)
     print(np.min(np.abs(from_network - resized_frames)))
 
+def sample_resizer_output():
+    root = './TinyVIRAT/'
+    classes_file = "classes.txt"
+    resizer_model = 'eval_models/bilinear_32_resizer_v2_v8_final000010.pt'
+    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, sample=True)
+    new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None, sample=True)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
+    resizer = ResizerMainNetworkV2(3, 32, (112, 112), skip=False)
+    resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
+    resizer.load_state_dict(torch.load(resizer_model, map_location=device))
+    resizer.to(device)
+    resizer_skip.to(device)
+    index = 0
+    for batch, label in val_dataloader:
+
+        resized_image_sp = resizer(batch).squeeze(0)
+        print("resizer shape", resized_image_sp.shape)
+        resized_normal = new_val_dataset[index][0]
+        print("resized normal shape", resized_normal.shape)
+        permuted_view = (resized_image_sp.permute(1,0,2,3) + 1)/2
+        permuted_view_n = (resized_normal.permute(1,0,2,3) +1)/2
+        print(permuted_view.size(0))
+        for i in range(permuted_view.size(0)):
+            save_image(permuted_view[i], "resized_frames/test_{0}_frame{1}_sp.png".format(index, i))
+            save_image(permuted_view_n[i], "resized_frames/test_{0}_frame{1}_normal.png".format(index, i))
+        index+=1
+    
+
+
+
+
+
+
+
 if __name__ == '__main__':
-    main()
+    sample_resizer_output()
