@@ -36,7 +36,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                     for c in range(num_videos):    
                         outputs = model(inputs[c].permute(1,0,2,3))
                         outputs,_ = torch.max(outputs, dim=0)
-                        loss = criterion(outputs, labels)
+                        loss = criterion(outputs, labels[c])
                         if phase == 'train':    
                             loss.backward()     
                             optimizer.step()
