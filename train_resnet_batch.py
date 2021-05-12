@@ -121,7 +121,7 @@ def test_dataset():
 
     ])
     dataset = Dataset(root, "test","classes.txt", resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=False)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=128, shuffle=False, num_workers=4, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=4, shuffle=False, num_workers=4, pin_memory=True)
     for img, label in dataloader:
         print(img.shape)
 def print_resnet():

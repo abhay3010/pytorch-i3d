@@ -101,7 +101,7 @@ def get_frames(p):
 
 
 class ViratResnetValidation(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False):
+    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=True, normalize=True, transforms=None,sample=False):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
