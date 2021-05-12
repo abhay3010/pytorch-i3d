@@ -53,7 +53,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 torch.save(model.state_dict(), model_prefix  + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=4, lr=0.005):
+def run(root, classes_file,save_path, batch_size=4, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
@@ -85,7 +85,7 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.005):
         if param.requires_grad == True:
             params_to_update.append(param)
             print("\t",name)
-    optimizer_ft = optim.Adam(params_to_update, lr=lr)
+    optimizer_ft = optim.Adagrad(params_to_update, lr=lr)
     ## define the criteria
     criterion  = nn.BCEWithLogitsLoss()
     model_ft.to(device)
@@ -111,7 +111,7 @@ def main():
     classes_file =  "classes.txt"
     save_path = '/virat-vr/models/pytorch-i3d/resnet50_lf_v1'
 
-    run(root,classes_file,save_path, batch_size=8)
+    run(root,classes_file,save_path, batch_size=4)
 def test_dataset():
     root = "/mnt/data/TinyVIRAT/"
     train_transforms = transforms.Compose([ 
