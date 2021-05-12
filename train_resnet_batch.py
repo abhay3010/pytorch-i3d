@@ -39,8 +39,9 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                         loss = criterion(outputs, labels[c])
                         if phase == 'train':    
                             loss.backward()     
-                            optimizer.step()
                         running_loss += loss.item()
+                    if phase == 'train':
+                         optimizer.step()
                 counter+=1
                 if counter%100 == 0:
                     print("step ", counter, running_loss/(counter*inputs.size(0)))
