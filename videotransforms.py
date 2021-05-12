@@ -100,3 +100,19 @@ class RandomHorizontalFlip(object):
 
     def __repr__(self):
         return self.__class__.__name__ + '(p={})'.format(self.p)
+    
+class Normalize(object):
+    def __init__(self, means, std):
+        self.means = means
+        self.std = std
+    
+    def __call__(self, imgs):
+        print("before", imgs)
+        imgs[...,0]-=self.means[0]
+        imgs[...,1]-=self.means[1]
+        imgs[...,2]-=self.means[2]
+        imgs[...,0]/=self.std[0]
+        imgs[...,1]/=self.std[1]
+        imgs[...,2]/=self.std[2]
+        print("after", imgs)
+        return imgs

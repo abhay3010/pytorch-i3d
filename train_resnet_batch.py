@@ -8,7 +8,7 @@ from torch.autograd import Variable
 import torchvision
 from torchvision import datasets, transforms, models
 import videotransforms
-from per_frame_image_dataset import ViratImages as Dataset
+from resnet_test_dataset import ViratResnetValidation as Dataset
 from torchsummary import summary
 
 
@@ -28,17 +28,19 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             running_loss = 0.0
             counter = 0
             for inputs, labels in dataloaders[phase]:
+                num_videos = inputs.size(0)
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 optimizer.zero_grad()
                 with torch.set_grad_enabled(phase=='train'):
-
-                    outputs = model(inputs)
-                    loss = criterion(outputs, labels)
-                    if phase == 'train':    
-                        loss.backward()     
-                        optimizer.step()
-                running_loss += loss.item() * inputs.size(0)
+                    for c in range(num_videos):    
+                        outputs = model(inputs[c])
+                        outputs,_ = torch.max(outputs, dim=0)
+                        loss = criterion(outputs, labels)
+                        if phase == 'train':    
+                            loss.backward()     
+                            optimizer.step()
+                            running_loss += loss.item()
                 counter+=1
                 if counter%100 == 0:
                     print("step ", counter, running_loss/(counter*inputs.size(0)))
@@ -57,7 +59,7 @@ def run(root, classes_file,save_path, batch_size=256, lr=0.001):
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
 
-        transforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
+        transforms.Normalize( [0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
 
     ])
     val_transforms = transforms.Compose([ 
@@ -66,10 +68,10 @@ def run(root, classes_file,save_path, batch_size=256, lr=0.001):
         
 
     ])
-    dataset = Dataset(root, "train",classes_file, resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=True)
+    dataset = Dataset(root, "train", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
-    val_dataset = Dataset(root, "test",classes_file,resize=True, resize_shape=(224,224), transforms=val_transforms)
+    val_dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
