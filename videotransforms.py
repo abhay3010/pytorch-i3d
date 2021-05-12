@@ -107,12 +107,10 @@ class Normalize(object):
         self.std = std
     
     def __call__(self, imgs):
-        print("before", imgs)
         imgs[...,0]-=self.means[0]
         imgs[...,1]-=self.means[1]
         imgs[...,2]-=self.means[2]
         imgs[...,0]/=self.std[0]
         imgs[...,1]/=self.std[1]
         imgs[...,2]/=self.std[2]
-        print("after", imgs)
         return imgs
