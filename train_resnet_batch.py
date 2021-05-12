@@ -85,7 +85,7 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.001):
         if param.requires_grad == True:
             params_to_update.append(param)
             print("\t",name)
-    optimizer_ft = optim.Adagrad(params_to_update, lr=lr)
+    optimizer_ft = optim.AdamW(params_to_update, lr=lr)
     ## define the criteria
     criterion  = nn.BCEWithLogitsLoss()
     model_ft.to(device)
