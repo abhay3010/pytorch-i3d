@@ -50,19 +50,19 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 torch.save(model.state_dict(), model_prefix  + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=256, lr=0.0005):
+def run(root, classes_file,save_path, batch_size=256, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
 
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize([6.7193e-05, 6.9380e-05, 6.6246e-05], [0.0061, 0.0063, 0.0061])
 
     ])
     val_transforms = transforms.Compose([ 
         transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize([6.7193e-05, 6.9380e-05, 6.6246e-05], [0.0061, 0.0063, 0.0061])
         
 
     ])
@@ -106,7 +106,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_v1'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_vmeans_v1'
 
     run(root,classes_file,save_path)
 def test_dataset():
@@ -126,6 +126,5 @@ def test_dataset():
 
 if __name__ == '__main__':
     main()
-
 
 
