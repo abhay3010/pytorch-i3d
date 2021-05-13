@@ -28,7 +28,6 @@ def run(model, dataloader):
         with torch.set_grad_enabled(False):
             v = list()
             for i in range(num_videos):
-                print(batch[i].shape)
                 inputs = batch[i].permute(1,0,2,3)
                 label = labels[i] 
                 out = model(inputs)
