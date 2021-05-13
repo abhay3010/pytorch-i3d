@@ -27,7 +27,6 @@ def run(model, dataloader):
         batch = batch.to(device)
         with torch.set_grad_enabled(False):
             for i in range(num_videos):
-                print(i)
                 inputs = batch[i].permute(1,0,2,3)
                 label = labels[i] 
                 out = model(inputs)
