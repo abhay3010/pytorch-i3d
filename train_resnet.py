@@ -114,7 +114,7 @@ def test_dataset():
     train_transforms = transforms.Compose([ 
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize([0.4719, 0.5126, 0.5077], 0.2090, 0.2103, 0.2152)
+        transforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
 
     ])
     dataset = Dataset(root, "test","classes.txt", resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=False)
