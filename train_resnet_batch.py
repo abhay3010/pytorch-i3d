@@ -65,7 +65,7 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.001):
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
-    set_parameters_requires_grad(model_ft, False)
+    set_parameters_requires_grad(model_ft, True)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
     params_to_update = []
