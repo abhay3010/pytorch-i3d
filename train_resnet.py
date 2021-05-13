@@ -106,7 +106,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_vmeans_v1'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_vmeans_deactivated_v1'
 
     run(root,classes_file,save_path)
 def test_dataset():
@@ -114,7 +114,7 @@ def test_dataset():
     train_transforms = transforms.Compose([ 
         transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
-        transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
+        transforms.Normalize([0.4719, 0.5126, 0.5077], 0.2090, 0.2103, 0.2152)
 
     ])
     dataset = Dataset(root, "test","classes.txt", resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=False)
