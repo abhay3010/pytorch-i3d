@@ -42,7 +42,6 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                         running_loss += loss.item()
                     if phase == 'train':
                          optimizer.step()
-                break
                 counter+=1
                 if counter%100 == 0:
                     print("step ", counter, running_loss/(counter*inputs.size(0)))
@@ -66,7 +65,7 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.001):
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
-    set_parameters_requires_grad(model_ft, True)
+    set_parameters_requires_grad(model_ft, False)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
     params_to_update = []
@@ -100,7 +99,7 @@ def main():
     classes_file =  "classes.txt"
     save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v1'
 
-    run(root,classes_file,save_path, batch_size=4)
+    run(root,classes_file,save_path, batch_size=2)
 def test_dataset():
     root = "/mnt/data/TinyVIRAT/"
     train_transforms = transforms.Compose([ 
