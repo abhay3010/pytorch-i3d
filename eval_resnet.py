@@ -24,9 +24,8 @@ def run(model, dataloader):
 
     for batch, labels in dataloader:
         num_videos = batch.size(0)
-        batch = Variable(batch.to(device))
+        batch = batch.to(device)
         with torch.set_grad_enabled(False):
-            v = list()
             for i in range(num_videos):
                 inputs = batch[i].permute(1,0,2,3)
                 label = labels[i] 
@@ -72,7 +71,7 @@ def main():
     root = "/mnt/data/TinyVIRAT"
     classes_file = "classes.txt"
     model_path = "eval_models/resnet50_v1000000.pt"
-    batch_size=2
+    batch_size=1
     n_workers=2
     models = [
         'resnet50_lf_v1000004.pt',
