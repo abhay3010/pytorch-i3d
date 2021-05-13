@@ -33,7 +33,7 @@ def run(model, dataloader):
 
                 out = torch.sigmoid(out)
                 y_p,_ = torch.max(out, dim=0)
-                p = np.array([1 if z >=0.5 else 0 for z in y_p])
+                p = np.array([1 if z >=0.5 else 0 for z in y_p.cpu()])
                 predictions.append(p)
                 trues.append(label.numpy())
 
