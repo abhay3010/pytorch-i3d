@@ -57,9 +57,10 @@ def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
     model_ft.to(device)
     if torch.cuda.device_count()>1:
         model_ft = nn.DataParallel(model_ft)
-    dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=True)
+    dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=n_workers, pin_memory=True)
-    run(model_ft, dataloader)
+    f1_macro, f1_micro, accuracy = run(model_ft, dataloader)
+    return f1_macro, f1_micro, accuracy
 def main():
     #Local Params
     # root = "./TinyVIRAT"
