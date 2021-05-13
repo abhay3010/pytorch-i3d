@@ -56,19 +56,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
 def run(root, classes_file,save_path, batch_size=4, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
-    train_transforms = transforms.Compose([ 
-        transforms.RandomHorizontalFlip(),
-        transforms.ToTensor(),
-
-        transforms.Normalize( [0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
-
-    ])
-    val_transforms = transforms.Compose([ 
-        transforms.ToTensor(),
-        transforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
-        
-
-    ])
+   
     dataset = Dataset(root, "train", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 

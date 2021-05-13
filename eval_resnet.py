@@ -61,25 +61,36 @@ def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
     model_ft.to(device)
     if torch.cuda.device_count()>1:
         model_ft = nn.DataParallel(model_ft)
-    dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
+    dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=True)
     dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=n_workers, pin_memory=True)
     run(model_ft, dataloader)
 def main():
     #Local Params
-    root = "./TinyVIRAT"
-    classes_file = "classes.txt"
-    model_path = "eval_models/resnet50_v1000000.pt"
-    batch_size=2
-    n_workers=0
-
-    #GPU Params
     # root = "./TinyVIRAT"
     # classes_file = "classes.txt"
     # model_path = "eval_models/resnet50_v1000000.pt"
     # batch_size=2
     # n_workers=0
 
-    eval_resnet(root, classes_file, model_path, batch_size, n_workers)
+    #GPU Params
+    root = "/mnt/data/TinyVIRAT/T"
+    classes_file = "classes.txt"
+    model_path = "eval_models/resnet50_v1000000.pt"
+    batch_size=2
+    n_workers=4
+    models = [
+        'resnet50_lf_v1000004.pt',
+        'resnet50_lf_v1000008.pt',
+        'resnet50_lf_v1000010.pt',
+        'resnet50_vmeans_v1000004.pt',
+        'resnet50_v1000007.pt',
+        'resnet50_v1000010.pt'
+
+    ]
+    base_path = '/virat-vr/models/pytorch-i3d/'
+    for model in models:
+        f1_macro, f1_micro, accuracy = eval_resnet(root, classes_file, base_path+model, batch_size, n_workers)
+        print("{0}: f1_macro {1}, f1_micro: {2}, accuracy: {3}".format(model, f1_macro, f1_micro, accuracy))
 def means():
     root = "./TinyVIRAT"
     classes_file = "classes.txt"

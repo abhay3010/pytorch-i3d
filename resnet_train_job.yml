@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resnet-job-version1
+  name: virat-vr-resnet-train-job-v1
 spec:
   template:
     spec:
@@ -45,8 +45,6 @@ spec:
                 - name: data
                   mountPath: /mnt/dest
           restartPolicy: Never
-          nodeSelector:
-            nautilus.io/disktype: nvme
           volumes:
            - name: virat-vr
              persistentVolumeClaim:
@@ -59,13 +57,4 @@ spec:
                medium: Memory
            - name: data
              emptyDir: {}
-          # affinity:
-          #   nodeAffinity:
-          #     requiredDuringSchedulingIgnoredDuringExecution:
-          #       nodeSelectorTerms:
-          #       - matchExpressions:
-          #         - key: gpu-type
-          #           operator: In
-          #           values:
-          #           - A40
   backoffLimit: 5
