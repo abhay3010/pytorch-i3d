@@ -97,7 +97,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v2'
 
     run(root,classes_file,save_path, batch_size=2)
 def test_dataset():
