@@ -35,13 +35,9 @@ def run(model, dataloader):
 
                 out = torch.sigmoid(out)
                 y_p,_ = torch.max(out, dim=0)
-                print("max prediction", y_p)
-                print("label ", label)
                 p = np.array([1 if z >=0.5 else 0 for z in y_p])
                 predictions.append(p)
                 trues.append(label.numpy())
-                break
-        break    
 
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
