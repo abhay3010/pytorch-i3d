@@ -74,12 +74,13 @@ def main():
     batch_size=2
     n_workers=2
     models = [
-        'resnet50_lf_v1000004.pt',
-        'resnet50_lf_v1000008.pt',
-        'resnet50_lf_v1000010.pt',
-        'resnet50_vmeans_v1000004.pt',
-        'resnet50_v1000007.pt',
-        'resnet50_v1000010.pt'
+        'resnet50_ftune_lf_v2000000.pt',
+        'resnet50_ftune_lf_v2000001.pt',
+        'resnet50_ftune_lf_v2000002.pt',
+        'resnet50_ftune_lf_v2000003.pt',
+        'resnet50_ftune_lf_v2000004.pt',
+        'resnet50_ftune_lf_v2000005.pt',
+        'resnet50_ftune_lf_v2000006.pt'
 
     ]
     base_path = '/virat-vr/models/pytorch-i3d/'
