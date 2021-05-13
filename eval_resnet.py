@@ -72,7 +72,7 @@ def main():
     classes_file = "classes.txt"
     model_path = "eval_models/resnet50_v1000000.pt"
     batch_size=2
-    n_workers=2
+    n_workers=0
     models = [
         'resnet50_ftune_lf_v2000000.pt',
         'resnet50_ftune_lf_v2000001.pt',
