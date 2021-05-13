@@ -42,6 +42,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
                         running_loss += loss.item()
                     if phase == 'train':
                          optimizer.step()
+                break
                 counter+=1
                 if counter%100 == 0:
                     print("step ", counter, running_loss/(counter*inputs.size(0)))
@@ -58,14 +59,14 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.001):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
    
     dataset = Dataset(root, "train", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
 
     val_dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
-    set_parameters_requires_grad(model_ft, False)
+    set_parameters_requires_grad(model_ft, True)
     num_ftrs = model_ft.fc.in_features
     model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
     params_to_update = []
@@ -73,7 +74,7 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.001):
         if param.requires_grad == True:
             params_to_update.append(param)
             print("\t",name)
-    optimizer_ft = optim.AdamW(params_to_update, lr=lr)
+    optimizer_ft = optim.Adam(params_to_update, lr=lr)
     ## define the criteria
     criterion  = nn.BCEWithLogitsLoss()
     model_ft.to(device)
@@ -97,7 +98,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_lf_v1'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v1'
 
     run(root,classes_file,save_path, batch_size=4)
 def test_dataset():

@@ -33,7 +33,7 @@ def run(model, dataloader):
 
                 out = torch.sigmoid(out)
                 y_p,_ = torch.max(out, dim=0)
-                p = np.array([1 if z >=0.5 else 0 for z in y_p.cpu()])
+                p = np.array([1 if z >=0.5 else 0 for z in y_p])
                 predictions.append(p)
                 trues.append(label.numpy())
 
@@ -72,7 +72,7 @@ def main():
     classes_file = "classes.txt"
     model_path = "eval_models/resnet50_v1000000.pt"
     batch_size=2
-    n_workers=4
+    n_workers=2
     models = [
         'resnet50_lf_v1000004.pt',
         'resnet50_lf_v1000008.pt',
