@@ -73,7 +73,7 @@ def main():
     # n_workers=0
 
     #GPU Params
-    root = "/mnt/data/TinyVIRAT/T"
+    root = "/mnt/data/TinyVIRAT"
     classes_file = "classes.txt"
     model_path = "eval_models/resnet50_v1000000.pt"
     batch_size=2
