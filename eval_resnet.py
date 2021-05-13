@@ -25,7 +25,6 @@ def run(model, dataloader):
     for batch, labels in dataloader:
         num_videos = batch.size(0)
         batch = batch.to(device)
-        labels = labels.to(device)
         with torch.set_grad_enabled(False):
             for i in range(num_videos):
                 print(i)
