@@ -58,10 +58,10 @@ def run(root, classes_file,save_path, batch_size=4, lr=0.001):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
    
     dataset = Dataset(root, "train", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True)    
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
@@ -97,7 +97,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v1'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v'
 
     run(root,classes_file,save_path, batch_size=2)
 def test_dataset():
