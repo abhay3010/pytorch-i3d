@@ -144,7 +144,7 @@ class ViratResnetValidation(data_util.Dataset):
             test_samples.update(random.sample(labels_count[k],c))
         all_indices = set(range(len(self.data)))
         training = all_indices - test_samples
-        return training, test_samples
+        return list(training), list(test_samples)
 
 
 

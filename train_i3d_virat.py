@@ -31,19 +31,20 @@ from i3d import InceptionI3d
 from virat_dataset import Virat as Dataset
 
 
-def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d_rgb_charades.pt', root='/ssd/Charades_v1_rgb', classes_file="classes.txt",
+def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb',init_model='models/converted_i3d_rgb_charades.pt', root='/ssd/Charades_v1_rgb', classes_file="classes.txt",
  batch_size=8*5, save_model='', start_from=None):
     
     # setup dataset remember to change the crop size here.
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    test_transforms = transforms.Compose([videotransforms.CenterCrop(112)])
 
-    dataset = Dataset(root, "train",classes_file, transforms=train_transforms, shuffle=True)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True)
+    train, test = dataset.get_train_validation_split()
+    train_dataset = torch.utils.data.Subset(dataset, train)
+    val_dataset = torch.utils.data.Subset(dataset, test)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
-    val_dataset = Dataset(root, "test",classes_file, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
@@ -51,7 +52,7 @@ def run(init_lr=0.1, max_steps=64e3, mode='rgb',init_model='models/converted_i3d
 
     
     # setup the model
-    i3d = InceptionI3d(157,mode="32x112", in_channels=3)
+    i3d = InceptionI3d(157,mode=i3d_mode, in_channels=3)
     print(len(i3d.state_dict()))
     if start_from:
         state_dict = torch.load(start_from)
@@ -149,11 +150,11 @@ if __name__ == '__main__':
     # need to add argparse
     # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
-    max_steps = 32000.0
+    max_steps = 64000.0
     save_model='/virat-vr/models/pytorch-i3d/v7_bilinear_32_112'
     start_from = None
     # root = "TinyVIRAT/"
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=4, start_from=start_from )
+    run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=8, start_from=start_from )

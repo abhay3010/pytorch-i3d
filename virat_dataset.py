@@ -8,6 +8,7 @@ import cv2
 import os
 import torch
 import torch.nn.functional as F
+from collections import defaultdict
 
 #from joblib import Parallel, delayed
 def video_to_tensor(pic):
@@ -133,7 +134,8 @@ class Virat(data_util.Dataset):
 
     def __len__(self):
         return len(self.data)
-    def get_train_test_split(self, test_perc=0.1):
+        
+    def get_train_validation_split(self, test_perc=0.1):
         labels_count = defaultdict(set)
         for i, d in enumerate(self.data):
             for k in d['label']:
@@ -141,11 +143,15 @@ class Virat(data_util.Dataset):
         test_samples = set()
         for k in labels_count.keys():
             c =  max(int(len(labels_count[k])*test_perc), 1)
-            print(c)
             test_samples.update(random.sample(labels_count[k],c))
         all_indices = set(range(len(self.data)))
         training = all_indices - test_samples
-        return training, test_samples
+        return list(training), list(test_samples)
+
+    def __len__(self):
+        return len(self.data)
+
+    
 def test_interpolate():
     frame_path = 'TinyVIRAT/videos/train/VIRAT_S_000203_07_001341_001458/0.mp4'
     total_frames = 77
