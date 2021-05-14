@@ -54,16 +54,9 @@ def run(root, classes_file,save_path, batch_size=256, lr=0.0002):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
-        transforms.Random
-        transforms.ToTensor(),
-
-        transforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
-
-    ])
-    val_transforms = transforms.Compose([ 
+        transforms.RandomHorizontalFlip(),
         transforms.ToTensor(),
         transforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
-        
 
     ])
     dataset = Dataset(root, "train",classes_file, resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=True)
