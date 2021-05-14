@@ -4,7 +4,6 @@ import torch.nn.functional as F
 import torch.optim as optim
 from torch.optim import lr_scheduler
 from torch.autograd import Variable
-
 import torchvision
 from torchvision import datasets, transforms, models
 import videotransforms
@@ -98,7 +97,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v2'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v3'
 
     run(root,classes_file,save_path, batch_size=2)
 def test_dataset():
@@ -142,6 +141,18 @@ def get_histogram():
         print(torch.min(img).item())
         print(h_p)
         break
+
+def test_dataset():
+    dataset = ViratImages("./TinyVIRAT", "train","classes.txt", resize=True, resize_shape=(224,224), shuffle=False)
+    training, test = dataset.get_train_validation_split()
+    print(len(training), len(test))
+    train_dataset = torch.utils.data.Subset(dataset, training)
+    test_dataset = torch.utils.data.Subset(dataset, test)
+    print(len(train_dataset), len(test_dataset))
+    train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=2, shuffle=False, num_workers=0, pin_memory=True)
+    val_dataloader = torch.utils.data.DataLoader(test_dataset, batch_size=2, shuffle=False, num_workers=0, pin_memory=True)
+    print(print(val_dataloader))
+
 if __name__ == '__main__':
-    get_histogram()
+    test_dataset()
 
