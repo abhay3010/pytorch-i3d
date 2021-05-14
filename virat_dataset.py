@@ -163,19 +163,7 @@ def test_interpolate():
     print("torch unresized frames", torch_frames.shape)
     torch_resized_frames = F.interpolate(torch_frames.unsqueeze(0),size=(77,112,112), mode='trilinear', align_corners = False).numpy().squeeze()
     print(resized_frames.shape, torch_resized_frames.shape)
-    print(np.all(np.abs(resized_frames - torch_resized_frames) < 0.7))
-
-def test_interpolation():
-    total_frames = 77
-    shape = (70,70)
-    unresized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=False, normalize=False)
-    print(unresized_frames.shape)
-    resized_frames = load_rgb_frames(frame_path, 0, total_frames, total_frames, resize=True, resize_shape=(112, 112), normalize=False).transpose([3, 0, 1, 2])
-    torch_frames = torch.from_numpy(unresized_frames.transpose([3, 0, 1, 2]))
-    print("torch unresized frames", torch_frames.shape)
-    torch_resized_frames = F.interpolate(torch_frames.unsqueeze(0),size=(77,112,112), mode='trilinear', align_corners = False).numpy().squeeze()
-    print(resized_frames.shape, torch_resized_frames.shape)
-    print(np.all(np.abs(resized_frames - torch_resized_frames) < 0.7))
+    print(np.all(np.abs(resized_frames - torch_resized_frames) < 0.0005))
 
 
 def collate_tensors(tensor_list):

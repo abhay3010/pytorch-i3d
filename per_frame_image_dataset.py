@@ -125,7 +125,6 @@ class ViratImages(data_util.Dataset):
         details = self.data[index]
         start_f = details['frame_num']
         img = load_rgb_frame(details['path'],start_f,details['frames'],self.resize, self.resize_shape, self.normalize)
-        # print(type(img))
         if self.transforms:
             img = self.transforms(img)
         y = np.zeros(len(self.labels_map), dtype=np.float32)

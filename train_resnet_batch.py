@@ -56,11 +56,15 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
 def run(root, classes_file,save_path, batch_size=4, lr=0.001):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+    data_transforms = transforms.Compose([
+        videotransforms.RandomHorizontalFlip(),
+        videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])])
    
-    dataset = Dataset(root, "train", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
-
-    val_dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), sample=False)
+    dataset = Dataset(root, "train", classes_file, resize_shape=(224,224), transforms=data_transforms, sample=False)
+    train, test = dataset.get_train_validation_split()
+    train_dataset = torch.utils.data.Subset(dataset, train)
+    val_dataset = torch.utils.data.Subset(dataset, test)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
@@ -97,9 +101,9 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/resnet50_ftune_lf_v3'
+    save_path = '/virat-vr/models/pytorch-i3d/resnet50_batch_ftune_lf_v4'
 
-    run(root,classes_file,save_path, batch_size=2)
+    run(root,classes_file,save_path, batch_size=4, lr=0.0005)
 def test_dataset():
     root = "/mnt/data/TinyVIRAT/"
     train_transforms = transforms.Compose([ 
@@ -119,10 +123,11 @@ def print_resnet():
 def get_histogram():
     root = "./TinyVirat"
     train_transforms = transforms.Compose([
+        transforms.ToTensor(),
          transforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225])
     ])
     dataset = ViratImages(root, "test","classes.txt", resize=True, resize_shape=(224,224), transforms=train_transforms, shuffle=False,sample=True)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=False, num_workers=0, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
     h = None
     for img, label in dataloader:
         print(img.shape)
@@ -132,7 +137,7 @@ def get_histogram():
         print(h)
         break
     dataset = Dataset(root, "test","classes.txt", resize=True, resize_shape=(224,224), num_frames=1, transforms=videotransforms.Normalize([0.485, 0.456, 0.406], [0.229, 0.224, 0.225]), shuffle=False,sample=True)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2, shuffle=False, num_workers=0, pin_memory=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True)
     h_p = None
     for img, label in dataloader:
         print(img.shape)
@@ -154,5 +159,5 @@ def test_dataset():
     print(print(val_dataloader))
 
 if __name__ == '__main__':
-    test_dataset()
+    main()
 
