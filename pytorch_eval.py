@@ -74,9 +74,9 @@ def eval(model_path, root, classes_file):
     return f1_macro, f1_micro, accuracy
 
 def main():
-    model_list = ['v7_bilinear_32_112003600.pt', 'v7_bilinear_32_112003800.pt', 'v7_bilinear_32_112004000.pt', 'v7_bilinear_32_112004200.pt', 'v7_bilinear_32_112004400.pt'
-    , 'v7_bilinear_32_112005000.pt', 'v7_bilinear_32_112005500.pt', 'v7_bilinear_32_112006000.pt', 'v7_bilinear_32_112006500.pt', 'v7_bilinear_32_112007000.pt', 'v7_bilinear_32_112007500.pt', 
-    'v7_bilinear_32_112008000.pt', 'v7_bilinear_32_112008500.pt', 'v7_bilinear_32_112009000.pt', 'v7_bilinear_32_112009500.pt', 'v7_bilinear_32_112011500.pt']
+    model_list = ['v7_bilinear_32_112000600.pt', 'v7_bilinear_32_112000800.pt', 'v7_bilinear_32_112001000.pt', 'v7_bilinear_32_112001200.pt', 'v7_bilinear_32_112001400.pt'
+    , 'v7_bilinear_32_112001600.pt', 'v7_bilinear_32_112001800.pt', 'v7_bilinear_32_112002000.pt', 'v7_bilinear_32_112002200.pt', 'v7_bilinear_32_112002400.pt', 'v7_bilinear_32_112002600.pt', 
+    'v7_bilinear_32_112002700.pt']
     
     for model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt")
