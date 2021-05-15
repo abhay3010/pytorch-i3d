@@ -121,7 +121,7 @@ class Virat(data_util.Dataset):
         details = self.data[index]
         start_f = 0
         if self.shuffule:
-            start_f = random.randint(1,details['frames']-self.num_frames-1)
+            start_f = random.randint(0,details['frames']-self.num_frames-1)
         imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
         if self.transforms:
             imgs = self.transforms(imgs)
