@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-i3d-job-version2-1
+  name: virat-vr-i3d-job-version2-2
 spec:
   template:
     spec:
