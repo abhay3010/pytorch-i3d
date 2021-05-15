@@ -13,13 +13,13 @@ spec:
               args: [ "/virat-vr/code/pytorch-i3d/train_resizer.py", "/virat-vr/code/pytorch-i3d/" ]
               resources:
                 limits:
-                 nvidia.com/gpu: 2
-                 memory: "6Gi"
+                 nvidia.com/gpu: 1
+                 memory: "8Gi"
                  cpu: "3"
                  ephemeral-storage: 10Gi
                 requests:
-                 nvidia.com/gpu: 2
-                 memory: "6Gi"
+                 nvidia.com/gpu: 1
+                 memory: "8Gi"
                  cpu: "3" 
                  ephemeral-storage: 10Gi
               volumeMounts:

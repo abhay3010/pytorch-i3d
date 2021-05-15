@@ -8,7 +8,7 @@ def load_params_from_file(model, params_file, device):
     print("loading params from file", params_file)
     print("loading device", device)
     print("ignoring device")
-    state_dict = torch.load(params_file)
+    state_dict = torch.load(params_file, map_location=device)
     
     new_dict = OrderedDict()
     for k, v in state_dict.items():
@@ -22,7 +22,7 @@ def load_params_from_file(model, params_file, device):
 
 def load_module_params_from_file(model, params_file, device):
     print("loading", params_file)
-    state_dict = torch.load(params_file)
+    state_dict = torch.load(params_file, map_location=device)
     
     # new_dict = OrderedDict()
     # for k, v in state_dict.items():

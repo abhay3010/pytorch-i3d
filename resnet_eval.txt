@@ -1,0 +1,31 @@
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+
+0.2442225924861893 0.6500895814105001 0.27390631049167635
+resnet50_vmeans_deactivated_v3000009.pt: f1_macro 0.2442225924861893, f1_micro: 0.6500895814105001, accuracy: 0.27390631049167635
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+
+
+0.2431557399235478 0.6524156545209177 0.2686798296554394
+resnet50_vmeans_deactivated_v3000010.pt: f1_macro 0.2431557399235478, f1_micro: 0.6524156545209177, accuracy: 0.2686798296554394
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+0.23521374807197531 0.654154902286442 0.2963608207510647
+resnet50_vmeans_deactivated_v3000012.pt: f1_macro 0.23521374807197531, f1_micro: 0.654154902286442, accuracy: 0.2963608207510647
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+0.244430062367389 0.6475352679289814 0.2661633759194735
+resnet50_vmeans_deactivated_v3000014.pt: f1_macro 0.244430062367389, f1_micro: 0.6475352679289814, accuracy: 0.2661633759194735
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+0.2456936072262031 0.6541851426068868 0.2804878048780488
+resnet50_vmeans_deactivated_v3000015.pt: f1_macro 0.2456936072262031, f1_micro: 0.6541851426068868, accuracy: 0.2804878048780488
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+0.2349521696391969 0.6548614526971634 0.28300425861401474
+resnet50_vmeans_deactivated_v3000016.pt: f1_macro 0.2349521696391969, f1_micro: 0.6548614526971634, accuracy: 0.28300425861401474
+label map {'Closing': 0, 'Entering': 1, 'Exiting': 2, 'Interacts': 3, 'Loading': 4, 'Misc': 5, 'Opening': 6, 'Pull': 7, 'Push': 8, 'Riding': 9, 'Talking': 10, 'Transport_HeavyCarry': 11, 'activity_carrying': 12, 'activity_gesturing': 13, 'activity_running': 14, 'activity_standing': 15, 'activity_walking': 16, 'specialized_miscellaneous': 17, 'specialized_talking_phone': 18, 'specialized_texting_phone': 19, 'specialized_using_tool': 20, 'vehicle_moving': 21, 'vehicle_starting': 22, 'vehicle_stopping': 23, 'vehicle_turning_left': 24, 'vehicle_turning_right': 25}
+5166 26
+0.24281234028937554 0.6490582377137908 0.2742934572202865
+resnet50_vmeans_deactivated_v3000017.pt: f1_macro 0.24281234028937554, f1_micro: 0.6490582377137908, accuracy: 0.2742934572202865
