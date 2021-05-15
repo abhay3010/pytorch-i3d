@@ -295,7 +295,7 @@ def make_residuals(r, in_channels):
     return nn.Sequential(*residuals)
 
 def main():
-    resizer_network = ResizerWithTimeCompression(3,32, (112,112) )
+    resizer_network = ResizerWithTimeCompression(3,32,32, (112,112) )
     summary(resizer_network, (3, 64, 28, 28), batch_size=2)
 if __name__ == '__main__':
     main()
