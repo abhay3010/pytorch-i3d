@@ -121,12 +121,12 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
 
 def main():
     # Local parameters
-    data_root = 'TinyVIRAT'
-    data_input_shape= (14, 14)
-    model_input_shape = (112, 112)
-    virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
-    batch_size = 2
-    save_model = 'bilinear_32_resizer_v1'
+    # data_root = 'TinyVIRAT'
+    # data_input_shape= (14, 14)
+    # model_input_shape = (112, 112)
+    # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
+    # batch_size = 2
+    # save_model = 'bilinear_32_resizer_v1'
 
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
