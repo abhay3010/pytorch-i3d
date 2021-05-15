@@ -151,10 +151,10 @@ if __name__ == '__main__':
     # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 64000.0
-    save_model='/virat-vr/models/pytorch-i3d/v7_bilinear_32_112'
+    save_model='/virat-vr/models/pytorch-i3d/v7_bilinear_16_112'
     start_from = None
     # root = "TinyVIRAT/"
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, max_steps=max_steps,save_model=save_model, batch_size=8, start_from=start_from )
+    run(init_lr=0.0001, root=root, i3d_mode='16x112', num_frames=16, max_steps=max_steps,save_model=save_model, batch_size=16, start_from=start_from )
