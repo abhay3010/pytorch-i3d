@@ -157,4 +157,4 @@ if __name__ == '__main__':
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, i3d_mode='64x112', num_frames=64, max_steps=max_steps,save_model=save_model, batch_size=64, start_from=start_from )
+    run(init_lr=0.0001, root=root, i3d_mode='64x112', num_frames=64, max_steps=max_steps,save_model=save_model, batch_size=4, start_from=start_from )
