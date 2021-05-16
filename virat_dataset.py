@@ -131,7 +131,7 @@ class Virat(data_util.Dataset):
                 print("error while getting a start frame ", details)
         elif self.load_all:
             start_f = 0
-            nun_frames = details['frames']
+            num_frames = details['frames']
 
         imgs = load_rgb_frames(details['path'],start_f, num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
         if self.transforms:
@@ -192,7 +192,7 @@ def collate_with_time(tensor_list):
     return default_collate(tensor_list)
     
 def resize_video(t, shape):
-    return F.interpolate(t.unsqueeze(0),size=shape, mode='trilinear', align_corners = False).squeeze(0)
+    return F.interpolate(t.unsqueeze(0),size=shape, mode='trilinear', align_corners = True).squeeze(0)
 
 
 if __name__ == '__main__':
