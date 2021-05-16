@@ -68,8 +68,8 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     model_list = []
-    save_model_path = '/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1'
-    for i in range(1, 10):
+    save_model_path = '/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v2'
+    for i in range(0, 4):
         m = save_model_path + str(i).zfill(6)+'.pt'
         i3d = save_model_path + 'i3d' + str(i).zfill(6)+'.pt'
         model_list.append((m,i3d))
