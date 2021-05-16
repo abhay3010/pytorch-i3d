@@ -42,7 +42,7 @@ def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
     resizer = ResizerMainNetworkV2(3, 32, (112, 112), skip=False)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
@@ -90,11 +90,14 @@ def eval(resizer_model, model_path, root, classes_file):
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     model_list = [
-        ('bilinear_32_resizer_v2_v8_final000006.pt', 'bilinear_32_resizer_v2_v8_finali3d000006.pt'),
-        ('bilinear_32_resizer_v2_v8_final000007.pt', 'bilinear_32_resizer_v2_v8_finali3d000007.pt'),
-        ('bilinear_32_resizer_v2_v8_final000008.pt', 'bilinear_32_resizer_v2_v8_finali3d000008.pt'),
-        ('bilinear_32_resizer_v2_v8_final000009.pt', 'bilinear_32_resizer_v2_v8_finali3d000009.pt'),
-        ('bilinear_32_resizer_v2_v8_final000010.pt', 'bilinear_32_resizer_v2_v8_finali3d000010.pt')
+        ('bilinear_32_resizer_v3_v8_final000004.pt', 'bilinear_32_resizer_v3_v8_finali3d000004.pt'),
+        ('bilinear_32_resizer_v3_v8_final000005.pt', 'bilinear_32_resizer_v3_v8_finali3d000005.pt'),
+        ('bilinear_32_resizer_v3_v8_final000006.pt', 'bilinear_32_resizer_v3_v8_finali3d000006.pt'),
+        ('bilinear_32_resizer_v3_v8_final000007.pt', 'bilinear_32_resizer_v3_v8_finali3d000007.pt'),
+        
+        ('bilinear_32_resizer_v3_v8_final000008.pt', 'bilinear_32_resizer_v3_v8_finali3d000008.pt'),
+        ('bilinear_32_resizer_v3_v8_final000009.pt', 'bilinear_32_resizer_v3_v8_finali3d000009.pt'),
+        ('bilinear_32_resizer_v3_v8_final000010.pt', 'bilinear_32_resizer_v3_v8_finali3d000010.pt')
         
         
     ]
