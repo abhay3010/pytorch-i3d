@@ -50,7 +50,6 @@ def eval(model_list,time_d, root, classes_file):
         trues = list()
         print("Beginning evaluation for resizer model ", resizer_path, "code model ", i3d_path)
         for batch, labels in val_dataloader:
-            count+=1
             inputs = Variable(batch.to(device))
             out = resizer(inputs)
             v = torch.sigmoid(i3d(out))
