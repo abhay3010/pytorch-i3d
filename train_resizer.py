@@ -33,7 +33,7 @@ from resizer import ResizerMainNetworkV3
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.0001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -134,7 +134,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112002400.pt'
     batch_size = 8
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v4_v8_final'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v4_v9_final'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
