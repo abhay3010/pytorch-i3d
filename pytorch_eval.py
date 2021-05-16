@@ -38,7 +38,7 @@ def eval(model_path, root, classes_file, mode,n_frames):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=6)   
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=6)   
     i3d = InceptionI3d(26,mode=mode, in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()

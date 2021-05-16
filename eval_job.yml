@@ -15,12 +15,12 @@ spec:
                 limits:
                  nvidia.com/gpu: 1
                  memory: "8Gi"
-                 cpu: "10"
+                 cpu: "3"
                  ephemeral-storage: 10Gi
                 requests:
                  nvidia.com/gpu: 1
                  memory: "6Gi"
-                 cpu: "8" 
+                 cpu: "3" 
                  ephemeral-storage: 10Gi
               volumeMounts:
                 - mountPath: /virat-vr
