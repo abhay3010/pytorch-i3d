@@ -1,0 +1,7 @@
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000001.pt , f1_macro : 0.14425270017136158, f1_micro 0.7224559073131134, Accuracy 0.505420054200542
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000002.pt , f1_macro : 0.18667293680046, f1_micro 0.7420161463170679, Accuracy 0.5222609368950832
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000003.pt , f1_macro : 0.18981956646239093, f1_micro 0.7373362292440272, Accuracy 0.5036778939217964
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000004.pt , f1_macro : 0.19637447731670993, f1_micro 0.7370796023408307, Accuracy 0.5075493612078978
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000005.pt , f1_macro : 0.19330734112119013, f1_micro 0.7378848346636261, Accuracy 0.5172280294231514
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000006.pt , f1_macro : 0.1880152231046253, f1_micro 0.7353923205342238, Accuracy 0.4926442121564073
+/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v1000007.pt , f1_macro : 0.1965749984497321, f1_micro 0.7366185216652505, Accuracy 0.5089043747580333
