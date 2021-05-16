@@ -126,7 +126,7 @@ def main():
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
-    batch_size = 8
+    batch_size = 16
     save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_trained_together'
 
     num_epochs=50
