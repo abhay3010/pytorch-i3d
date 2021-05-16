@@ -83,7 +83,7 @@ def load_models(resizer_path, i3d_path, time_d):
     resizer.load_state_dict(torch.load(resizer_path))
     resizer.to(device)
    
-    i3d = InceptionI3d(26,mode="32x112", in_channels=3)
+    i3d = InceptionI3d(26,mode="16x112", in_channels=3)
     state_dict = torch.load(i3d_path)
     new_dict = dict()
     for k, v in state_dict.items():
