@@ -103,7 +103,7 @@ def get_frames(p):
 
 
 class Virat(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False):
+    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False,load_all=False):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
@@ -113,19 +113,27 @@ class Virat(data_util.Dataset):
         self.num_frames = num_frames
         self.shuffule = shuffle
         self.normalize = normalize
+        self.load_all = load_all
+        if load_all and shuffle:
+            raise ValueError("shuffle and load_all cannot both be true")
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
         if sample:
-            self.data = self.data[:50]
+            self.data = self.data[:10]
     
     def __getitem__(self, index):
         details = self.data[index]
         start_f = 0
+        num_frames = self.num_frames
         if self.shuffule:
             try:
                 start_f = random.randint(0,details['frames']-self.num_frames-1)
             except:
                 print("error while getting a start frame ", details)
-        imgs = load_rgb_frames(details['path'],start_f, self.num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
+        elif self.load_all:
+            start_f = 0
+            nun_frames = details['frames']
+
+        imgs = load_rgb_frames(details['path'],start_f, num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
         if self.transforms:
             imgs = self.transforms(imgs)
         y = np.zeros(len(self.labels_map), dtype=np.float32)
@@ -175,6 +183,12 @@ def collate_tensors(tensor_list):
     d1 = max([t.shape[2] for t,_ in tensor_list ])
     d2 = max([t.shape[3] for t, _ in tensor_list])
     tensor_list = [(resize_video(t, (d0, d1, d2)) , l) if (t.shape[2], t.shape[3]) != (d1,d2) else (t,l) for t,l in tensor_list]
+    return default_collate(tensor_list)
+def collate_with_time(tensor_list):
+    d0 = max([t.shape[1] for t,_ in tensor_list])
+    d1 = max([t.shape[2] for t,_ in tensor_list ])
+    d2 = max([t.shape[3] for t, _ in tensor_list])
+    tensor_list = [(resize_video(t, (d0, d1, d2)) , l) if (t.shape[1], t.shape[2], t.shape[3]) != (d0,d1,d2) else (t,l) for t,l in tensor_list]
     return default_collate(tensor_list)
     
 def resize_video(t, shape):
