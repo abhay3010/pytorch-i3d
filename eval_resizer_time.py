@@ -38,14 +38,14 @@ from virat_dataset import Virat as Dataset
 from torchsummary import summary
 from virat_dataset import collate_with_time, load_rgb_frames
 
-def eval(model_list,time_d, root, classes_file):
+def eval(model_list,time_d,i3d_mode, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_with_time) 
     
     for resizer_path, i3d_path in model_list:
-        resizer, i3d = load_models(resizer_path, i3d_path, time_d)
+        resizer, i3d = load_models(resizer_path, i3d_path, i3d_mode, time_d)
         predictions = list()
         trues = list()
         print("Beginning evaluation for resizer model ", resizer_path, "code model ", i3d_path)
@@ -62,7 +62,7 @@ def eval(model_list,time_d, root, classes_file):
         accuracy = accuracy_score(trues, predictions)
     
 
-        print("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
+        print("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(resizer_path,f1_macro, f1_micro, accuracy))
     
 
 def main():
@@ -76,21 +76,22 @@ def main():
 
     root = "/mnt/data/TinyVIRAT"
     time_d = 16
-    eval(model_list,time_d, root, "classes.txt")
-def load_models(resizer_path, i3d_path, time_d):
+    i3d_mode = "16x112"
+    eval(model_list,time_d,i3d_mode, root, "classes.txt")
+
+def load_models(resizer_path, i3d_path, i3d_mode, time_d):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     resizer = ResizerWithTimeCompression(3, time_d, time_d, (112, 112), skip=False)
     resizer.load_state_dict(torch.load(resizer_path))
     resizer.to(device)
    
-    i3d = InceptionI3d(26,mode="16x112", in_channels=3)
+    i3d = InceptionI3d(26,mode=i3d_mode, in_channels=3)
     state_dict = torch.load(i3d_path)
     new_dict = dict()
     for k, v in state_dict.items():
         if k.startswith("module."):
             new_dict[k[7:]] = v
         else:
-            print(k)
             new_dict[k] = v
     i3d.load_state_dict(new_dict)
     i3d.to(device)
