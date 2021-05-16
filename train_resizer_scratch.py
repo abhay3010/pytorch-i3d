@@ -73,11 +73,6 @@ def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.0005 
     lr = init_lr
     num_steps_per_update = 10
     #Only passing the resizer parameters to the optimizer
-
-    
-    for name, param in i3d.named_parameters():
-        if "logits" not in name:
-            param.requires_grad= False
     optimizer = optim.Adam(final_model.parameters(), lr=lr)
 
    
@@ -131,7 +126,7 @@ def main():
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
-    batch_size = 32
+    batch_size = 8
     save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_trained_together'
 
     num_epochs=50
