@@ -34,12 +34,12 @@ from i3d import InceptionI3d
 
 from virat_dataset import Virat as Dataset
 
-def eval(model_path, root, classes_file):
+def eval(model_path, root, classes_file, mode,n_frames):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, transforms=None)
+    val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=6)   
-    i3d = InceptionI3d(26,mode="32x112", in_channels=3)
+    i3d = InceptionI3d(26,mode=mode, in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()
     for k, v in state_dict.items():
@@ -74,12 +74,11 @@ def eval(model_path, root, classes_file):
     return f1_macro, f1_micro, accuracy
 
 def main():
-    model_list = ['v7_bilinear_32_112000600.pt', 'v7_bilinear_32_112000800.pt', 'v7_bilinear_32_112001000.pt', 'v7_bilinear_32_112001200.pt', 'v7_bilinear_32_112001400.pt'
-    , 'v7_bilinear_32_112001600.pt', 'v7_bilinear_32_112001800.pt', 'v7_bilinear_32_112002000.pt', 'v7_bilinear_32_112002200.pt', 'v7_bilinear_32_112002400.pt', 'v7_bilinear_32_112002600.pt', 
-    'v7_bilinear_32_112002700.pt']
+    model_list = ['v7_bilinear_64_112002000.pt', 'v7_bilinear_64_112002200.pt', 'v7_bilinear_64_112002400.pt', 'v7_bilinear_64_112002600.pt', 'v7_bilinear_64_112002700.pt'
+    , 'v7_bilinear_64_112002800.pt', 'v7_bilinear_64_112002900.pt', 'v7_bilinear_64_112003000.pt', 'v7_bilinear_64_112003100.pt', 'v7_bilinear_64_112003200.pt']
     
     for model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt")
+       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt", "64x112", 64)
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 if __name__ == '__main__':
     main()  
