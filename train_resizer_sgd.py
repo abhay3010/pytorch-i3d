@@ -68,8 +68,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         if "logits" not in name:
             param.requires_grad= False
     
-    optimizer = optim.SGD(list(resizer.parameters()) + list(i3d.parameters()), lr=lr, momentum=0.9, weight_decay=0.0000001)
-    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 12, T_mult=2, eta_min=5e-10, last_epoch=-1, verbose=False)
+    optimizer = optim.AdamW(list(resizer.parameters()) + list(i3d.parameters()), lr=lr,)
+    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 2, T_mult=2, eta_min=1e-6, last_epoch=-1, verbose=False)
 
     print("resizer network", resizer)
     print("i3d", i3d)
@@ -110,10 +110,10 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     optimizer.step()
                     optimizer.zero_grad()
                     i3d.zero_grad()
-                    lr_sched.step()
+                    #lr_sched.step()
                     print ('{} Loss: {:.4f}'.format(phase, tot_loss))                    
                     tot_loss  = 0.
-            #lr_sched.step()
+            lr_sched.step()
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
         if isinstance(resizer, nn.DataParallel):
