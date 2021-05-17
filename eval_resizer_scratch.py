@@ -68,8 +68,11 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
 
 def main():
     mpath = "/virat-vr/models/pytorch-i3d/"
-    model_list = [mpath+"bilinear_32_resizer_trained_together000004_prev.pt", mpath+ "bilinear_32_resizer_trained_together000005_prev.pt"]
+    model_list = [mpath+"bilinear_32_resizer_trained_together000004_prev.pt"
+                #mpath+ "bilinear_32_resizer_trained_together000005_prev.pt"
+    ]
     root = "/mnt/data/TinyVIRAT"
+    # root = "./TinyVIRAT"
     time_d = 32
     i3d_mode = "32x112"
     eval(model_list,time_d,i3d_mode, root, "classes.txt")
@@ -82,7 +85,16 @@ def load_models(model_path, i3d_mode, time_d):
         ('resizer',resizer),
         ('i3d',i3d)
     ]))
-    final_model.load_state_dict(torch.load(model_path))
+    model_dict = torch.load(model_path, device)
+    new_dict = dict()
+    for k,v in model_dict.items():
+        if k.startswith('module'):
+            new_dict[k[7:]] = v
+        else:
+            new_dict[k] = v
+    final_model.load_state_dict(new_dict)
+    final_model.to(device)
+    return final_model
 
 
 
