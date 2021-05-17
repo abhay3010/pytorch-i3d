@@ -32,7 +32,7 @@ import numpy as np
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV3
+from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 from torchsummary import summary
@@ -43,7 +43,7 @@ def eval(resizer_model, model_path, root, classes_file):
 
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=4, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
-    resizer = ResizerMainNetworkV(3, 32, (112, 112), skip=False)
+    resizer = ResizerMainNetworkV2(3, 32, (112, 112), skip=False)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
@@ -89,9 +89,9 @@ def eval(resizer_model, model_path, root, classes_file):
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'bilinear_32_resizer_v4_v8_final'
+    prefix = 'bilinear_32_resizer_v4_v9_final_resizer_v2'
     model_list = []
-    for i in range(6, 40, 2):
+    for i in range(4, 10):
         m = prefix + str(i).zfill(6)+'.pt'
         m_i3d = prefix + 'i3d' + str(i).zfill(6)+'.pt'
         model_list.append((m,m_i3d))
