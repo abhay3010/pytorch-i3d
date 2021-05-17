@@ -45,14 +45,14 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
     
     for model_path in model_list:
-        resizer, i3d = load_models(model_path, i3d_mode, time_d)
+        model = load_models(model_path, i3d_mode, time_d)
         predictions = list()
         trues = list()
-        print("Beginning evaluation for resizer model ", model_path, "code model ")
+        print("Beginning evaluation for resizer model ", model_path)
         for batch, labels in val_dataloader:
             inputs = Variable(batch.to(device))
-            out = resizer(inputs)
-            v = torch.sigmoid(i3d(out))
+            out = model(inputs)
+            v = torch.sigmoid(out)
             for y_t, y_p in zip(labels, v):
                 p = np.array([1 if z >=0.5 else 0 for z in y_p])
                 predictions.append(p)
@@ -62,21 +62,15 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
         accuracy = accuracy_score(trues, predictions)
     
 
-        print("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(resizer_path,f1_macro, f1_micro, accuracy))
+        print("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model_path,f1_macro, f1_micro, accuracy))
     
 
 def main():
-    #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    model_list = []
-    save_model_path = '/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v2'
-    for i in range(6, 11):
-        m = save_model_path + str(i).zfill(6)+'.pt'
-        i3d = save_model_path + 'i3d' + str(i).zfill(6)+'.pt'
-        model_list.append((m,i3d))
-
+    mpath = "/virat-vr/models/pytorch-i3d/"
+    model_list = [mpath+"bilinear_32_resizer_trained_together000004_prev.pt", mpath+ "bilinear_32_resizer_trained_together000005_prev.pt"]
     root = "/mnt/data/TinyVIRAT"
-    time_d = 16
-    i3d_mode = "16x112"
+    time_d = 32
+    i3d_mode = "32x112"
     eval(model_list,time_d,i3d_mode, root, "classes.txt")
 
 def load_models(model_path, i3d_mode, time_d):
