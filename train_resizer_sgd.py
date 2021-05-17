@@ -60,7 +60,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 4
+    num_steps_per_update = 8
     #Only passing the resizer parameters to the optimizer
 
     
@@ -68,8 +68,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         if "logits" not in name:
             param.requires_grad= False
     
-    optimizer = optim.SGD(list(resizer.parameters()) + list(i3d.parameters()), lr=lr, momentum=0.9, weight_decay=0.0000001)
-    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 12, T_mult=1, eta_min=1e-9, last_epoch=-1, verbose=False)
+    optimizer = optim.SGD(list(resizer.parameters()) + list(i3d.parameters()), lr=lr, momentum=0.9, weight_decay=0.000001)
+    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 12, T_mult=2, eta_min=1e-9, last_epoch=-1, verbose=False)
 
     print("resizer network", resizer)
     print("i3d", i3d)
