@@ -1,0 +1,69 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: virat-vr-resizer-evaluation-job-v5
+spec:
+  template:
+    spec:
+      containers:
+        - name: virat-vr-container
+          image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
+          imagePullPolicy: Always 
+          command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
+          args: [ "/virat-vr/code/pytorch-i3d/eval_resizer.py", "/virat-vr/code/pytorch-i3d/" ]
+          resources:
+            limits:
+              nvidia.com/gpu: 1
+              memory: "12Gi"
+              cpu: "3"
+              ephemeral-storage: 10Gi
+            requests:
+              nvidia.com/gpu: 1
+              memory: "10Gi"
+              cpu: "3" 
+              ephemeral-storage: 10Gi
+          volumeMounts:
+            - mountPath: /virat-vr
+              name: virat-vr 
+            - mountPath: /dev/shm
+              name: dshm
+            - mountPath: /mnt/data
+              name: data
+      initContainers:
+        - name : init-data
+          image: gitlab-registry.nautilus.optiputer.net/prp/gsutil
+          args:
+            - gsutil
+            - "-m"
+            - rsync
+            - "-erP"
+            - /mnt/source/
+            - /mnt/dest/
+          volumeMounts:
+            - name: virat-vr-small
+              mountPath: /mnt/source
+            - name: data
+              mountPath: /mnt/dest
+      restartPolicy: Never
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: gpu-type
+      #           operator: In
+      #           values:
+      #           - A100
+      volumes:
+        - name: virat-vr
+          persistentVolumeClaim:
+            claimName: virat-vr
+        - name: virat-vr-small
+          persistentVolumeClaim:
+            claimName: virat-vr-small
+        - name: dshm
+          emptyDir:
+            medium: Memory
+        - name: data
+          emptyDir: {}
+  backoffLimit: 5
