@@ -110,7 +110,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     optimizer.step()
                     optimizer.zero_grad()
                     i3d.zero_grad()
-                    # lr_sched.step()
+                    #lr_sched.step()
                     print ('{} Loss: {:.4f}'.format(phase, tot_loss))                    
                     tot_loss  = 0.
             #lr_sched.step()
