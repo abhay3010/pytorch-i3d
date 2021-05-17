@@ -33,7 +33,7 @@ from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.00005 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.000 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -46,7 +46,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, sample=True)
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, sample=False)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
