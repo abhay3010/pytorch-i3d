@@ -53,7 +53,7 @@ def train_model(model, dataloaders, criterion, optimizer, model_prefix='', num_e
             else:
                 torch.save(model.state_dict(), model_prefix  + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file,save_path, batch_size=2, lr=0.0002):
+def run(root, classes_file,save_path, batch_size=2, lr=0.00005):
     #Initialise the dataset, loaders and model with the right set of parameters. 
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ 
@@ -65,8 +65,8 @@ def run(root, classes_file,save_path, batch_size=2, lr=0.0002):
     training, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, training)
     val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=0, pin_memory=True, collate_fn=collate_tensors)    
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
