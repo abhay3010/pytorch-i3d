@@ -46,7 +46,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, sample=False)
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, sample=True)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -110,7 +110,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     optimizer.step()
                     optimizer.zero_grad()
                     i3d.zero_grad()
-                    #lr_sched.step()
+                    lr_sched.step()
                     print ('{} Loss: {:.4f}'.format(phase, tot_loss))                    
                     tot_loss  = 0.
             #lr_sched.step()
