@@ -192,7 +192,7 @@ def collate_with_time(tensor_list):
     return default_collate(tensor_list)
     
 def resize_video(t, shape):
-    return F.interpolate(t.unsqueeze(0),size=shape, mode='trilinear', align_corners = True).squeeze(0)
+    return F.interpolate(t.unsqueeze(0),size=shape, mode='trilinear', align_corners = False).squeeze(0)
 
 
 if __name__ == '__main__':
