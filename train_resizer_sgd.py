@@ -33,7 +33,7 @@ from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.00001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -60,7 +60,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 10
+    num_steps_per_update = 1
     #Only passing the resizer parameters to the optimizer
 
     
@@ -69,7 +69,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
             param.requires_grad= False
     
     optimizer = optim.SGD(list(resizer.parameters()) + list(i3d.parameters()), lr=lr, momentum=0.9, weight_decay=0.0000001)
-    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 4, T_mult=1, eta_min=1e-7, last_epoch=-1, verbose=False)
+    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 4, T_mult=1, eta_min=1e-8, last_epoch=-1, verbose=False)
 
     print("resizer network", resizer)
     print("i3d", i3d)
