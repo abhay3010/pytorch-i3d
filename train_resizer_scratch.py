@@ -29,11 +29,11 @@ from virat_dataset import collate_tensors
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV3
+from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.0002 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root,i3d_path, model_input_shape,batch_size,save_model='', init_lr = 0.0002 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -47,11 +47,9 @@ def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.0002 
         else:
             y_new[k] = v
     i3d.load_state_dict(y_new)
-    for k in i3d.parameters():
-        k.requires_grad = False
     i3d.replace_logits(26)
     print("declared model")
-    resizer = ResizerMainNetworkV3(3, int(v_mode.split('x')[0]), model_input_shape)
+    resizer = ResizerMainNetworkV2(3, int(v_mode.split('x')[0]), model_input_shape)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
