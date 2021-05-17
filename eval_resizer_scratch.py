@@ -43,7 +43,7 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
     
     for model_path in model_list:
         model = load_models(model_path, i3d_mode, time_d)
@@ -68,8 +68,8 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
 
 def main():
     mpath = "/virat-vr/models/pytorch-i3d/"
-    model_list = [mpath+"bilinear_32_resizer_trained_together000004_prev.pt"
-                #mpath+ "bilinear_32_resizer_trained_together000005_prev.pt"
+    model_list = [mpath+"bilinear_32_resizer_trained_together000004.pt"
+                ,mpath+ "bilinear_32_resizer_trained_together000005.pt"
     ]
     root = "/mnt/data/TinyVIRAT"
     # root = "./TinyVIRAT"
