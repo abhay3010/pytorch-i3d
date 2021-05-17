@@ -33,7 +33,7 @@ from resizer import ResizerMainNetworkV3
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.002 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.0002 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -47,6 +47,8 @@ def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.002 ,
         else:
             y_new[k] = v
     i3d.load_state_dict(y_new)
+    for k in i3d.parameters():
+        k.requires_grad = False
     i3d.replace_logits(26)
     print("declared model")
     resizer = ResizerMainNetworkV3(3, int(v_mode.split('x')[0]), model_input_shape)
@@ -73,7 +75,13 @@ def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.002 ,
     lr = init_lr
     num_steps_per_update = 10
     #Only passing the resizer parameters to the optimizer
-    optimizer = optim.Adam(final_model.parameters(), lr=lr)
+    params = list()
+    print("final params ", len(list(final_model.parameters())))
+    for k in final_model.parameters():
+        if k.requires_grad:
+            params.append(k)
+    print("optimizer params", len(params))
+    optimizer = optim.Adam(params, lr=lr)
 
    
     for epoch in range(num_epochs):
@@ -88,6 +96,7 @@ def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.002 ,
             tot_loss = 0.0
             num_iter = 0
             optimizer.zero_grad()
+            final_model.zero_grad()
             for data in dataloaders[phase]:
                 num_iter += 1
                 inputs, labels = data
@@ -107,6 +116,7 @@ def run(data_root, model_input_shape,batch_size,save_model='', init_lr = 0.002 ,
                     num_iter = 0
                     optimizer.step()
                     optimizer.zero_grad()
+                    final_model.zero_grad()
                     print ('{} Loss: {:.4f}'.format(phase, tot_loss))                    
                     tot_loss  = 0.
             if phase == 'val':
@@ -127,7 +137,7 @@ def main():
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
     batch_size = 16
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_trained_together'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_trained_together_ftune'
 
     num_epochs=50
     run(data_root, model_input_shape, batch_size, save_model, num_epochs=num_epochs)
