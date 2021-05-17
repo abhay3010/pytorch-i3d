@@ -76,7 +76,7 @@ def main():
 def load_models(model_path, i3d_mode, time_d):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     i3d = InceptionI3d(26,mode=i3d_mode, in_channels=3)
-    resizer = ResizerMainNetworkV3(3, int(i3d_mode.split('x')[0]), time_d)
+    resizer = ResizerMainNetworkV3(3, int(i3d_mode.split('x')[0]),(112,112))
     final_model = nn.Sequential(OrderedDict([
         ('resizer',resizer),
         ('i3d',i3d)
