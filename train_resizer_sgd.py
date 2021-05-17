@@ -60,7 +60,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 1
+    num_steps_per_update = 4
     #Only passing the resizer parameters to the optimizer
 
     
