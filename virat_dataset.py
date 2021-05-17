@@ -118,7 +118,7 @@ class Virat(data_util.Dataset):
             raise ValueError("shuffle and load_all cannot both be true")
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
         if sample:
-            self.data = self.data[:400]
+            self.data = self.data[:1000]
     
     def __getitem__(self, index):
         details = self.data[index]

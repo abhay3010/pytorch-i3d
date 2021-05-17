@@ -228,13 +228,14 @@ class ResizerMainNetworkV3(nn.Module):
             out+=residual
             return out
 class ResizerWithTimeCompression(nn.Module):
-    def __init__(self, in_channels,n_frames,n_output_frames, scale_shape,num_resblocks=1, skip=False):
+    def __init__(self, in_channels,n_frames,n_output_frames, scale_shape,num_resblocks=1, skip=False, squeeze=False):
         self.in_channels = in_channels
         self.r = num_resblocks
         self.scale_shape = scale_shape
         self.n_input_frames = n_frames
         self.n_output_frames = n_output_frames
         self.skip = skip
+        self.squeeze = squeeze
         super(ResizerWithTimeCompression, self).__init__()
         self.skip_resizer =  ResizerBlock((self.n_output_frames,)+self.scale_shape, False)
         if not self.skip:
@@ -268,6 +269,8 @@ class ResizerWithTimeCompression(nn.Module):
             out = self.c4(out)
             # print(out.shape)
             out+=residual
+            if self.squeeze:
+                out = out.permute([0,2,1,3,4]).squeeze(1)
             return out
 
 class ResidualBlock(nn.Module):
