@@ -33,7 +33,7 @@ from resizer import ResizerMainNetworkV2
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.0001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.0002 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -46,7 +46,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, sample=True)
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, sample=False)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -69,7 +69,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
             param.requires_grad= False
     
     optimizer = optim.AdamW(list(resizer.parameters()) + list(i3d.parameters()), lr=lr,)
-    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 2, T_mult=2, eta_min=1e-6, last_epoch=-1, verbose=False)
+    lr_sched = torch.optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 2, T_mult=2, eta_min=1e-8, last_epoch=-1, verbose=False)
 
     print("resizer network", resizer)
     print("i3d", i3d)
@@ -136,8 +136,8 @@ def main():
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
-    batch_size = 4
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_sgd_v4_v9_final_resizer_v2_rerun_test'
+    batch_size = 16
+    save_model = '/virat-vr/models/pytorch-i3d/32_112_bilinear_adamw_rerun'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
