@@ -91,7 +91,7 @@ def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     prefix = 'bilinear_32_resizer_v4_v9_final_resizer_v2'
     model_list = []
-    for i in range(4, 10):
+    for i in range(4, 50, 2):
         m = prefix + str(i).zfill(6)+'.pt'
         m_i3d = prefix + 'i3d' + str(i).zfill(6)+'.pt'
         model_list.append((m,m_i3d))
