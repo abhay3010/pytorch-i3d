@@ -87,7 +87,7 @@ def run(root, classes_file,save_path, batch_size=2, lr=0.00005):
     criterion  = nn.BCEWithLogitsLoss()
     final_model.to(device)
     if torch.cuda.device_count()>1:
-        final_model = nn.DataParallel(model_ft)
+        final_model = nn.DataParallel(final_model)
     train_model(final_model, dataloaders,criterion, optimizer_ft, model_prefix=save_path )
 
 
