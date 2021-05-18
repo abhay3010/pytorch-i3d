@@ -41,7 +41,7 @@ from virat_dataset import collate_with_time, load_rgb_frames
 def eval(model_list,time_d,i3d_mode, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, num_frames=64)
+    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, load_all=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_with_time) 
     
     for resizer_path, i3d_path in model_list:
