@@ -61,7 +61,7 @@ def run(root, classes_file,save_path, batch_size=2, lr=0.00005):
         videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152])
 
     ])
-    dataset = Dataset(root, "train",classes_file, transforms=train_transforms, normalize=False, sample=True)
+    dataset = Dataset(root, "train",classes_file, transforms=train_transforms, normalize=False, sample=False)
     training, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, training)
     val_dataset = torch.utils.data.Subset(dataset, test)
