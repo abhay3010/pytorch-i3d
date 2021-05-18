@@ -103,7 +103,7 @@ def get_frames(p):
 
 
 class Virat(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames= 32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False,load_all=False):
+    def __init__(self, root, dtype,labels_file,num_frames=32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False,load_all=False):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
@@ -124,15 +124,14 @@ class Virat(data_util.Dataset):
         details = self.data[index]
         start_f = 0
         num_frames = self.num_frames
+        if self.load_all:
+            num_frames = min(details['frames', self.num_frames])
         if self.shuffule:
             try:
                 start_f = random.randint(0,details['frames']-self.num_frames-1)
             except:
                 print("error while getting a start frame ", details)
-        elif self.load_all:
-            start_f = 0
-            num_frames = details['frames']
-
+    
         imgs = load_rgb_frames(details['path'],start_f, num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
         if self.transforms:
             imgs = self.transforms(imgs)
