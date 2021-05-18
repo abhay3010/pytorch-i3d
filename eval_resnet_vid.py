@@ -43,6 +43,7 @@ def run(model, dataloader):
     return f1_macro, f1_micro, accuracy
 
 def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
+    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     model_ft = models.resnet50()
     model_resizer = ResizerWithTimeCompression(3, 1, 1, (224,224), squeeze=True)
     num_ftrs = model_ft.fc.in_features
@@ -51,6 +52,7 @@ def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
         ('resnet',model_ft)
     ]))
     final_model.load_state_dict(torch.load(model_path))
+    final_model.to(device)
     if torch.cuda.device_count()>1:
         final_model = nn.DataParallel(final_model)
     dataset = Dataset(root, "test", classes_file, transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), normalize=False)
