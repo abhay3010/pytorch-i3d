@@ -43,14 +43,6 @@ def run(model, dataloader):
     return f1_macro, f1_micro, accuracy
 
 def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
-    dataset = Dataset(root, "train",classes_file, transforms=train_transforms, normalize=False, sample=False)
-    training, test = dataset.get_train_validation_split()
-    train_dataset = torch.utils.data.Subset(dataset, training)
-    val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)    
-
-    dataloaders = {'train': dataloader, 'val': val_dataloader}
     model_ft = models.resnet50(pretrained=True)
     model_resizer = ResizerWithTimeCompression(3, 1, 1, (224,224), squeeze=True)
     final_model = nn.Sequential(OrderedDict([ ('resizer',model_resizer),
@@ -59,9 +51,9 @@ def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
     final_model.load_state_dict(torch.load(model_path))
     if torch.cuda.device_count()>1:
         final_model = nn.DataParallel(final_model)
-    dataset = Dataset(root, "test", classes_file, resize_shape=(224,224), transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), normalize==False)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=n_workers, pin_memory=True)
-    f1_macro, f1_micro, accuracy = run(model_ft, dataloader)
+    dataset = Dataset(root, "test", classes_file, transforms=videotransforms.Normalize([0.4719, 0.5126, 0.5077], [0.2090, 0.2103, 0.2152]), normalize=False)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size,num_workers=n_workers, pin_memory=True)
+    f1_macro, f1_micro, accuracy = run(final_model, dataloader)
     return f1_macro, f1_micro, accuracy
 def main():
     #Local Params
