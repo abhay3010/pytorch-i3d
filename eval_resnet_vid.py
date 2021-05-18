@@ -43,8 +43,10 @@ def run(model, dataloader):
     return f1_macro, f1_micro, accuracy
 
 def eval_resnet(root, classes_file, model_path, batch_size, n_workers):
-    model_ft = models.resnet50(pretrained=True)
+    model_ft = models.resnet50()
     model_resizer = ResizerWithTimeCompression(3, 1, 1, (224,224), squeeze=True)
+    num_ftrs = model_ft.fc.in_features
+    model_ft.fc = nn.Linear(num_ftrs, 26, bias=True)
     final_model = nn.Sequential(OrderedDict([ ('resizer',model_resizer),
         ('resnet',model_ft)
     ]))
