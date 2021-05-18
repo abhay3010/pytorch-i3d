@@ -77,3 +77,5 @@ def main():
     for model in models:
         f1_macro, f1_micro, accuracy = eval_resnet(root, classes_file, base_path+model, batch_size, n_workers)
         print("{0}: f1_macro {1}, f1_micro: {2}, accuracy: {3}".format(model, f1_macro, f1_micro, accuracy))
+if __name__ == '__main__':
+    main()
