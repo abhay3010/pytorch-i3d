@@ -244,7 +244,7 @@ class ResizerWithTimeCompression(nn.Module):
             self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
             self.resizer_first = ResizerBlock((self.n_output_frames,) + self.scale_shape, False)
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
-            self.c4 = ConvUnit(in_channels=16, kernel_shape=[7,7,7], output_channels=self.in_channels, lru=False, norm=None)
+            self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
         
     def forward(self, x):
         # print("input shape", x.shape)

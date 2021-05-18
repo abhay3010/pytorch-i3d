@@ -46,7 +46,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, load_all=True)
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms, num_frames=64)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -131,9 +131,9 @@ def main():
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
-    virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_16_112002800.pt'
+    virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size = 16
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v2'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_64_32_resizer_timecompression_v2'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
