@@ -41,7 +41,7 @@ from virat_dataset import collate_with_time, load_rgb_frames
 def eval(model_list,time_d,i3d_mode, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, load_all=True)
+    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, num_frames=64)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_with_time) 
     
     for resizer_path, i3d_path in model_list:
@@ -68,15 +68,15 @@ def eval(model_list,time_d,i3d_mode, root, classes_file):
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     model_list = []
-    save_model_path = '/virat-vr/models/pytorch-i3d/bilinear_16_resizer_timecompression_v2'
-    for i in range(6, 11):
+    save_model_path = '/virat-vr/models/pytorch-i3d/bilinear_64_32_resizer_timecompression_v2'
+    for i in range(0,9):
         m = save_model_path + str(i).zfill(6)+'.pt'
         i3d = save_model_path + 'i3d' + str(i).zfill(6)+'.pt'
         model_list.append((m,i3d))
 
     root = "/mnt/data/TinyVIRAT"
-    time_d = 16
-    i3d_mode = "16x112"
+    time_d = 32
+    i3d_mode = "32x112"
     eval(model_list,time_d,i3d_mode, root, "classes.txt")
 
 def load_models(resizer_path, i3d_path, i3d_mode, time_d):

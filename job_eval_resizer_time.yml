@@ -14,12 +14,12 @@ spec:
           resources:
             limits:
               nvidia.com/gpu: 1
-              memory: "28Gi"
+              memory: "14Gi"
               cpu: "3"
               ephemeral-storage: 10Gi
             requests:
               nvidia.com/gpu: 1
-              memory: "20Gi"
+              memory: "8Gi"
               cpu: "3" 
               ephemeral-storage: 10Gi
           volumeMounts:
