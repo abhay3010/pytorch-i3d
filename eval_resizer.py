@@ -89,7 +89,7 @@ def eval(resizer_model, model_path, root, classes_file):
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'pytorch-i3d/32_112_bilinear_adamw_rerun'
+    prefix = '32_112_bilinear_adamw_rerun'
     model_list = list()
     for epoch in range(15,31):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
