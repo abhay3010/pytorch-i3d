@@ -228,7 +228,7 @@ class ResizerMainNetworkV3(nn.Module):
             out+=residual
             return out
 class ResizerWithTimeCompression(nn.Module):
-    def __init__(self, in_channels,n_frames,n_output_frames, scale_shape,num_resblocks=1, skip=False, squeeze=False):
+    def __init__(self, in_channels,n_frames,n_output_frames, scale_shape,num_resblocks=2, skip=False, squeeze=False):
         self.in_channels = in_channels
         self.r = num_resblocks
         self.scale_shape = scale_shape
