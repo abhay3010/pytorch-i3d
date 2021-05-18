@@ -212,7 +212,7 @@ class InceptionModule(nn.Module):
         
 def main():
     i3d = i3d = InceptionI3d(26,mode="32x112", in_channels=3)
-    summary(i3d, (3,32,  128, 128))  
+    summary(i3d, (3, 32,  112, 112))  
     
 if __name__ == '__main__':
     main()

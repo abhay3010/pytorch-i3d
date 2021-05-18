@@ -15,12 +15,12 @@ spec:
             limits:
               nvidia.com/gpu: 1
               memory: "14Gi"
-              cpu: "3"
+              cpu: "2"
               ephemeral-storage: 10Gi
             requests:
               nvidia.com/gpu: 1
               memory: "8Gi"
-              cpu: "3" 
+              cpu: "2" 
               ephemeral-storage: 10Gi
           volumeMounts:
             - mountPath: /virat-vr
@@ -53,7 +53,7 @@ spec:
               - key: gpu-type
                 operator: In
                 values:
-                - "2080Ti"
+                - "1080Ti"
       volumes:
         - name: virat-vr
           persistentVolumeClaim:
