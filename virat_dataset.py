@@ -147,6 +147,7 @@ class Virat(data_util.Dataset):
         return len(self.data)
         
     def get_train_validation_split(self, test_perc=0.1):
+        random.seed(22)
         labels_count = defaultdict(set)
         for i, d in enumerate(self.data):
             for k in d['label']:

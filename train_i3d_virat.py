@@ -40,10 +40,10 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     ])
 
     dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True)
-    train, test = dataset.get_train_validation_split()
-    train_dataset = torch.utils.data.Subset(dataset, train)
-    val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    test_valid_dataset = Dataset(root, "test",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True)
+    test, val = test_valid_dataset.get_train_validation_split(test_perc=0.1)
+    val_dataset = torch.utils.data.Subset(test_valid_dataset, val)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
