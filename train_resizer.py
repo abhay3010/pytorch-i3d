@@ -62,7 +62,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     lr = init_lr
     num_steps_per_update = 10
     #Only passing the resizer parameters to the optimizer
-
+    weights = torch.tensor([2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 1.8133541585318236, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 1.0, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487])
+    weights = weights.to(device)
     
     for name, param in i3d.named_parameters():
         if "logits" not in name:
@@ -99,7 +100,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                 resized_image = resizer(inputs)
                 # print("resized input shape", resized_image.shape)
                 per_video_logits = i3d(resized_image)
-                class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels)
+                class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels, weights)
                 loss = class_loss/num_steps_per_update
                 tot_loss += loss.item()
                 loss.backward()
@@ -134,7 +135,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size = 16
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v4_v9_final_resizer_v2_rerun'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v9_final_resizer_v3_rerun'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
