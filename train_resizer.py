@@ -29,7 +29,7 @@ from virat_dataset import collate_tensors
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV4
+from resizer import ResizerMainNetworkV4_3D
 
 from virat_dataset import Virat as Dataset
 
@@ -42,7 +42,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = ResizerMainNetworkV4(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
+    resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])

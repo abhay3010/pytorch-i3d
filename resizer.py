@@ -404,10 +404,10 @@ class ResidualBlock(nn.Module):
 class ResidualBlock2D(nn.Module):
     def __init__(self,num_channels):
         super(ResidualBlock2D, self).__init__()
-        self.conv1 = nn.Conv3d(num_channels, num_channels, kernel_size=(1,3,3), padding=1)
+        self.conv1 = nn.Conv3d(num_channels, num_channels, kernel_size=(1,3,3), padding=(0,1,1))
         self.bn1 = nn.BatchNorm3d(num_channels)
         self.leaky_relu = nn.LeakyReLU(negative_slope=0.2)
-        self.conv2 = nn.Conv3d(num_channels, num_channels, kernel_size=(1,3,3), padding=1)
+        self.conv2 = nn.Conv3d(num_channels, num_channels, kernel_size=(1,3,3), padding=(0,1,1))
         self.bn2 = nn.BatchNorm3d(num_channels)
     def forward(self, x):
         residual = x
@@ -433,8 +433,8 @@ def make_residuals(r, in_channels):
     return nn.Sequential(*residuals)
 
 def main():
-    resizer_network = ResizerMainNetworkV4_3D(3,32,(112,112), num_resblocks=2 )
-    summary(resizer_network, (3, 64, 28, 28), batch_size=2)
+    resizer_network = ResizerMainNetworkV2(3,32,(112,112), num_resblocks=1 )
+    summary(resizer_network, (3, 64, 10, 10), batch_size=2)
 if __name__ == '__main__':
     main()
     
