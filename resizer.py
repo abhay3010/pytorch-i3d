@@ -332,6 +332,24 @@ class ResidualBlock(nn.Module):
         out = self.bn2(out)
         out+=residual
         return out
+
+class ResidualBlock2D(nn.Module):
+    def __init__(self,num_channels):
+        super(ResidualBlock, self).__init__()
+        self.conv1 = nn.Conv3d(num_channels, num_channels, kernel_size=(1,3,3), padding=1)
+        self.bn1 = nn.BatchNorm3d(num_channels)
+        self.leaky_relu = nn.LeakyReLU(negative_slope=0.2)
+        self.conv2 = nn.Conv3d(num_channels, num_channels, kernel_size=(1,3,3), padding=1)
+        self.bn2 = nn.BatchNorm3d(num_channels)
+    def forward(self, x):
+        residual = x
+        out = self.conv1(x)
+        out = self.bn1(out)
+        out = self.leaky_relu(out)
+        out = self.conv2(out)
+        out = self.bn2(out)
+        out+=residual
+        return out
 def make_residuals(r, in_channels):
     residuals = []
     for i in range(r):

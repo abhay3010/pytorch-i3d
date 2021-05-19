@@ -1,0 +1,9 @@
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000000.pt , f1_macro : 0.1988848880116777, f1_micro 0.7599347568208779, Accuracy 0.5611691831204026
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000001.pt , f1_macro : 0.20593952174677854, f1_micro 0.7696535763361538, Accuracy 0.5607820363917925
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000002.pt , f1_macro : 0.22442533408787435, f1_micro 0.7716558417864702, Accuracy 0.5782036391792489
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000003.pt , f1_macro : 0.22220347748431435, f1_micro 0.7753021697975826, Accuracy 0.5787843592721641
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000004.pt , f1_macro : 0.23112923042622088, f1_micro 0.7716811573025497, Accuracy 0.5799457994579946
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000005.pt , f1_macro : 0.2351560805587824, f1_micro 0.7773825941787036, Accuracy 0.5820751064653503
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000006.pt , f1_macro : 0.24168780012741736, f1_micro 0.7786437468133149, Accuracy 0.5880758807588076
+bilinear_32_resizer_v9_final_resizer_v3_1_rerun000007.pt , f1_macro : 0.23087852063173592, f1_micro 0.772972972972973, Accuracy 0.5772357723577236
+
