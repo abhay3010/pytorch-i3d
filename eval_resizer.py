@@ -91,7 +91,7 @@ def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     prefix = 'bilinear_32_resizer_v9_final_resizer_v3_1_rerun'
     model_list = list()
-    for epoch in range(8,13):
+    for epoch in range(8,15):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
