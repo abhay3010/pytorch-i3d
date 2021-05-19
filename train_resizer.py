@@ -29,7 +29,7 @@ from virat_dataset import collate_tensors
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV2
+from resizer import ResizerMainNetworkV3_1
 
 from virat_dataset import Virat as Dataset
 
@@ -42,7 +42,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = ResizerMainNetworkV2(3, int(v_mode.split('x')[0]), model_input_shape)
+    resizer = ResizerMainNetworkV3_1(3, int(v_mode.split('x')[0]), model_input_shape)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
@@ -61,10 +61,6 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         resizer = nn.DataParallel(resizer)
     lr = init_lr
     num_steps_per_update = 10
-    #Only passing the resizer parameters to the optimizer
-    weights = torch.tensor([2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 1.8133541585318236, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 1.0, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487, 2.4599629204555487])
-    weights = weights.to(device)
-    
     for name, param in i3d.named_parameters():
         if "logits" not in name:
             param.requires_grad= False
@@ -100,7 +96,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                 resized_image = resizer(inputs)
                 # print("resized input shape", resized_image.shape)
                 per_video_logits = i3d(resized_image)
-                class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels, weights)
+                class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels)
                 loss = class_loss/num_steps_per_update
                 tot_loss += loss.item()
                 loss.backward()
