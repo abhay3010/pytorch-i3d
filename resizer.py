@@ -263,6 +263,8 @@ class ResizerMainNetworkV4(nn.Module):
             self.residual_blocks = make_residuals_2d(num_resblocks, 16)
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[1,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[1,7,7], output_channels=self.in_channels, lru=False, norm=None)
+
+
         
     def forward(self, x):
         # print("input shape", x.shape)
@@ -288,8 +290,54 @@ class ResizerMainNetworkV4(nn.Module):
             # print(out.shape)
             out+=residual
             return out
+
+class ResizerMainNetworkV4_3D(nn.Module):
+    def __init__(self, in_channels,n_frames, scale_shape,num_resblocks=1, skip=False):
+        self.in_channels = in_channels
+        self.r = num_resblocks
+        self.scale_shape = scale_shape
+        self.nframes = n_frames
+        self.skip = skip
+        super(ResizerMainNetworkV4_3D, self).__init__()
+        self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
+        if not self.skip:
+            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[7, 7, 7],  norm=None)
+            #revisit size of this unit as it is inconsitent between paper and diagram
+            self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
+            self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
+            self.residual_blocks = make_residuals(num_resblocks, 16)
+            self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
+            self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
+
+
+        
+    def forward(self, x):
+        # print("input shape", x.shape)
+        residual = self.skip_resizer(x)
+        if self.skip:
+            return residual
+        else:
+
+        # print("resizer_shape", out.shape)
+            out = self.c1(x)
+            # print("conv shape", out.shape)
+
+            out = self.c2(out)
+            # print("conv2 shape", out.shape)
+            out =  self.resizer_first(out)
+            # print("in resizer shape", out.shape)
+            residual_skip = out
+            out = self.residual_blocks(out)
+            out = self.c3(out)
+            out+=residual_skip
+            # print(out.shape)        
+            out = self.c4(out)
+            # print(out.shape)
+            out+=residual
+            return out
+
 class ResizerWithTimeCompression(nn.Module):
-    def __init__(self, in_channels,n_frames,n_output_frames, scale_shape,num_resblocks=2, skip=False, squeeze=False):
+    def __init__(self, in_channels,n_frames,n_output_frames, scale_shape,num_resblocks=1, skip=False, squeeze=False):
         self.in_channels = in_channels
         self.r = num_resblocks
         self.scale_shape = scale_shape
@@ -304,6 +352,7 @@ class ResizerWithTimeCompression(nn.Module):
             #revisit size of this unit as it is inconsitent between paper and diagram
             self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
             self.resizer_first = ResizerBlock((self.n_output_frames,) + self.scale_shape, False)
+            self.residual_blocks = make_residuals(16, num_resblocks)
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
         
@@ -322,10 +371,10 @@ class ResizerWithTimeCompression(nn.Module):
             # print("conv2 shape", out.shape)
             out =  self.resizer_first(out)
             # print("in resizer shape", out.shape)
-            # residual_skip = out
-            # out = self.residual_blocks(out)
+            residual_skip = out
+            out = self.residual_blocks(out)
             out = self.c3(out)
-            # out+=residual_skip
+            out+=residual_skip
             # print(out.shape)        
             out = self.c4(out)
             # print(out.shape)
@@ -372,7 +421,7 @@ class ResidualBlock2D(nn.Module):
 def make_residuals_2d(r, in_channels):
     residuals = []
     for i in range(r):
-        b = ResidualBlock(in_channels)
+        b = ResidualBlock2D(in_channels)
         residuals.append(b)
     return nn.Sequential(*residuals)
 
@@ -384,7 +433,7 @@ def make_residuals(r, in_channels):
     return nn.Sequential(*residuals)
 
 def main():
-    resizer_network = ResizerMainNetworkV4(3,32,(112,112), num_resblocks=2 )
+    resizer_network = ResizerMainNetworkV4_3D(3,32,(112,112), num_resblocks=2 )
     summary(resizer_network, (3, 64, 28, 28), batch_size=2)
 if __name__ == '__main__':
     main()
