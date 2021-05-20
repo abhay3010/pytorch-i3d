@@ -45,15 +45,15 @@ spec:
             - name: data
               mountPath: /mnt/dest
       restartPolicy: Never
-      affinity:
-        nodeAffinity:
-          requiredDuringSchedulingIgnoredDuringExecution:
-            nodeSelectorTerms:
-            - matchExpressions:
-              - key: gpu-type
-                operator: In
-                values:
-                - 1080Ti
+      # affinity:
+      #   nodeAffinity:
+      #     requiredDuringSchedulingIgnoredDuringExecution:
+      #       nodeSelectorTerms:
+      #       - matchExpressions:
+      #         - key: gpu-type
+      #           operator: In
+      #           values:
+      #           - 1080Ti
       volumes:
         - name: virat-vr
           persistentVolumeClaim:

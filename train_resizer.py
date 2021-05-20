@@ -65,7 +65,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         if "logits" not in name:
             param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
-    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 4, T_mult=2, eta_min=init_lr/10000, last_epoch=-1, verbose=False)
+    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 2, T_mult=2, eta_min=init_lr/1000, last_epoch=-1, verbose=False)
 
     print("resizer network", resizer)
     print("i3d", i3d)
