@@ -42,7 +42,7 @@ def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=6, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
     resizer = ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
@@ -89,9 +89,9 @@ def eval(resizer_model, model_path, root, classes_file):
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'bilinear_32_resizer_v9_final_resizer_v43r_residuals'
+    prefix = 'bilinear_32_resizer_v9_final_resizer_v43r_residuals_'
     model_list = list()
-    for epoch in range(15,30):
+    for epoch in range(5,20,2):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
