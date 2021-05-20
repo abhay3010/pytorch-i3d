@@ -65,7 +65,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         if "logits" not in name:
             param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
-    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer, 2, T_mult=2, eta_min=init_lr/100000, last_epoch=-1, verbose=False)
+    scheduler = optim.ReduceLROnPlateau(optimizer, mode='min', factor=0.5, patience=2, threshold=0.0001, verbose=True)
 
     print("resizer network", resizer)
     print("i3d", i3d)
@@ -111,7 +111,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     tot_loss  = 0.
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
-            scheduler.step()
+                scheduler.step((tot_loss*num_steps_per_update)/num_iter)
         if isinstance(resizer, nn.DataParallel):
             torch.save(resizer.module.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
             torch.save(i3d.module.state_dict(), save_model + 'i3d' + str(epoch).zfill(6)+'.pt')
@@ -133,7 +133,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size =24
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v9_final_resizer_v43r_residuals_'
+    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v9_final_resizer_v43r_residuals_plateau'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
