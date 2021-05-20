@@ -53,7 +53,7 @@ spec:
               - key: gpu-type
                 operator: In
                 values:
-                - "3090"
+                - "1080"
       volumes:
         - name: virat-vr
           persistentVolumeClaim:
