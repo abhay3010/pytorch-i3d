@@ -76,10 +76,9 @@ def eval(resizer_model, model_path, root, classes_file):
         v = torch.sigmoid(i3d(out))
         for y_t, y_p in zip(labels, v):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
-            p_l = np.array([z for z in y_p])
             predictions.append(p)
             trues.append(y_t.numpy()) 
-            p_logits.append(p_l)
+            p_logits.append(t_p.numpy())
 
 
     #print(trues, predictions)
