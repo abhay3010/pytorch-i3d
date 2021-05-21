@@ -78,7 +78,7 @@ def eval(resizer_model, model_path, root, classes_file):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
             predictions.append(p)
             trues.append(y_t.numpy()) 
-            p_logits.append(y_p.cpu().numpy())
+            p_logits.append(y_p.cpu().detach().numpy())
 
 
     #print(trues, predictions)
