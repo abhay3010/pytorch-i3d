@@ -65,6 +65,7 @@ def eval(resizer_model, model_path, root, classes_file):
     resizer.train(False)
     predictions = list()
     trues = list()
+    p_logits = list()
 
     count = 0
     print("Beginning evaluation for resizer model ", resizer_model, "code model ", model_path)
@@ -75,20 +76,25 @@ def eval(resizer_model, model_path, root, classes_file):
         v = torch.sigmoid(i3d(out))
         for y_t, y_p in zip(labels, v):
             p = np.array([1 if z >=0.5 else 0 for z in y_p])
+            p_l = np.array([z for z in y_p])
             predictions.append(p)
-            trues.append(y_t.numpy())    
+            trues.append(y_t.numpy()) 
+            p_logits.append(p_l)
+
 
     #print(trues, predictions)
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
-    accuracy = accuracy_score(trues, predictions)
-    
+    accuracy = accuracy_score(trues, predictions)    
 
     print(f1_macro, f1_micro, accuracy)
     pred_np = np.asarray(predictions)
     act_np = np.asarray(trues)
+    cf = multilabel_confusion_matrix(trues, predictions)
     np.save('predictions.npy', pred_np)
     np.save('actuals.npy', act_np)
+    np.save('logits.npy', np.asarray(p_logits))
+    np.save('confusion.npy', cf)
 
     return f1_macro, f1_micro, accuracy
 
@@ -96,7 +102,7 @@ def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     prefix = 'bilinear_32_resizer_v9_final_resizer_v43r_residuals_'
     model_list = list()
-    for epoch in range(38,90):
+    for epoch in range(38,39):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
