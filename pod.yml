@@ -10,12 +10,12 @@ spec:
     resources:
       limits:
         nvidia.com/gpu: 1
-        memory: "8Gi"
+        memory: "6Gi"
         cpu: "2000m"
         ephemeral-storage: 10Gi
       requests:
         nvidia.com/gpu: 1
-        memory: "8Gi"
+        memory: "4Gi"
         cpu: "2000m"
         ephemeral-storage: 10Gi
     volumeMounts:

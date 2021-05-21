@@ -85,13 +85,18 @@ def eval(resizer_model, model_path, root, classes_file):
     
 
     print(f1_macro, f1_micro, accuracy)
+    pred_np = np.asarray(predictions)
+    act_np = np.asarray(trues)
+    np.save('predictions.npy', pred_np)
+    np.save('actuals.npy', act_np)
+
     return f1_macro, f1_micro, accuracy
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     prefix = 'bilinear_32_resizer_v9_final_resizer_v43r_residuals_'
     model_list = list()
-    for epoch in range(40,50,1):
+    for epoch in range(38,90):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
@@ -116,11 +121,11 @@ def test_resizer():
 def sample_resizer_output():
     root = './TinyVIRAT/'
     classes_file = "classes.txt"
-    resizer_model = 'eval_models/bilinear_32_resizer_v2_v8_final000010.pt'
+    resizer_model = 'eval_models/bilinear_32_resizer_v9_final_resizer_v43r_residuals_000038.pt'
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, sample=True)
     new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None, sample=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
-    resizer = ResizerMainNetworkV4(3, 32, (112, 112), skip=False)
+    resizer =ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
     resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     resizer.load_state_dict(torch.load(resizer_model, map_location=device))
@@ -149,4 +154,4 @@ def sample_resizer_output():
 
 
 if __name__ == '__main__':
-    main()
+    sample_resizer_output()
