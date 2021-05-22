@@ -125,7 +125,8 @@ class Virat(data_util.Dataset):
         start_f = 0
         num_frames = self.num_frames
         if self.load_all:
-            num_frames = min(details['frames'], self.num_frames)
+            #num_frames = min(details['frames'], self.num_frames)
+            num_frames = details['frames']
         if self.shuffule:
             try:
                 start_f = random.randint(0,details['frames']-self.num_frames-1)
