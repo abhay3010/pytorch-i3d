@@ -53,13 +53,21 @@ def make_dataset(root, data_type,num_frames, labels_file):
         labels_map = {v:k for k,v in enumerate([k[:-1] for k in f.readlines()])}
         print("label map", labels_map)
     print(len(dataset), len(labels_map))
-    processed_dataset = [
-        {'path':str(_root.joinpath("videos", data_type, v['path'])),
-        'frames':v['dim'][0], 
-        'label': v['label'],
-        'dims': v['dim']
-        } for v in dataset if v['dim'][0] >=num_frames]
-    
+    if not self.load_all:
+        processed_dataset = [
+            {'path':str(_root.joinpath("videos", data_type, v['path'])),
+            'frames':v['dim'][0], 
+            'label': v['label'],
+            'dims': v['dim']
+            } for v in dataset if v['dim'][0] >=num_frames]
+    else:
+        processed_dataset = [
+            {'path':str(_root.joinpath("videos", data_type, v['path'])),
+            'frames':v['dim'][0], 
+            'label': v['label'],
+            'dims': v['dim']
+            } for v in dataset]
+
     
     return processed_dataset, labels_map
     
