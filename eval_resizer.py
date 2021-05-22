@@ -41,7 +41,7 @@ from virat_dataset import collate_tensors, load_rgb_frames
 def eval(resizer_model, model_path, root, classes_file):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None)
+    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None,load_all=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors) 
     resizer = ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
     resizer.load_state_dict(torch.load(resizer_model))
@@ -128,6 +128,9 @@ def sample_resizer_output():
     classes_file = "classes.txt"
     resizer_model = 'eval_models/bilinear_32_resizer_v9_final_resizer_v43r_residuals_000038.pt'
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, sample=True)
+    x = val_dataset[3]
+    print(x[0].shape)
+    return
     new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None, sample=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
     resizer =ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
@@ -159,4 +162,4 @@ def sample_resizer_output():
 
 
 if __name__ == '__main__':
-    main()
+    sample_resizer_output()

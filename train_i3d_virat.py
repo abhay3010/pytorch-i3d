@@ -29,6 +29,8 @@ import numpy as np
 from i3d import InceptionI3d
 
 from virat_dataset import Virat as Dataset
+from torchsummary import summary
+
 
 
 def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb',init_model='models/converted_i3d_rgb_charades.pt', root='/ssd/Charades_v1_rgb', classes_file="classes.txt",
@@ -145,16 +147,23 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
     
 
-
-if __name__ == '__main__':
+def main():
     # need to add argparse
     # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 64000.0
-    save_model='/virat-vr/models/pytorch-i3d/v7_bilinear_64_112'
+    save_model='/virat-vr/models/pytorch-i3d/v7_bilinear__112'
     start_from = None
     # root = "TinyVIRAT/"
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
     run(init_lr=0.0001, root=root, i3d_mode='64x112', num_frames=64, max_steps=max_steps,save_model=save_model, batch_size=4, start_from=start_from )
+
+def mode_summary():
+    model = i3d = InceptionI3d(26, in_channels=3)
+    summary(model, (3,32,112,112), batch_size=2)
+
+if __name__ == '__main__':
+    mode_summary()
+    
