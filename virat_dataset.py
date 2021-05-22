@@ -42,7 +42,7 @@ def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape, no
         frames.append(img)
     return np.asarray(frames, dtype=np.float32)
     
-def make_dataset(root, data_type,num_frames, labels_file):
+def make_dataset(root, data_type,num_frames, labels_file, load_all):
     _root  = Path(root)
     type_to_file = {"train":"tiny_train.json", "test":"tiny_test.json"}
     dataset = None
@@ -53,7 +53,7 @@ def make_dataset(root, data_type,num_frames, labels_file):
         labels_map = {v:k for k,v in enumerate([k[:-1] for k in f.readlines()])}
         print("label map", labels_map)
     print(len(dataset), len(labels_map))
-    if not self.load_all:
+    if not load_all:
         processed_dataset = [
             {'path':str(_root.joinpath("videos", data_type, v['path'])),
             'frames':v['dim'][0], 
@@ -124,7 +124,7 @@ class Virat(data_util.Dataset):
         self.load_all = load_all
         if load_all and shuffle:
             raise ValueError("shuffle and load_all cannot both be true")
-        self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file)
+        self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file, self.load_all)
         if sample:
             self.data = self.data[:50]
     
