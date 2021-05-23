@@ -129,19 +129,19 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
 
 def main():
     # Local parameters
-    data_root = 'TinyVIRAT'
-    data_input_shape= (14, 14)
-    model_input_shape = (112, 112)
-    virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
-    batch_size = 2
-    save_model = 'bilinear_32_resizer_v1'
+    # data_root = 'TinyVIRAT'
+    # data_input_shape= (14, 14)
+    # model_input_shape = (112, 112)
+    # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
+    # batch_size = 2
+    # save_model = 'bilinear_32_resizer_v1'
 
     #GPU parameters
-    # data_root = '/mnt/data/TinyVIRAT/'
-    # model_input_shape = (112, 112)
-    # virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
-    # batch_size =4
-    # save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial_test'
+    data_root = '/mnt/data/TinyVIRAT/'
+    model_input_shape = (112, 112)
+    virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
+    batch_size =4
+    save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial_final'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
