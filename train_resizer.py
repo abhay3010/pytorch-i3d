@@ -132,7 +132,7 @@ def main():
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
-    batch_size =24
+    batch_size =8
     save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v9_final_resizer_v43r_residuals_plateau'
 
     num_epochs=50
