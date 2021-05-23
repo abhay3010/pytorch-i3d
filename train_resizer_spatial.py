@@ -46,13 +46,14 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     resizer = nn.Sequential(
         ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2),
         SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=int(v_mode.split('x')[1]))
+        
     )
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
 
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms,sample=True)
+    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms,sample=False)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -94,6 +95,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
             for data in dataloaders[phase]:
                 num_iter += 1
                 inputs, labels = data
+                print(inputs.shape)
 
                 # wrap them in Variable
                 # print(inputs.shape)
@@ -127,19 +129,19 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
 
 def main():
     # Local parameters
-    # data_root = 'TinyVIRAT'
-    # data_input_shape= (14, 14)
-    # model_input_shape = (112, 112)
-    # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
-    # batch_size = 2
-    # save_model = 'bilinear_32_resizer_v1'
+    data_root = 'TinyVIRAT'
+    data_input_shape= (14, 14)
+    model_input_shape = (112, 112)
+    virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
+    batch_size = 2
+    save_model = 'bilinear_32_resizer_v1'
 
     #GPU parameters
-    data_root = '/mnt/data/TinyVIRAT/'
-    model_input_shape = (112, 112)
-    virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
-    batch_size =4
-    save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial_test'
+    # data_root = '/mnt/data/TinyVIRAT/'
+    # model_input_shape = (112, 112)
+    # virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
+    # batch_size =4
+    # save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial_test'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)

@@ -44,5 +44,5 @@ class SpatialTransformer(nn.Module):
 
 if __name__ == '__main__':
     c = SpatialTransformer(3, in_res=112, in_time=32)
-    summary(c, (3,32, 112, 112), batch_size=1)
+    summary(c, (3,32, 70, 70), batch_size=1)
 
