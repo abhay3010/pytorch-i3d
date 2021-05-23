@@ -95,7 +95,6 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
             for data in dataloaders[phase]:
                 num_iter += 1
                 inputs, labels = data
-                print(inputs.shape)
 
                 # wrap them in Variable
                 # print(inputs.shape)
