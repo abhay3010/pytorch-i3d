@@ -43,11 +43,11 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    # resizer = nn.Sequential(
-    #     ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2),
-    #     SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=int(v_mode.split('x')[1]))
-    # )
-    resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
+    resizer = nn.Sequential(
+        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2),
+        SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=int(v_mode.split('x')[1]))
+    )
+    # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
 
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
