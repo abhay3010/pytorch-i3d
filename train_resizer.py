@@ -23,7 +23,7 @@ import torchvision
 from torchvision import datasets, transforms
 import videotransforms
 from model_utils import *
-from virat_dataset import collate_tensors 
+from virat_dataset import collate_tensors_min 
 
 
 import numpy as np
@@ -50,8 +50,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors_min)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors_min)
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     #Move both models to devices
     i3d.to(device)
@@ -133,7 +133,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size =8
-    save_model = '/virat-vr/models/pytorch-i3d/bilinear_32_resizer_v9_final_resizer_v43r_residuals_plateau'
+    save_model = '/virat-vr/models/pytorch-i3d/resizer_collate_min_32_112_3r'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)

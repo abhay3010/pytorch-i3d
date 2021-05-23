@@ -193,6 +193,15 @@ def collate_tensors(tensor_list):
     d2 = max([t.shape[3] for t, _ in tensor_list])
     tensor_list = [(resize_video(t, (d0, d1, d2)) , l) if (t.shape[2], t.shape[3]) != (d1,d2) else (t,l) for t,l in tensor_list]
     return default_collate(tensor_list)
+
+def collate_tensors_min(tensor_list):
+    #tensors have shape CxTxHxW
+    d0 = min([t.shape[1] for t,_ in tensor_list])
+    d1 = min([t.shape[2] for t,_ in tensor_list ])
+    d2 = min([t.shape[3] for t, _ in tensor_list])
+    tensor_list = [(resize_video(t, (d0, d1, d2)) , l) if (t.shape[2], t.shape[3]) != (d1,d2) else (t,l) for t,l in tensor_list]
+    return default_collate(tensor_list)
+
 def collate_with_time(tensor_list):
     d0 = max([t.shape[1] for t,_ in tensor_list])
     d1 = max([t.shape[2] for t,_ in tensor_list ])
