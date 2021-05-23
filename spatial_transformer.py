@@ -30,7 +30,7 @@ class SpatialTransformer(nn.Module):
             nn.Linear(32, 3*4)
         )
         self.fc_loc[2].weight.data.zero_()
-        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, 0], dtype=torch.float))
+        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0], dtype=torch.float))
     def forward(self, x):
         xs =  self.localization(x)
         xs = xs.view([-1,int((self.in_time/4)*8*((self.in_res/4)**2)) ])

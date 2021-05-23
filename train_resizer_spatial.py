@@ -34,7 +34,7 @@ from resizer import ResizerMainNetworkV4_3D
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.0002 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -56,8 +56,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     #Move both models to devices
     i3d.to(device)
@@ -127,7 +127,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
 
 def main():
     # Local parameters
-    data_root = 'TinyVIRAT'
+    # data_root = 'TinyVIRAT'
     # data_input_shape= (14, 14)
     # model_input_shape = (112, 112)
     # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
@@ -138,8 +138,8 @@ def main():
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
-    batch_size =20
-    save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial'
+    batch_size =24
+    save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial_test'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
