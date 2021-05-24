@@ -112,7 +112,9 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
                 p = np.array([1 if z >=0.5 else 0 for z in y_p])
                 predictions.append(p)
                 trues.append(y_t.numpy()) 
-                p_logits.append(y_p.cpu().detach().numpy()) 
+                p_logits.append(y_p.cpu().detach().numpy())
+        pred_np = np.asarray(predictions)
+        act_np = np.asarray(trues) 
         np.save('val_predictions.npy', pred_np)
         np.save('val_actuals.npy', act_np)
 
