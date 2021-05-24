@@ -65,7 +65,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         if "logits" not in name:
             param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
-    # scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
+    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
 
     print("resizer network", resizer)
     print("i3d", i3d)
@@ -111,7 +111,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     tot_loss  = 0.
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
-                # scheduler.step((tot_loss*num_steps_per_update)/num_iter)
+                scheduler.step((tot_loss*num_steps_per_update)/num_iter)
         if isinstance(resizer, nn.DataParallel):
             torch.save(resizer.module.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
             torch.save(i3d.module.state_dict(), save_model + 'i3d' + str(epoch).zfill(6)+'.pt')
