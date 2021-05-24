@@ -479,8 +479,62 @@ def make_residuals(r, in_channels):
         residuals.append(b)
     return nn.Sequential(*residuals)
 
+class ResizerBranch(nn.Module):
+    def __init__(self, in_channels, n_frames, scale_shape, num_resblocks):
+        self.in_channels = in_channels
+        self.r = num_resblocks
+        self.scale_shape = scale_shape
+        self.n_frames = n_frames
+        super(ResizerBranch,self).__init__()
+        self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[7, 7, 7],  norm=None)
+        self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
+        self.resizer_first = ResizerBlock((self.n_frames,) + self.scale_shape, False)
+        self.residual_blocks = make_residuals(num_resblocks, 16)
+        self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
+        self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
+    
+    def forward(self, x):
+        out = self.c1(x)
+        out = self.c2(out)
+        out = self.resizer_first(out)
+        residual_skip = out
+        out = self.residual_blocks(out)
+        out = self.c3(out)
+        out+=residual_skip
+        out = self.c4(out)
+        return out
+
+
+class BranchedResizerV1(nn.Module):
+    def __init__(self, in_channels,n_frames, scale_shape,num_resblocks=1, skip=False,nblocks=2):
+        self.in_channels = in_channels
+        self.r = num_resblocks
+        self.scale_shape = scale_shape
+        self.nframes = n_frames
+        self.skip = skip
+        super(BranchedResizerV1, self).__init__()
+        self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
+        if not self.skip:
+            self.connections = nn.ModuleList([ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks) for i in range(nblocks)])
+        
+
+
+        
+    def forward(self, x):
+        # print("input shape", x.shape)
+        residual = self.skip_resizer(x)
+        if self.skip:
+            return residual
+        else:
+
+        # print("resizer_shape", out.shape)
+            out = residual
+            for net in self.connections:
+                out+=net(x)
+            return out
+
 def main():
-    resizer_network = ResizerMainNetworkV4_3D(3,32,(112,112), num_resblocks=1 )
+    resizer_network = BranchedResizerV1(3,32,(112,112), num_resblocks=1 )
     summary(resizer_network, (3, 32, 10, 10), batch_size=2)
     # c = nn.Conv3d(3, 16, kernel_size=(1,7,7), stride=(1,1,1), padding=(0, 3, 3))
     # c = ConvUnit(3, 16, kernel_shape = (1,7,7), stride=(1,1,1))

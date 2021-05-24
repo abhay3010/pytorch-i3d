@@ -23,13 +23,13 @@ import torchvision
 from torchvision import datasets, transforms
 import videotransforms
 from model_utils import *
-from virat_dataset import collate_tensors_min 
+from virat_dataset import collate_tensors_min, collate_tensors 
 
 
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV4_3D
+from resizer import *
 
 from virat_dataset import Virat as Dataset
 
@@ -42,7 +42,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
+    resizer = BranchedResizerV1(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
@@ -50,8 +50,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors_min)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors_min)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     #Move both models to devices
     i3d.to(device)
@@ -65,7 +65,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         if "logits" not in name:
             param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
+    # scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
 
     print("resizer network", resizer)
     print("i3d", i3d)
@@ -111,7 +111,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     tot_loss  = 0.
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
-                scheduler.step((tot_loss*num_steps_per_update)/num_iter)
+                # scheduler.step((tot_loss*num_steps_per_update)/num_iter)
         if isinstance(resizer, nn.DataParallel):
             torch.save(resizer.module.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
             torch.save(i3d.module.state_dict(), save_model + 'i3d' + str(epoch).zfill(6)+'.pt')
@@ -133,7 +133,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size =16
-    save_model = '/virat-vr/models/pytorch-i3d/resizer_collate_min_32_112_3r'
+    save_model = '/virat-vr/models/pytorch-i3d/branched_resizer_32_112'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
