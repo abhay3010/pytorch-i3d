@@ -44,8 +44,8 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
     val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=False, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=2, pin_memory=True, collate_fn=collate_tensors) 
     resizer = nn.Sequential(
-        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2),
-        SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=int(v_mode.split('x')[1]))
+        ResizerMainNetworkV4_3D(3, 32, (112,112),num_resblocks=2),
+        SpatialTransformer(3, in_time=32, in_res=112)
         
     )
     resizer.load_state_dict(torch.load(resizer_model))
