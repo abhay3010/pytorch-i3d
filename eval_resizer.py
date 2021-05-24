@@ -38,7 +38,7 @@ from virat_dataset import Virat as Dataset
 from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 
-def eval(resizer_model, model_path, root, classes_file):
+def eval(resizer_model, model_path, root, classes_file, debug=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=False, transforms=None)
@@ -82,18 +82,40 @@ def eval(resizer_model, model_path, root, classes_file):
 
 
     #print(trues, predictions)
+
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
     accuracy = accuracy_score(trues, predictions)    
 
     print(f1_macro, f1_micro, accuracy)
-    pred_np = np.asarray(predictions)
-    act_np = np.asarray(trues)
-    cf = multilabel_confusion_matrix(trues, predictions)
-    np.save('predictions.npy', pred_np)
-    np.save('actuals.npy', act_np)
-    np.save('logits.npy', np.asarray(p_logits))
-    np.save('confusion.npy', cf)
+    if debug:
+        pred_np = np.asarray(predictions)
+        act_np = np.asarray(trues)
+        cf = multilabel_confusion_matrix(trues, predictions)
+        np.save('predictions.npy', pred_np)
+        np.save('actuals.npy', act_np)
+        np.save('logits.npy', np.asarray(p_logits))
+        np.save('confusion.npy', cf)
+        val_dataset = Dataset(root, "train",classes_file,num_frames=32, resize=False, transforms=None)
+        _,val = val_dataset.get_train_validation_split()
+        subset = torch.utils.data.Subset(val_dataset, val)
+        val_loader = torch.utils.data.DataLoader(subset, batch_size=1, shuffle=False, num_workers=2, pin_memory=True, collate_fn=collate_tensors)
+        predictions = list()
+        trues = list()
+        p_logits = list()
+        for batch, labels in val_loader:
+            count+=1
+            inputs = Variable(batch.to(device))
+            out = resizer(inputs)
+            v = torch.sigmoid(i3d(out))
+            for y_t, y_p in zip(labels, v):
+                p = np.array([1 if z >=0.5 else 0 for z in y_p])
+                predictions.append(p)
+                trues.append(y_t.numpy()) 
+                p_logits.append(y_p.cpu().detach().numpy()) 
+        np.save('val_predictions.npy', pred_np)
+        np.save('val_actuals.npy', act_np)
+
 
     return f1_macro, f1_micro, accuracy
 
@@ -104,7 +126,7 @@ def main():
     for epoch in range(38,39):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt")
+       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=True)
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 
 
