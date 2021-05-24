@@ -13,12 +13,12 @@ spec:
           args: [ "/virat-vr/code/pytorch-i3d/train_resizer.py", "/virat-vr/code/pytorch-i3d/" ]
           resources:
             limits:
-              nvidia.com/gpu: 2
+              nvidia.com/gpu: 4
               memory: "9Gi"
               cpu: "4"
               ephemeral-storage: 10Gi
             requests:
-              nvidia.com/gpu: 2
+              nvidia.com/gpu: 4
               memory: "7Gi"
               cpu: "3" 
               ephemeral-storage: 10Gi
@@ -53,7 +53,7 @@ spec:
               - key: gpu-type
                 operator: In
                 values:
-                - "3090"
+                - "1080Ti"
       volumes:
         - name: virat-vr
           persistentVolumeClaim:
