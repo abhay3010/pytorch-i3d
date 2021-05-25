@@ -43,7 +43,7 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=False, transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=2, pin_memory=True, collate_fn=collate_tensors) 
-    resizer = ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
+    resizer = BranchedResizerV2(3, 32, (112, 112), skip=False, num_resblocks=1)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
