@@ -41,11 +41,11 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
 
-    dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True)
-    test_valid_dataset = Dataset(root, "test",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True)
-    test, val = test_valid_dataset.get_train_validation_split(test_perc=0.1)
-    val_dataset = torch.utils.data.Subset(test_valid_dataset, val)
-    dataloader = torch.utils.data.DataLoader(dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
+    dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True, downscale=True, downscale_shape=(28,28), sample=False)
+    train, val = dataset.get_train_validation_split(test_perc=0.1)
+    val_dataset = torch.utils.data.Subset(dataset, val)
+    train_dataset = torch.utils.data.Subset(dataset, train)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)
 
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
@@ -55,7 +55,6 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     
     # setup the model
     i3d = InceptionI3d(157,mode=i3d_mode, in_channels=3)
-    print(len(i3d.state_dict()))
     if start_from:
         state_dict = torch.load(start_from)
         i3d.replace_logits(26)
@@ -85,8 +84,8 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     #lr_sched = optim.lr_scheduler.MultiStepLR(optimizer, [800, 1600, 3200, 6400])
 
 
-    num_steps_per_update = 10 # accum gradient
-    # num_steps_per_update = 1
+    num_steps_per_update = 2 # accum gradient
+    #num_steps_per_update = 1
     steps = 0
     # train it
     while steps < max_steps:#for epoch in range(num_epochs):
@@ -148,22 +147,24 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     
 
 def main():
+    #Gpu params
     # need to add argparse
-    # run(mode=args.mode, root=args.root, save_model=args.save_model)
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 64000.0
-    save_model='/virat-vr/models/pytorch-i3d/v7_bilinear__112'
-    start_from = None
+    save_model='/virat-vr/models/pytorch-i3d/i3d_inp28_'
+
+    #Local params
+    # start_from = None
     # root = "TinyVIRAT/"
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, i3d_mode='64x112', num_frames=64, max_steps=max_steps,save_model=save_model, batch_size=4, start_from=start_from )
+    run(init_lr=0.0001, root=root, i3d_mode='32x112', num_frames=32, max_steps=max_steps,save_model=save_model, batch_size=28, start_from=start_from)
 
 def mode_summary():
     model = i3d = InceptionI3d(26, in_channels=3)
     summary(model, (3,32,112,112), batch_size=2)
 
 if __name__ == '__main__':
-    mode_summary()
+    main()
     

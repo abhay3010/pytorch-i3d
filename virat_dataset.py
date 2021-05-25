@@ -22,7 +22,7 @@ def video_to_tensor(pic):
          Tensor: Converted video.
     """
     return torch.from_numpy(pic.transpose([3,0,1,2]))
-def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape, normalize):
+def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape, normalize, downscale, downscale_shape):
     fnames = []
     for i in range(start_frame, start_frame + num_frames):
             fnames.append(os.path.join(frame_root, 'frame_{0}.jpg'.format(i)))
@@ -32,6 +32,10 @@ def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape, no
         img = cv2.imread(fn, cv2.IMREAD_UNCHANGED)
         if  img is None:
             print("Failed to read file {0}, will exit", fn)
+        if downscale and (img.shape[0], img.shape[1]) != downscale_shape:
+            print("downscaling")
+            img = cv2.resize(img, downscale_shape, interpolation=cv2.INTER_LINEAR)
+            print("downscaling", img.shape)
         if resize and (img.shape[0], img.shape[1]) != resize_shape:
             #this will need to change for the final results
             img = cv2.resize(img, resize_shape, interpolation=cv2.INTER_LINEAR)
@@ -71,14 +75,14 @@ def make_dataset(root, data_type,num_frames, labels_file, load_all):
     
     return processed_dataset, labels_map
     
-def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(112, 112), normalize=True):
+def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=False, resize_shape=(112, 112), normalize=True, downscale=False, downscale_shape=(14,14)):
     vpath = Path(root_path)
     parent_path = vpath.parents[0]
     #look for the frames filepath
     frames_folder = parent_path.joinpath(vpath.stem + '_frames')
     if frames_folder.exists() and frames_folder.is_dir() and len(get_frames(str(frames_folder))) == total_frames :
         #print("loading from existing frames")
-        array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape, normalize)
+        array_from_frames = load_from_frames(str(frames_folder),start_frame, num_frames, resize, resize_shape, normalize, downscale, downscale_shape)
         return array_from_frames
     else:
         if not vpath.exists():
@@ -99,7 +103,7 @@ def load_rgb_frames(root_path,start_frame, num_frames,total_frames,  resize=Fals
                 frames.append(frame)
         finally:
             cap.release()
-        saved_frames = load_from_frames(str(frames_folder),start_frame,num_frames, resize, resize_shape, normalize)
+        saved_frames = load_from_frames(str(frames_folder),start_frame,num_frames, resize, resize_shape, normalize, downscale, downscale_shape)
         return saved_frames
 
 def get_frames(p):
@@ -111,7 +115,7 @@ def get_frames(p):
 
 
 class Virat(data_util.Dataset):
-    def __init__(self, root, dtype,labels_file,num_frames=32,resize=True, resize_shape=(112,112), shuffle=False, normalize=True, transforms=None,sample=False,load_all=False):
+    def __init__(self, root, dtype,labels_file,num_frames=32,resize=True, resize_shape=(112,112), downscale=False, downscale_shape=(14,14), shuffle=False, normalize=True, transforms=None,sample=False,load_all=False):
         self.root = root
         self.dtype = dtype
         self.labels_file = labels_file
@@ -122,6 +126,8 @@ class Virat(data_util.Dataset):
         self.shuffule = shuffle
         self.normalize = normalize
         self.load_all = load_all
+        self.downscale = downscale
+        self.downscale_shape = downscale_shape
         if load_all and shuffle:
             raise ValueError("shuffle and load_all cannot both be true")
         self.data, self.labels_map = make_dataset(root, dtype,num_frames, labels_file, self.load_all)
@@ -141,7 +147,7 @@ class Virat(data_util.Dataset):
             except:
                 print("error while getting a start frame ", details)
     
-        imgs = load_rgb_frames(details['path'],start_f, num_frames,details['frames'],self.resize, self.resize_shape, self.normalize)
+        imgs = load_rgb_frames(details['path'],start_f, num_frames,details['frames'],self.resize, self.resize_shape, self.normalize, self.downscale, self.downscale_shape)
         if self.transforms:
             imgs = self.transforms(imgs)
         y = np.zeros(len(self.labels_map), dtype=np.float32)
