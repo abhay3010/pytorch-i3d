@@ -152,6 +152,7 @@ def main():
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 64000.0
     save_model='/virat-vr/models/pytorch-i3d/i3d_inp28_'
+    start_from=None
 
     #Local params
     # start_from = None
