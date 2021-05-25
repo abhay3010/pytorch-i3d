@@ -33,9 +33,9 @@ def load_from_frames(frame_root,start_frame,num_frames, resize, resize_shape, no
         if  img is None:
             print("Failed to read file {0}, will exit", fn)
         if downscale and (img.shape[0], img.shape[1]) != downscale_shape:
-            print("downscaling")
+            #print("downscaling")
             img = cv2.resize(img, downscale_shape, interpolation=cv2.INTER_LINEAR)
-            print("downscaling", img.shape)
+            #print("downscaling", img.shape)
         if resize and (img.shape[0], img.shape[1]) != resize_shape:
             #this will need to change for the final results
             img = cv2.resize(img, resize_shape, interpolation=cv2.INTER_LINEAR)
