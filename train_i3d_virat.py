@@ -160,7 +160,7 @@ def main():
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, i3d_mode='32x112', num_frames=32, max_steps=max_steps,save_model=save_model, batch_size=32, start_from=start_from)
+    run(init_lr=0.0001, root=root, i3d_mode='32x112', num_frames=32, max_steps=max_steps,save_model=save_model, batch_size=42, start_from=start_from)
 
 def mode_summary():
     model = i3d = InceptionI3d(26, in_channels=3)
