@@ -42,7 +42,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = BranchedResizerV2(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
+    # resizer = BranchedResizerV2(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
+    resizer = ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
@@ -133,7 +134,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
     batch_size =
-    save_model = '/virat-vr/models/pytorch-i3d/branched_resizer_v2_32_14_nocolate'
+    save_model = '/virat-vr/models/pytorch-i3d/resizerv42d_v2_32_14'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
