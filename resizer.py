@@ -365,19 +365,19 @@ class ResizerMainNetworkV4_2D(nn.Module):
 
         # print("resizer_shape", out.shape)
             out = self.c1(x)
-            print("conv shape", out.shape)
+            # print("conv shape", out.shape)
 
             out = self.c2(out)
-            print("conv2 shape", out.shape)
+            # print("conv2 shape", out.shape)
             out =  self.resizer_first(out)
-            print("in resizer shape", out.shape)
+            # print("in resizer shape", out.shape)
             residual_skip = out
             out = self.residual_blocks(out)
             out = self.c3(out)
             out+=residual_skip
-            print(out.shape)        
+            # print(out.shape)        
             out = self.c4(out)
-            print(out.shape)
+            #print(out.shape)
             out+=residual
             return out
 
