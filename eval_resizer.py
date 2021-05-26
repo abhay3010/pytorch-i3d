@@ -41,9 +41,9 @@ from virat_dataset import collate_tensors, load_rgb_frames
 def eval(resizer_model, model_path, root, classes_file, debug=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=False, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=2, shuffle=False, num_workers=2, pin_memory=True, collate_fn=collate_tensors) 
-    resizer = BranchedResizerV2(3, 32, (112, 112), skip=False, num_resblocks=1)
+    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=True,resize_shape=(28,28), transforms=None)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=40, shuffle=False, num_workers=5, pin_memory=True) 
+    resizer = ResizerMainNetworkV4_2D(3, 32, (112, 112), skip=False, num_resblocks=1)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
@@ -123,9 +123,9 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'branched_resizer_v2_32_112'
+    prefix = 'resizerv42d_v2_32_14_scratch'
     model_list = list()
-    for epoch in range(6,30):
+    for epoch in range(0,17):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=False)
@@ -157,7 +157,7 @@ def sample_resizer_output():
     return
     new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None, sample=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
-    resizer =ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
+    resizer =ResizerMainNetworkV4_2D(3, 32, (112, 112), skip=False, num_resblocks=1)
     resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     resizer.load_state_dict(torch.load(resizer_model, map_location=device))
