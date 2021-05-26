@@ -37,7 +37,7 @@ from virat_dataset import Virat as Dataset
 def eval(model_path, root, classes_file, mode,n_frames):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames,downscale=True, downscale_shape=(56,56))
+    val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames,downscale=False))
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=20, shuffle=False, num_workers=6)   
     i3d = InceptionI3d(26,mode=mode, in_channels=3)
     state_dict = torch.load(model_path)
