@@ -42,7 +42,7 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=True,resize_shape=(28,28), transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=40, shuffle=False, num_workers=5, pin_memory=True) 
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=32, shuffle=False, num_workers=5, pin_memory=True) 
     resizer = ResizerMainNetworkV4_2D(3, 32, (112, 112), skip=False, num_resblocks=1)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)

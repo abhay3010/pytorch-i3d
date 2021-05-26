@@ -13,12 +13,12 @@ spec:
           args: [ "/virat-vr/code/pytorch-i3d/eval_resizer.py", "/virat-vr/code/pytorch-i3d/" ]
           resources:
             limits:
-              nvidia.com/gpu: 2
+              nvidia.com/gpu: 4
               memory: "9Gi"
               cpu: "3"
               ephemeral-storage: 10Gi
             requests:
-              nvidia.com/gpu: 2
+              nvidia.com/gpu: 4
               memory: "6Gi"
               cpu: "2" 
               ephemeral-storage: 10Gi
