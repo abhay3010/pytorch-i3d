@@ -76,9 +76,12 @@ def eval(model_path, root, classes_file, mode,n_frames):
     return f1_macro, f1_micro, accuracy
 
 def main():
-    model_list = ['i3d_inp56_001200.pt', 'i3d_inp56_001300.pt', 'i3d_inp56_001400.pt', 'i3d_inp56_001500.pt', 'i3d_inp56_001600.pt'
-    , 'i3d_inp56_001700.pt', 'i3d_inp56_001800.pt', 'i3d_inp56_001900.pt', 'i3d_inp56_002000.pt', 'i3d_inp56_002100.pt',
-    'i3d_inp56_002200.pt', 'i3d_inp56_002300.pt', 'i3d_inp56_002400.pt', 'i3d_inp56_002500.pt'
+    model_list = ['i3d_inp112_001200.pt', 'i3d_inp112_001300.pt', 'i3d_inp112_001400.pt', 'i3d_inp112_001500.pt', 'i3d_inp112_001600.pt'
+    , 'i3d_inp112_001700.pt', 'i3d_inp112_001800.pt', 'i3d_inp112_001900.pt', 'i3d_inp112_002000.pt', 'i3d_inp112_002100.pt',
+    'i3d_inp112_002200.pt', 'i3d_inp112_002300.pt', 'i3d_inp112_002400.pt', 'i3d_inp112_002500.pt',
+    'i3d_inp112_002600.pt', 'i3d_inp112_002700.pt', 'i3d_inp112_002800.pt', 'i3d_inp112_002900.pt',
+    'i3d_inp112_003000.pt'
+
     ]
     
     for model in model_list:
