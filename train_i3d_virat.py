@@ -41,7 +41,7 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
 
-    dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True, downscale=True, downscale_shape=(56,56), sample=False)
+    dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True, downscale=False, sample=False)
     train, val = dataset.get_train_validation_split(test_perc=0.1)
     val_dataset = torch.utils.data.Subset(dataset, val)
     train_dataset = torch.utils.data.Subset(dataset, train)
@@ -151,7 +151,7 @@ def main():
     # need to add argparse
     root = "/mnt/data/TinyVIRAT/"
     max_steps = 64000.0
-    save_model='/virat-vr/models/pytorch-i3d/i3d_inp56_'
+    save_model='/virat-vr/models/pytorch-i3d/i3d_inp112_'
     start_from=None
 
     #Local params
