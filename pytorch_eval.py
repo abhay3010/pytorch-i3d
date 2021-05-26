@@ -38,7 +38,7 @@ def eval(model_path, root, classes_file, mode,n_frames):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames,downscale=True, downscale_shape=(28,28))
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=6)   
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=20, shuffle=False, num_workers=6)   
     i3d = InceptionI3d(26,mode=mode, in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()
@@ -50,6 +50,8 @@ def eval(model_path, root, classes_file, mode,n_frames):
             new_dict[k] = v
     i3d.load_state_dict(new_dict)
     i3d.to(device)
+    if torch.cuda.device_count()>1:
+        i3d = nn.DataParallel(i3d)
     i3d.train(False)
     predictions = list()
     trues = list()
