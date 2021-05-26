@@ -37,7 +37,7 @@ from virat_dataset import Virat as Dataset
 def eval(model_path, root, classes_file, mode,n_frames):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames,downscale=True, downscale_shape=(28,28))
+    val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames,downscale=True, downscale_shape=(56,56))
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=20, shuffle=False, num_workers=6)   
     i3d = InceptionI3d(26,mode=mode, in_channels=3)
     state_dict = torch.load(model_path)
@@ -76,9 +76,9 @@ def eval(model_path, root, classes_file, mode,n_frames):
     return f1_macro, f1_micro, accuracy
 
 def main():
-    model_list = ['i3d_inp28_001200.pt', 'i3d_inp28_001300.pt', 'i3d_inp28_001400.pt', 'i3d_inp28_001500.pt', 'i3d_inp28_001600.pt'
-    , 'i3d_inp28_001700.pt', 'i3d_inp28_001800.pt', 'i3d_inp28_001900.pt', 'i3d_inp28_002000.pt', 'i3d_inp28_002100.pt',
-    'i3d_inp28_002200.pt', 'i3d_inp28_002300.pt', 'i3d_inp28_002400.pt', 'i3d_inp28_002500.pt'
+    model_list = ['i3d_inp56_001200.pt', 'i3d_inp56_001300.pt', 'i3d_inp56_001400.pt', 'i3d_inp56_001500.pt', 'i3d_inp56_001600.pt'
+    , 'i3d_inp56_001700.pt', 'i3d_inp56_001800.pt', 'i3d_inp56_001900.pt', 'i3d_inp56_002000.pt', 'i3d_inp56_002100.pt',
+    'i3d_inp56_002200.pt', 'i3d_inp56_002300.pt', 'i3d_inp56_002400.pt', 'i3d_inp56_002500.pt'
     ]
     
     for model in model_list:
