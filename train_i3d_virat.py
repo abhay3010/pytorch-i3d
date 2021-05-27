@@ -126,6 +126,7 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
                  
 
                 # compute localization loss
+                print(per_video_logits.shape)
                 class_loss = F.binary_cross_entropy_with_logits(per_video_logits, labels)
                 loss = class_loss/num_steps_per_update
                 tot_loss += loss.item()
@@ -167,5 +168,5 @@ def mode_summary():
     summary(model, (3,32,112,112), batch_size=2)
 
 if __name__ == '__main__':
-    main()
+    mode_summary()
     

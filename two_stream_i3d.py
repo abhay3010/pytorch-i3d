@@ -1,0 +1,45 @@
+import torch
+import torch.nn as nn
+import torch.nn.functional as F
+from torchsummary import summary
+import numpy as np
+from resizer import ConvUnit
+from virat_dataset import Virat as Dataset
+from i3d import InceptionI3d
+
+class TwoStreamNetwork(nn.Module):
+    def __init__(self, model_to_train, model_to_help, num_classes):
+        self.num_classes = num_classes
+        super(TwoStreamNetwork, self).__init__()
+        self.model_to_train = model_to_train
+        self.model_to_help = model_to_help
+        self.final_layer = nn.Sequential(nn.Linear(num_classes*3, num_classes*2), 
+            nn.ReLU(), 
+            nn.Linear(num_classes*2, num_classes)
+        )
+    def forward(self, x):
+        #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
+        x1 = self.model_to_train(x)
+        x2 = self.model_to_help(x)
+        print(x1.shape)
+        print(x2.shape)
+        o = x1+ x2
+        o = o.view(-1, self.num_classes*3)
+        print(o.shape)
+        o = self.final_layer(o)
+        return o
+
+    def get_parameters_to_train(self):
+        return list(self.model_to_train.parameters()) + list(self.final_layer.parameters())
+
+
+def mode_summary():
+    i3d = InceptionI3d(26, in_channels=3)
+    model = TwoStreamNetwork(i3d, i3d, 26)
+    summary(model, (3,32,112,112), batch_size=2)
+
+
+if __name__ == '__main__':
+    mode_summary()
+        
+        
