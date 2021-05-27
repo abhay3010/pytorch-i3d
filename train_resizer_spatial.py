@@ -45,7 +45,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the resizer_model
     resizer = nn.Sequential(
         SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=28),
-        ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
+        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
         
     )
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
