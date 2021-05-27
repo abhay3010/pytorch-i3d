@@ -4,6 +4,7 @@ import torch.nn.functional as F
 from torchsummary import summary
 import numpy as np
 from resizer import ConvUnit
+from virat_dataset import Virat as Dataset
 
 """Spatial transformer module class to add to the resizer network"""
 
@@ -26,6 +27,8 @@ class SpatialTransformer(nn.Module):
             nn.ReLU(),
             nn.Linear(32, 3*2)
         )
+        self.fc_loc[2].weight.data.zero_()
+        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
     def forward(self, x):
         #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
         c = x.shape[1]
@@ -33,11 +36,12 @@ class SpatialTransformer(nn.Module):
         t = x.shape[2]
         h = x.shape[3]
         w = x.shape[4]
-
+        # print(b,c,t,h,w)
         x_view = x.view(-1,c,h,w)
         xs =  self.localization(x_view)
         xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
         theta = self.fc_loc(xs)
+        # qgit 
         theta = theta.view(-1,2,3)
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x_view = F.grid_sample(x_view, grid, align_corners=False)
@@ -70,7 +74,7 @@ class SpatialTransformer3D(nn.Module):
             nn.Linear(32, 3*2)
         )
         self.fc_loc[2].weight.data.zero_()
-        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
+        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0,0, 0,1, 0, 0, 0, 0, 1, 0], dtype=torch.float))
     def forward(self, x):
         xs =  self.localization(x)
         xs = xs.view([-1,int((self.in_time/4)*8*((self.in_res/4)**2)) ])
@@ -81,9 +85,22 @@ class SpatialTransformer3D(nn.Module):
         return x
 
 
+def test_spatial_transformer():
+    root = "./TinyVIRAT"
+    c = SpatialTransformer(3, in_res=28)
 
+    dataset = Dataset(root,"test","classes.txt", 32, resize_shape=(28,28), sample=True)
+    dataloader = torch.utils.data.DataLoader(dataset, batch_size=2,  shuffle=True, num_workers=0, pin_memory=True)
+    for d,l in dataloader:
+        print(d.shape)
+
+        y = c(d)
+        break    
+
+def summary_transformer():
+    c = SpatialTransformer(3, in_res=28)
+    summary(c, (3, 32, 28, 28), batch_size=2)
 
 if __name__ == '__main__':
-    c = SpatialTransformer(3, in_res=112)
-    summary(c, (3,32, 112, 112), batch_size=1)
+    summary_transformer()
 
