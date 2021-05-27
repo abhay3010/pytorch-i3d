@@ -95,6 +95,7 @@ def test_spatial_transformer():
         print(d.shape)
 
         y = c(d)
+        print(y == d)
         break    
 
 def summary_transformer():
@@ -102,5 +103,5 @@ def summary_transformer():
     summary(c, (3, 32, 28, 28), batch_size=2)
 
 if __name__ == '__main__':
-    summary_transformer()
+    test_spatial_transformer()
 

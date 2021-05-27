@@ -39,14 +39,14 @@ from virat_dataset import Virat as Dataset
 from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 
-def eval(resizer_model, model_path, root, classes_file, debug=False):
+def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=False, transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=2, pin_memory=True, collate_fn=collate_tensors) 
+    val_dataset = Dataset(root, "test",classes_file,num_frames=8, resize_shape=(112,112), transforms=None)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=4, pin_memory=True) 
     resizer = nn.Sequential(
-        ResizerMainNetworkV4_3D(3, 32, (112,112),num_resblocks=2),
-        SpatialTransformer(3, in_time=32, in_res=112)
+        SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=28),
+        ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
     )
     resizer.load_state_dict(torch.load(resizer_model))
@@ -105,7 +105,7 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = '32_112_2res_spatial_final'
+    prefix = 'np28_2dsp_2d_resizer'
     model_list = list()
     for epoch in range(7,12):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
