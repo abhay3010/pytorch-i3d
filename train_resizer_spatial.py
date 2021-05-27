@@ -139,7 +139,7 @@ def main():
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt'
-    batch_size =16
+    batch_size =40
     save_model = '/virat-vr/models/pytorch-i3d/inp28_2dsp_2d_resizer'
 
     num_epochs=50
