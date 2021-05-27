@@ -39,8 +39,8 @@ class SpatialTransformer(nn.Module):
         xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
         theta = self.fc_loc(xs)
         theta = theta.view(-1,2,3)
-        grid = F.affine_grid(theta, x_view.size(),align_corners=True)
-        x_view = F.grid_sample(x_view, grid, align_corners=True)
+        grid = F.affine_grid(theta, x_view.size(),align_corners=False)
+        x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
         
         return o

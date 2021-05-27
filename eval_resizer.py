@@ -150,12 +150,11 @@ def test_resizer():
 def sample_resizer_output():
     root = './TinyVIRAT/'
     classes_file = "classes.txt"
-    resizer_model = 'eval_models/bilinear_32_resizer_v9_final_resizer_v43r_residuals_000038.pt'
+    resizer_model = 'eval_models/resizerv42d_v2_32_14_scratch000015.pt'
     val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, sample=True)
     x = val_dataset[3]
     print(x[0].shape)
-    return
-    new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None, sample=True)
+    new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(28,28), transforms=None, sample=True)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
     resizer =ResizerMainNetworkV4_2D(3, 32, (112, 112), skip=False, num_resblocks=1)
     resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
@@ -174,8 +173,8 @@ def sample_resizer_output():
         permuted_view_n = (resized_normal.permute(1,0,2,3) +1)/2
         print(permuted_view.size(0))
         for i in range(permuted_view.size(0)):
-            save_image(permuted_view[i], "resized_frames/test_{0}_frame{1}_sp.png".format(index, i))
-            save_image(permuted_view_n[i], "resized_frames/test_{0}_frame{1}_normal.png".format(index, i))
+            save_image(permuted_view[i], "resized_frames/test_{0}_frame{1}_sp_28_2d.png".format(index, i))
+            #save_image(permuted_view_n[i], "resized_frames/test_{0}_frame{1}_normal.png".format(index, i))
         index+=1
     
 
@@ -186,4 +185,4 @@ def sample_resizer_output():
 
 
 if __name__ == '__main__':
-    main()
+    sample_resizer_output()
