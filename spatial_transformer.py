@@ -8,7 +8,21 @@ from resizer import ConvUnit
 """Spatial transformer module class to add to the resizer network"""
 
 class SpatialTransformer(nn.Module):
-    def __init__():
+    def __init__(self, in_channels, in_res = 112):
+        super(SpatialTransformer, self).__init__()
+        self.localization = nn.Sequential(
+        nn.Conv2d(self.in_channels, 16, kernel_size=[7,7], stride=[1,1],padding=3),
+        nn.MaxPool2d(3, stride=2, padding=1),
+        nn.ReLU(),
+        nn.Conv2d(16, 8, kernel_size = 5, padding=2),
+        nn.MaxPool2d(2, stride=2, padding=[0,0,0]),
+        nn.ReLU()
+        )
+        self.fc_loc = nn.Sequential(
+            nn.Linear(int(((in_res/4)**2)), 32), 
+            nn.ReLU(),
+            nn.Linear(32, 3*2)
+        )
 
 class SpatialTransformer3D(nn.Module):
     def __init__(self, in_channels, in_res=112, in_time=32):
