@@ -30,11 +30,11 @@ from spatial_transformer import SpatialTransformer
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import ResizerMainNetworkV4_3D
+from resizer import ResizerMainNetworkV4_3D,ResizerMainNetworkV4_2D
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.00005 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='', init_lr = 0.005 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -44,8 +44,8 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
     resizer = nn.Sequential(
-        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2),
-        SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=int(v_mode.split('x')[1]))
+        SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=28),
+        ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
         
     )
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
@@ -53,12 +53,12 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=False, transforms=train_transforms,sample=False)
+    dataset = Dataset(data_root, "train",classes_file,resize_shape=(28,28), transforms=train_transforms,sample=False)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
-    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
+    dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size,  shuffle=True, num_workers=0, pin_memory=True)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size,  shuffle=True, num_workers=0, pin_memory=True)
     dataloaders = {'train': dataloader, 'val': val_dataloader}
     #Move both models to devices
     i3d.to(device)
@@ -67,12 +67,12 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 8    
+    num_steps_per_update = 2    
     for name, param in i3d.named_parameters():
         if "logits" not in name:
             param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
-    scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
+    #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
 
     print("resizer network", resizer)
     print("i3d", i3d)
@@ -118,7 +118,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
                     tot_loss  = 0.
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
-                scheduler.step((tot_loss*num_steps_per_update)/num_iter)
+                #scheduler.step((tot_loss*num_steps_per_update)/num_iter)
         if isinstance(resizer, nn.DataParallel):
             torch.save(resizer.module.state_dict(), save_model+str(epoch).zfill(6)+'.pt')
             torch.save(i3d.module.state_dict(), save_model + 'i3d' + str(epoch).zfill(6)+'.pt')
@@ -138,9 +138,9 @@ def main():
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
-    virat_model_path = '/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt'
+    virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt'
     batch_size =16
-    save_model = '/virat-vr/models/pytorch-i3d/32_112_2res_spatial_final'
+    save_model = '/virat-vr/models/pytorch-i3d/inp28_2dsp_2d_resizer'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)

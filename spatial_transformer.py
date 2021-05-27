@@ -8,21 +8,44 @@ from resizer import ConvUnit
 """Spatial transformer module class to add to the resizer network"""
 
 class SpatialTransformer(nn.Module):
-    def __init__(self, in_channels, in_res = 112):
+    def __init__(self, in_channels, in_res = 112, in_time=32):
         super(SpatialTransformer, self).__init__()
+        self.in_channels = in_channels
+        self.in_res = in_res
+        self.in_time = in_time
         self.localization = nn.Sequential(
         nn.Conv2d(self.in_channels, 16, kernel_size=[7,7], stride=[1,1],padding=3),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.ReLU(),
         nn.Conv2d(16, 8, kernel_size = 5, padding=2),
-        nn.MaxPool2d(2, stride=2, padding=[0,0,0]),
+        nn.MaxPool2d(2, stride=2, padding=[0,0]),
         nn.ReLU()
         )
         self.fc_loc = nn.Sequential(
-            nn.Linear(int(((in_res/4)**2)), 32), 
+            nn.Linear(int(8*((in_res/4)**2)), 32), 
             nn.ReLU(),
             nn.Linear(32, 3*2)
         )
+    def forward(self, x):
+        #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
+        c = x.shape[1]
+        b = x.shape[0]
+        t = x.shape[2]
+        h = x.shape[3]
+        w = x.shape[4]
+
+        x_view = x.view(-1,c,h,w)
+        xs =  self.localization(x_view)
+        xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
+        theta = self.fc_loc(xs)
+        theta = theta.view(-1,2,3)
+        grid = F.affine_grid(theta, x_view.size(),align_corners=True)
+        x_view = F.grid_sample(x_view, grid, align_corners=True)
+        o = x_view.view(b,c,t,h,w)
+        
+        return o
+    
+
 
 class SpatialTransformer3D(nn.Module):
     def __init__(self, in_channels, in_res=112, in_time=32):
@@ -44,10 +67,10 @@ class SpatialTransformer3D(nn.Module):
         self.fc_loc = nn.Sequential(
             nn.Linear(int((in_time/4)*8*((in_res/4)**2)), 32), 
             nn.ReLU(),
-            nn.Linear(32, 3*4)
+            nn.Linear(32, 3*2)
         )
         self.fc_loc[2].weight.data.zero_()
-        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0], dtype=torch.float))
+        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
     def forward(self, x):
         xs =  self.localization(x)
         xs = xs.view([-1,int((self.in_time/4)*8*((self.in_res/4)**2)) ])
@@ -59,7 +82,8 @@ class SpatialTransformer3D(nn.Module):
 
 
 
+
 if __name__ == '__main__':
-    c = SpatialTransformer3D(3, in_res=112, in_time=32)
-    summary(c, (3,32, 70, 70), batch_size=1)
+    c = SpatialTransformer(3, in_res=112)
+    summary(c, (3,32, 112, 112), batch_size=1)
 
