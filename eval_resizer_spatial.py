@@ -46,7 +46,7 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=4, pin_memory=True) 
     resizer = nn.Sequential(
         SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=28),
-        ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
+        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
     )
     resizer.load_state_dict(torch.load(resizer_model))
@@ -105,7 +105,7 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'inp28_2dsp_2d_resizer'
+    prefix = 'inp28_2dsp_3d_resizer'
     model_list = list()
     for epoch in range(15,51):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
