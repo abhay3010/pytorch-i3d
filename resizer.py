@@ -486,7 +486,7 @@ class ResizerBranch(nn.Module):
         self.scale_shape = scale_shape
         self.n_frames = n_frames
         super(ResizerBranch,self).__init__()
-        self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[7, 7, 7],  norm=None)
+        self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=init_shape,  norm=None)
         self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
         self.resizer_first = ResizerBlock((self.n_frames,) + self.scale_shape, False)
         self.residual_blocks = make_residuals(num_resblocks, 16)
