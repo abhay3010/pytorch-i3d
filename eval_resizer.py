@@ -185,4 +185,4 @@ def sample_resizer_output():
 
 
 if __name__ == '__main__':
-    sample_resizer_output()
+    main()
