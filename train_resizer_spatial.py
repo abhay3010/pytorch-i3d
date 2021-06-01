@@ -67,7 +67,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 2    
+    num_steps_per_update = 8    
     for name, param in i3d.named_parameters():
         if "logits" not in name:
             param.requires_grad= False
