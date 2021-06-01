@@ -43,11 +43,11 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
     # resizer = BranchedResizerV2(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
-    resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
+    resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize=True,resize_shape=(112,112), transforms=train_transforms,sample=False)
+    dataset = Dataset(data_root, "train",classes_file,resize=True,resize_shape=(28,28), transforms=train_transforms,sample=False)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -132,9 +132,9 @@ def main():
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
-    virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp112_002300.pt'
-    batch_size = 32
-    save_model = '/virat-vr/models/pytorch-i3d/resizerv43d_112_32_'
+    virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt'
+    batch_size = 40
+    save_model = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_2res_'
 
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
