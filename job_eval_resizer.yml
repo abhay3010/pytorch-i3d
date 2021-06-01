@@ -20,7 +20,7 @@ spec:
             requests:
               nvidia.com/gpu: 4
               memory: "6Gi"
-              cpu: "2" 
+              cpu: "1500m" 
               ephemeral-storage: 10Gi
           volumeMounts:
             - mountPath: /virat-vr
