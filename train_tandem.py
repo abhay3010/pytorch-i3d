@@ -121,7 +121,7 @@ def main():
     save_path = '/virat-vr/models/pytorch-i3d/two_stream_28_deactivated'
     resizer_path = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_000015.pt'
     i3d_path = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_i3d000015.pt'
-    batch_size = 36
+    batch_size = 64
 
 
     run(root,classes_file, save_path, resizer_path,i3d_path, batch_size=batch_size)
