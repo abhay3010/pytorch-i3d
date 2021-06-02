@@ -33,7 +33,7 @@ from spatial_transformer import SpatialTransformer
 import numpy as np
 
 from i3d import InceptionI3d
-from resizer import *
+from resizer import ResizerMainNetworkV4_3D, ResizerMainNetworkV4_2D
 
 from virat_dataset import Virat as Dataset
 from torchsummary import summary
@@ -44,12 +44,12 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize_shape=(112,112), transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=4, pin_memory=True) 
-    # resizer = nn.Sequential(
-    #     SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=56),
-    #     ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
+    resizer = nn.Sequential(
+        SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=56),
+        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
-    # )
-    resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
+    )
+    # resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
@@ -106,61 +106,14 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'imp112_wtithout_resizer_'
+    prefix = 'spatial_2d_2dr_56_'
     model_list = list()
-    for epoch in range(8, 21):
+    for epoch in range(0, 13):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=True)
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 
-
-def test_resizer():
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    resizer = ResizerMainNetworkV2(3, 32, (112, 112), skip=True)
-    #load unnormalized image and then resized image and resizer network should give the same output
-    frame_path = 'TinyVIRAT/videos/train/VIRAT_S_000203_07_001341_001458/0.mp4'
-    total_frames = 77
-    shape = (70,70)
-    unresized_frames = load_rgb_frames(frame_path, 0, 32, total_frames, resize=False, normalize=False).transpose([3,0,1,2])
-    print(unresized_frames.shape)
-    resized_frames = load_rgb_frames(frame_path, 0, 32, total_frames, resize=True, resize_shape=(112, 112), normalize=False).transpose([3, 0, 1, 2])
-    print(resized_frames.shape)
-    from_network = resizer(torch.from_numpy(unresized_frames).unsqueeze(0)).squeeze(0).numpy()
-    print(from_network.shape)
-    print(np.min(np.abs(from_network - resized_frames)))
-
-def sample_resizer_output():
-    root = './TinyVIRAT/'
-    classes_file = "classes.txt"
-    resizer_model = 'eval_models/bilinear_32_resizer_v9_final_resizer_v43r_residuals_000038.pt'
-    val_dataset = Dataset(root, "test",classes_file, resize=False, transforms=None, sample=True)
-    x = val_dataset[3]
-    print(x[0].shape)
-    return
-    new_val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None, sample=True)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=1, shuffle=False, num_workers=0, pin_memory=True, collate_fn=collate_tensors)
-    resizer =ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=2)
-    resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
-    device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    resizer.load_state_dict(torch.load(resizer_model, map_location=device))
-    resizer.to(device)
-    resizer_skip.to(device)
-    index = 0
-    for batch, label in val_dataloader:
-
-        resized_image_sp = resizer(batch).squeeze(0)
-        print("resizer shape", resized_image_sp.shape)
-        resized_normal = new_val_dataset[index][0]
-        print("resized normal shape", resized_normal.shape)
-        permuted_view = (resized_image_sp.permute(1,0,2,3) + 1)/2
-        permuted_view_n = (resized_normal.permute(1,0,2,3) +1)/2
-        print(permuted_view.size(0))
-        for i in range(permuted_view.size(0)):
-            save_image(permuted_view[i], "resized_frames/test_{0}_frame{1}_sp.png".format(index, i))
-            save_image(permuted_view_n[i], "resized_frames/test_{0}_frame{1}_normal.png".format(index, i))
-        index+=1
-    
 
 
 
