@@ -75,7 +75,7 @@ def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',mo
     scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer_ft, 2, 2, eta_min=0.0000001)
     ## define the criteria
     weights = torch.FloatTensor([1,1,0,0,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,1,0,0,0,0,1,1])
-    weights.to(device)
+    #weights.to(device)
     criterion  = nn.BCEWithLogitsLoss(weights)
     model_ft.to(device)
     if torch.cuda.device_count()>1:
