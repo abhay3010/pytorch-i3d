@@ -82,7 +82,7 @@ def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',mo
         model_ft = nn.DataParallel(model_ft)
     
     
-    train_model(model_ft, dataloaders,criterion, optimizer_ft,scheduler, model_prefix=save_path, weights=weights )
+    train_model(model_ft, dataloaders,criterion, optimizer_ft,scheduler, model_prefix=save_path)
 
 def load_resizer_and_i3d(resizer_path, i3d_path, device):
     i3d = InceptionI3d(26, mode="32x112", in_channels=3)
