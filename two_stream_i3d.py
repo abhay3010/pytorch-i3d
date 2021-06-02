@@ -25,7 +25,7 @@ class TwoStreamNetwork(nn.Module):
         o = o.view(-1, self.num_classes*2)
         #print(o.shape)
         o = self.final_layer(o)
-        return o
+        return o + x2
 
     def get_parameters_to_train(self):
         return list(self.model_to_train.parameters()) + list(self.final_layer.parameters())
