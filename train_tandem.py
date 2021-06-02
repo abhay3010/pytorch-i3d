@@ -18,7 +18,7 @@ from spatial_transformer import *
 
 
 
-def train_model(model, dataloaders, criterion, optimizer,model_prefix='', num_epochs=25  ):
+def train_model(model, dataloaders, criterion, optimizer,model_prefix='', num_epochs=50  ):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs))
@@ -33,7 +33,7 @@ def train_model(model, dataloaders, criterion, optimizer,model_prefix='', num_ep
                 inputs = inputs.to(device)
                 labels = labels.to(device)
                 optimizer.zero_grad()
-
+                model.zero_grad()
                 with torch.set_grad_enabled(phase=='train'):
 
                     outputs = model(inputs)
@@ -43,7 +43,7 @@ def train_model(model, dataloaders, criterion, optimizer,model_prefix='', num_ep
                         optimizer.step()
                 running_loss += loss.item() * inputs.size(0)
                 counter+=1
-                if counter%100 == 0:
+                if counter%10 == 0:
                     print("step ", counter, running_loss/(counter*inputs.size(0)))
             epoch_loss = running_loss /len(dataloaders[phase].dataset)
             print('{} Loss: {:.4f} '.format(phase, epoch_loss) )
