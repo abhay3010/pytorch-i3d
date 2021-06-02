@@ -42,7 +42,7 @@ from virat_dataset import collate_tensors, load_rgb_frames
 def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize_shape=(112,112), transforms=None)
+    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize_shape=(56,56), transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=4, pin_memory=True) 
     resizer = nn.Sequential(
         SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=56),
