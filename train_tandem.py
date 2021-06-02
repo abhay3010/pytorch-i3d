@@ -53,7 +53,7 @@ def train_model(model, dataloaders, criterion, optimizer,model_prefix='', num_ep
             else:
                 torch.save(model.state_dict(), model_prefix  + str(epoch).zfill(6)+'.pt')
 
-def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',model_input_shape=(112,112), batch_size=256, lr=0.001):
+def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',model_input_shape=(112,112), batch_size=256, lr=0.005):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     #Initialise the dataset, loaders and model with the right set of parameters. 
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),

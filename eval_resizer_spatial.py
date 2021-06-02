@@ -46,7 +46,7 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=4, pin_memory=True) 
     resizer = nn.Sequential(
         SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=56),
-        ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
+        ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
     )
     # resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
