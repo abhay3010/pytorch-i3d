@@ -58,7 +58,7 @@ def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',mo
     #Initialise the dataset, loaders and model with the right set of parameters. 
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(root, "train",classes_file,resize=True,resize_shape=(28,28), transforms=train_transforms,sample=True)
+    dataset = Dataset(root, "train",classes_file,resize=True,resize_shape=(28,28), transforms=train_transforms,sample=False)
     training, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, training)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -81,7 +81,9 @@ def load_resizer_and_i3d(resizer_path, i3d_path, device):
     i3d.load_state_dict(torch.load(i3d_path, device))
     resizer = ResizerMainNetworkV4_3D(3, 32, (112,112),num_resblocks=1)
     resizer.load_state_dict(torch.load(resizer_path, device))
-    return nn.Sequential(resizer, i3d)
+    model =  nn.Sequential(resizer, i3d)
+    set_parameters_requires_grad(model, True)
+    return model
 
 
 def load_actual_model(v_mode, model_input_shape, input_res=28):
@@ -119,7 +121,7 @@ def main():
     save_path = '/virat-vr/models/pytorch-i3d/two_stream_28_deactivated'
     resizer_path = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_000015.pt'
     i3d_path = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_i3d000015.pt'
-    batch_size = 12
+    batch_size = 36
 
 
     run(root,classes_file, save_path, resizer_path,i3d_path, batch_size=batch_size)

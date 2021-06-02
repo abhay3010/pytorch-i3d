@@ -23,7 +23,7 @@ class TwoStreamNetwork(nn.Module):
         x2 = self.model_to_help(x)
         o = torch.cat((x1,x2))
         o = o.view(-1, self.num_classes*2)
-        print(o.shape)
+        #print(o.shape)
         o = self.final_layer(o)
         return o
 
