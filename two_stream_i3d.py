@@ -13,7 +13,7 @@ class TwoStreamNetwork(nn.Module):
         super(TwoStreamNetwork, self).__init__()
         self.model_to_train = model_to_train
         self.model_to_help = model_to_help
-        self.final_layer = nn.Sequential(nn.Linear(num_classes*3, num_classes*2), 
+        self.final_layer = nn.Sequential(nn.Linear(num_classes*2, num_classes*2), 
             nn.ReLU(), 
             nn.Linear(num_classes*2, num_classes)
         )
@@ -21,10 +21,8 @@ class TwoStreamNetwork(nn.Module):
         #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
         x1 = self.model_to_train(x)
         x2 = self.model_to_help(x)
-        print(x1.shape)
-        print(x2.shape)
-        o = x1+ x2
-        o = o.view(-1, self.num_classes*3)
+        o = torch.cat((x1,x2))
+        o = o.view(-1, self.num_classes*2)
         print(o.shape)
         o = self.final_layer(o)
         return o
@@ -36,7 +34,7 @@ class TwoStreamNetwork(nn.Module):
 def mode_summary():
     i3d = InceptionI3d(26, in_channels=3)
     model = TwoStreamNetwork(i3d, i3d, 26)
-    summary(model, (3,32,112,112), batch_size=2)
+    summary(model, (3,32,112,112), batch_size=12)
 
 
 if __name__ == '__main__':
