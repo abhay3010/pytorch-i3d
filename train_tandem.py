@@ -18,7 +18,7 @@ from spatial_transformer import *
 
 
 
-def train_model(model, dataloaders, criterion, optimizer, scheduler = None, model_prefix='', num_epochs=50, weights=torch.ones(26)  ):
+def train_model(model, dataloaders, criterion, optimizer, scheduler = None, model_prefix='', num_epochs=50 ):
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     for epoch in range(num_epochs):
         print('Epoch {}/{}'.format(epoch, num_epochs))
@@ -37,7 +37,7 @@ def train_model(model, dataloaders, criterion, optimizer, scheduler = None, mode
                 with torch.set_grad_enabled(phase=='train'):
 
                     outputs = model(inputs)
-                    loss = criterion(outputs, labels,weights)
+                    loss = criterion(outputs, labels)
                     if phase == 'train':    
                         loss.backward()     
                         optimizer.step()
@@ -74,12 +74,14 @@ def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',mo
     optimizer_ft = optim.Adam(model_ft.get_parameters_to_train(), lr=lr)
     scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer_ft, 2, 2, eta_min=0.0000001)
     ## define the criteria
-    criterion  = nn.BCEWithLogitsLoss()
+    weights = torch.FloatTensor([1,1,0,0,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,1,0,0,0,0,1,1])
+    weights.to(device)
+    criterion  = nn.BCEWithLogitsLoss(weights)
     model_ft.to(device)
     if torch.cuda.device_count()>1:
         model_ft = nn.DataParallel(model_ft)
-    weights = torch.FloatTensor([1,1,0,0,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,1,0,0,0,0,1,1])
-    weights.to(device)
+    
+    
     train_model(model_ft, dataloaders,criterion, optimizer_ft,scheduler, model_prefix=save_path, weights=weights )
 
 def load_resizer_and_i3d(resizer_path, i3d_path, device):
