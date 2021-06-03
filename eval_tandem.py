@@ -83,7 +83,7 @@ def main():
     model_list = list()
     for epoch in range(0, 5):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
-    for model, i3d_model in model_list:
+    for model in model_list:
        f1_macro, f1_micro, accuracy = eval(model_path+ model, data_root, "classes.txt", debug=False)
        print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
 

@@ -72,17 +72,18 @@ def run(root, classes_file, save_path, resizer_path, i3d_path,v_mode='32x112',mo
     actual_model = load_actual_model(v_mode, model_input_shape)
     model_ft = TwoStreamNetwork(actual_model, helper_model, 26)
     optimizer_ft = optim.Adam(model_ft.get_parameters_to_train(), lr=lr)
-    scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer_ft, 2, 2, eta_min=0.0000001)
+    #scheduler = optim.lr_scheduler.CosineAnnealingWarmRestarts(optimizer_ft, 2, 2, eta_min=0.0000001)
     ## define the criteria
-    weights = torch.FloatTensor([1,1,0,0,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,1,0,0,0,0,1,1])
-    weights = weights.to(device)
-    criterion  = nn.BCEWithLogitsLoss(weights)
+    # weights = torch.FloatTensor([1,1,0,0,1,1,1,0,1,0,1,1,0,1,1,0,0,1,1,1,0,0,0,0,1,1])
+    # weights = weights.to(device)
+    # criterion  = nn.BCEWithLogitsLoss(weights)
+    criterion = nn.BCEWithLogitsLoss()
     model_ft.to(device)
     if torch.cuda.device_count()>1:
         model_ft = nn.DataParallel(model_ft)
     
     
-    train_model(model_ft, dataloaders,criterion, optimizer_ft,scheduler, model_prefix=save_path)
+    train_model(model_ft, dataloaders,criterion, optimizer_ft, model_prefix=save_path)
 
 def load_resizer_and_i3d(resizer_path, i3d_path, device):
     i3d = InceptionI3d(26, mode="32x112", in_channels=3)
@@ -126,7 +127,7 @@ def main():
     #gpu paramaeters
     root = "/mnt/data/TinyVIRAT/"
     classes_file =  "classes.txt"
-    save_path = '/virat-vr/models/pytorch-i3d/two_stream_28_deactivated'
+    save_path = '/virat-vr/models/pytorch-i3d/two_stream_28_deactivated_max'
     resizer_path = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_000015.pt'
     i3d_path = '/virat-vr/models/pytorch-i3d/resizerv43d_28_32_i3d000015.pt'
     batch_size = 64

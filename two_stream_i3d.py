@@ -13,19 +13,13 @@ class TwoStreamNetwork(nn.Module):
         super(TwoStreamNetwork, self).__init__()
         self.model_to_train = model_to_train
         self.model_to_help = model_to_help
-        self.final_layer = nn.Sequential(nn.Linear(num_classes*2, 30), 
-            nn.ReLU(), 
-            nn.Linear(30, num_classes)
-        )
+        
     def forward(self, x):
         #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
         x1 = self.model_to_train(x)
         x2 = self.model_to_help(x)
-        o = torch.cat((x1,x2))
-        o = o.view(-1, self.num_classes*2)
-        #print(o.shape)
-        o = self.final_layer(o)
-        return o + x2
+       
+        return (x1 + x2)/2.
 
     def get_parameters_to_train(self):
         return list(self.model_to_train.parameters()) + list(self.final_layer.parameters())
