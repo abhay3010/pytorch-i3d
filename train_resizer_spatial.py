@@ -54,7 +54,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize_shape=(56,56), transforms=train_transforms,sample=False)
+    dataset = Dataset(data_root, "train",classes_file,resize_shape=(112,112), transforms=train_transforms,sample=False)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -141,7 +141,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp56_002300.pt'
     batch_size =40
-    save_model = '/virat-vr/models/pytorch-i3d/spatial_2d_2dr_56_'
+    save_model = '/virat-vr/models/pytorch-i3d/spatial_2d_2dr_112_'
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
 
