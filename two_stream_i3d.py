@@ -22,7 +22,7 @@ class TwoStreamNetwork(nn.Module):
         return (x1 + x2)/2.
 
     def get_parameters_to_train(self):
-        return list(self.model_to_train.parameters()) + list(self.final_layer.parameters())
+        return list(self.model_to_train.parameters())
 
 
 def mode_summary():
