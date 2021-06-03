@@ -73,7 +73,7 @@ def eval(model_path, root, classes_file,v_mode='32x112', input_shape=(112,112), 
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'two_stream_28_deactivated'
+    prefix = 'two_stream_28_deactivated_max'
     #cpu params
     model_path = "./eval_models/"
     data_root = "./TinyVIRAT/"
@@ -81,7 +81,7 @@ def main():
     model_path = "/virat-vr/models/pytorch-i3d/"
     data_root = "/mnt/data/TinyVIRAT/"
     model_list = list()
-    for epoch in range(0, 5):
+    for epoch in range(0, 12):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model in model_list:
        f1_macro, f1_micro, accuracy = eval(model_path+ model, data_root, "classes.txt", debug=False)
