@@ -139,7 +139,7 @@ def main():
     #GPU parameters
     data_root = '/mnt/data/TinyVIRAT/'
     model_input_shape = (112, 112)
-    virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp56_002300.pt'
+    virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp112_002300.pt'
     batch_size =36
     save_model = '/virat-vr/models/pytorch-i3d/spatial_2d_2dr_112_'
     num_epochs=50
