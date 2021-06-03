@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resizer-spatial-evaluation-job-v5
+  name: virat-vr-resizer-tandem-evaluation-job-v5
 spec:
   template:
     spec:
@@ -10,7 +10,7 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/eval_resizer_spatial.py", "/virat-vr/code/pytorch-i3d/" ]
+          args: [ "/virat-vr/code/pytorch-i3d/eval_tandem.py", "/virat-vr/code/pytorch-i3d/" ]
           resources:
             limits:
               nvidia.com/gpu: 4

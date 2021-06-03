@@ -40,7 +40,7 @@ def eval(model_path, root, classes_file,v_mode='32x112', input_shape=(112,112), 
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=True,resize_shape=(28,28), transforms=None, sample=False)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=16, shuffle=False, num_workers=5, pin_memory=True) 
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=8, shuffle=False, num_workers=5, pin_memory=True) 
     model = load_model_from_file(model_path, v_mode=v_mode, model_input_shape=input_shape, input_res=28)
     predictions = list()
     trues = list()
