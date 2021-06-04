@@ -31,6 +31,7 @@ import numpy as np
 
 from i3d import InceptionI3d
 from resizer import ResizerMainNetworkV4_3D,ResizerMainNetworkV4_2D
+from spatial_resizer import *
 
 from virat_dataset import Virat as Dataset
 

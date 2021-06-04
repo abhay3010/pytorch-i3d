@@ -17,14 +17,14 @@ class SpatialTransformer(nn.Module):
         self.localization = nn.Sequential(
         nn.Conv2d(self.in_channels, 16, kernel_size=[7,7], stride=[1,1],padding=3),
         nn.MaxPool2d(3, stride=2, padding=1),
-        nn.ReLU(),
+        nn.Tanh(),
         nn.Conv2d(16, 8, kernel_size = 5, padding=2),
         nn.MaxPool2d(2, stride=2, padding=[0,0]),
-        nn.ReLU()
+        nn.Tanh()
         )
         self.fc_loc = nn.Sequential(
             nn.Linear(int(8*((in_res/4)**2)), 32), 
-            nn.ReLU(),
+            nn.Tanh(),
             nn.Linear(32, 3*2)
         )
         self.fc_loc[2].weight.data.zero_()
@@ -43,6 +43,7 @@ class SpatialTransformer(nn.Module):
         theta = self.fc_loc(xs)
         # qgit 
         theta = theta.view(-1,2,3)
+        print("theta", theta.detach().numpy()[0])
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
