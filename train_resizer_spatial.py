@@ -44,14 +44,14 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = TransformerWithResizer(3, 32, (112,112))
+    resizer = TransformerWithResizer(3, 32, (112,112), in_res=28)
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
     #resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
 
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
-    dataset = Dataset(data_root, "train",classes_file,resize_shape=(28,28), transforms=train_transforms,sample=False)
+    dataset = Dataset(data_root, "train",classes_file,resize_shape=(28,28), transforms=train_transforms,sample=True)
     train, test = dataset.get_train_validation_split()
     train_dataset = torch.utils.data.Subset(dataset, train)
     val_dataset = torch.utils.data.Subset(dataset, test)
@@ -127,7 +127,6 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
 def main():
     # Local parameters
     # data_root = 'TinyVIRAT'
-    # data_input_shape= (14, 14)
     # model_input_shape = (112, 112)
     # virat_model_path = '/workspaces/pytorch-i3d/eval_models/v5004080.pt'
     # batch_size = 2
