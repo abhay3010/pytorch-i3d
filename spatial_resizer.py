@@ -12,7 +12,7 @@ import random
 #we need to sample at point 1 and apply at another point. And consider all strategies of doing so.
 
 class TransformerWithResizer(nn.Module):
-    def __init__(self, in_channels,n_frames, scale_shape,in_res, num_resblocks=1, skip=False):
+    def __init__(self, in_channels,n_frames, scale_shape,in_res=112, num_resblocks=1, skip=False):
         super(TransformerWithResizer, self).__init__()
         self.in_channels = in_channels
         self.r = num_resblocks
@@ -47,7 +47,7 @@ class TransformerWithResizer(nn.Module):
     def forward(self, x):
          # print("input shape", x.shape)
         residual = self.skip_resizer(x)
-        print(residual.shape)
+        #print(residual.shape)
         theta = self.get_theta(residual)
         if self.skip:
             return residual
@@ -81,7 +81,7 @@ class TransformerWithResizer(nn.Module):
         # print(b,c,t,h,w)
         x_view = x.view(-1,c,h,w)
         xs =  self.localization(x_view)
-        print(xs.shape)
+        #print(xs.shape)
         xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
         theta = self.fc_loc(xs)
         theta = theta.view(-1,2,3)
@@ -102,51 +102,10 @@ class TransformerWithResizer(nn.Module):
     
 
     
-class ReferenceTransformer(nn.Module):
 
-    def __init__(self, in_channels, in_res = 112, in_time=32):
-        super(ReferenceTransformer, self).__init__()
-        self.in_channels = in_channels
-        self.in_res = in_res
-        self.in_time = in_time
-        self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels, 16, kernel_size=[7,7], stride=[1,1],padding=3),
-        nn.MaxPool2d(3, stride=2, padding=1),
-        nn.Tanh(),
-        nn.Conv2d(16, 8, kernel_size = 5, padding=2),
-        nn.MaxPool2d(2, stride=2, padding=[0,0]),
-        nn.Tanh()
-        )
-        self.fc_loc = nn.Sequential(
-            nn.Linear(int(8*((in_res/4)**2)), 32), 
-            nn.Tanh(),
-            nn.Linear(32, 3*2)
-        )
-        self.fc_loc[2].weight.data.zero_()
-        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
-    def forward(self, x):
-        #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
-        c = x.shape[1]
-        b = x.shape[0]
-        t = x.shape[2]
-        h = x.shape[3]
-        w = x.shape[4]
-        # print(b,c,t,h,w)
-        x_view = x.view(-1,c,h,w)
-        xs =  self.localization(x_view)
-        xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
-        theta = self.fc_loc(xs)
-        # qgit 
-        theta = theta.view(-1,2,3)
-        print("theta", theta.detach().numpy()[0])
-        grid = F.affine_grid(theta, x_view.size(),align_corners=False)
-        x_view = F.grid_sample(x_view, grid, align_corners=False)
-        o = x_view.view(b,c,t,h,w)
-        
-        return o
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),112, num_resblocks=1 )
-    summary(resizer_network, (3, 32, 112, 112), batch_size=2)
+    resizer_network = TransformerWithResizer(3,32,(112,112), num_resblocks=1 )
+    summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     # c = nn.Conv3d(3, 16, kernel_size=(1,7,7), stride=(1,1,1), padding=(0, 3, 3))
     # c = ConvUnit(3, 16, kernel_shape = (1,7,7), stride=(1,1,1))
     # y = torch.randn(1, 3, 32, 112,112)
