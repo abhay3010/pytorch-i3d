@@ -45,7 +45,7 @@ class TransformerWithResizer(nn.Module):
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        print("input shape", x.shape)
+        #print("input shape", x.shape)
         residual = self.skip_resizer(x)
         #print(residual.shape)
         theta = self.get_theta(x)
