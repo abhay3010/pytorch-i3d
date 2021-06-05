@@ -66,9 +66,9 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
         resizer = nn.DataParallel(resizer)
     lr = init_lr
     num_steps_per_update = 8    
-    for name, param in i3d.named_parameters():
-        if "logits" not in name:
-            param.requires_grad= False
+    # for name, param in i3d.named_parameters():
+    #     if "logits" not in name:
+    #         param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
     #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
 
@@ -137,7 +137,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt'
     batch_size =36
-    save_model = '/virat-vr/models/pytorch-i3d/combined_resizer_28_u'
+    save_model = '/virat-vr/models/pytorch-i3d/combined_resizer_28_all_unaligned_'
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
 
