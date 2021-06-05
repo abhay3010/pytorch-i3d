@@ -63,7 +63,7 @@ class TransformerWithResizer(nn.Module):
             out = self.c2(out)
             # print("conv2 shape", out.shape)
             out =  self.resizer_first(out)
-            out =
+            
             # print("in resizer shape", out.shape)
             residual_skip = out
             out = self.residual_blocks(out)
