@@ -87,7 +87,7 @@ class TransformerWithResizer(nn.Module):
         xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
         theta = self.fc_loc(xs)
         theta = theta.view(-1,2,3)
-        if random.uniform(0,1) <=0.01: 
+        if random.uniform(0,1) <=0.03: 
             print("theta", theta.detach().cpu().numpy()[0])
         return theta
     def apply_theta(self, theta, x):
