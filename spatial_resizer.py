@@ -24,11 +24,11 @@ class TransformerWithResizer(nn.Module):
         self.localization = nn.Sequential(
         nn.Conv2d(self.in_channels, 16, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
-        nn.BatchNorm2d(),
+        nn.BatchNorm2d(16),
         nn.Tanh(),
         nn.Conv2d(16, 8, kernel_size = 3, padding=1),
         nn.MaxPool2d(2, stride=2, padding=[0,0]),
-        nn.BatchNorm2d(),
+        nn.BatchNorm2d(8),
         nn.Tanh())
         self.fc_loc = nn.Sequential(
             nn.Linear(int(8*((in_res/4)**2)), 32), 
