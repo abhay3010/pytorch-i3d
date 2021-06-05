@@ -137,7 +137,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp112_002300.pt'
     batch_size =36
-    save_model = '/virat-vr/models/pytorch-i3d/combined_resizer_28_'
+    save_model = '/virat-vr/models/pytorch-i3d/combined_resizer_28_u'
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
 

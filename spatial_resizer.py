@@ -100,8 +100,8 @@ class TransformerWithResizer(nn.Module):
         h = x.shape[3]
         w = x.shape[4]
         x_view = x.view(-1,c,h,w)
-        grid = F.affine_grid(theta, x_view.size(),align_corners=True)
-        x_view = F.grid_sample(x_view, grid, align_corners=True)
+        grid = F.affine_grid(theta, x_view.size(),align_corners=False)
+        x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
         return o
     
