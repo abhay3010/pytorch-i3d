@@ -51,7 +51,7 @@ class TransformerWithResizer(nn.Module):
         #print("input shape", x.shape)
         residual = self.skip_resizer(x)
         #print(residual.shape)
-        theta = self.get_theta(residual)
+        
         if self.skip:
             return residual
         else:
@@ -63,6 +63,7 @@ class TransformerWithResizer(nn.Module):
             out = self.c2(out)
             # print("conv2 shape", out.shape)
             out =  self.resizer_first(out)
+            out =
             # print("in resizer shape", out.shape)
             residual_skip = out
             out = self.residual_blocks(out)
@@ -73,8 +74,9 @@ class TransformerWithResizer(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            # theta = self.get_theta(out)
-            return self.apply_theta(theta, out)
+            theta = self.get_theta(out)
+            out = self.apply_theta(theta, out)
+            return out
 
     def get_theta(self, x):
         #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
