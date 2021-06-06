@@ -51,7 +51,7 @@ class TransformerWithResizer(nn.Module):
         #print("input shape", x.shape)
         residual = self.skip_resizer(x)
         #print(residual.shape)
-        theta = self.get_theta(residual)
+        #theta = self.get_theta(residual)
         
         if self.skip:
             return residual
@@ -75,7 +75,7 @@ class TransformerWithResizer(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            
+            theta = self.get_theta(out)
             out = self.apply_theta(theta, out)
             return out
 
@@ -104,8 +104,8 @@ class TransformerWithResizer(nn.Module):
         w = x.shape[4]
         #print(theta.shape)
         x_view = x.view(-1,c,h,w)
-        grid = F.affine_grid(theta, x_view.size(),align_corners=True)
-        x_view = F.grid_sample(x_view, grid, align_corners=True)
+        grid = F.affine_grid(theta, x_view.size(),align_corners=False)
+        x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
         return o
 
