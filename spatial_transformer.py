@@ -43,7 +43,6 @@ class SpatialTransformer(nn.Module):
         theta = self.fc_loc(xs)
         # qgit 
         theta = theta.view(-1,2,3)
-        print("theta", theta.detach().numpy()[0])
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
