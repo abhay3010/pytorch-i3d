@@ -43,14 +43,14 @@ from spatial_resizer import *
 def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=False):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
-    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize_shape=(56,56), transforms=None)
+    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize_shape=(56,56), transforms=None, shuffle=False)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=12, shuffle=False, num_workers=4, pin_memory=True) 
     # resizer = nn.Sequential(
     #     SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=56),
     #     ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
     # )
-    resizer = TransformerWithResizer(3, 32, (112,112), in_res=56, num_resblocks=1)
+    resizer = TransformerWithResizer(3, 32, (112,112), in_res=56, num_resblocks=2)
     # resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
@@ -92,9 +92,10 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
     #print(trues, predictions)
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
-    accuracy = accuracy_score(trues, predictions)    
+    accuracy = accuracy_score(trues, predictions)
+    f1_samples = f1_score(trues, predictions, average = "samples")    
 
-    print(f1_macro, f1_micro, accuracy)
+    print(f1_macro, f1_micro, accuracy, f1_samples)
     pred_np = np.asarray(predictions)
     act_np = np.asarray(trues)
     if debug:
@@ -104,22 +105,20 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
         np.save('d-logits.npy', np.asarray(p_logits))
         np.save('d-confusion.npy', cf)
 
-    return f1_macro, f1_micro, accuracy
+    return f1_macro, f1_micro, accuracy, f1_samples
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'combined_resizer_56_2res_all_first'
+    prefix = 'combined_resizer_56_wider_all_first'
+    model_path = '/virat-vr/models/pytorch-i3d/'
+    data_root = '/mnt/data/TinyVIRAT/'
+    classes = "classes.txt"
     model_list = list()
     for epoch in range(0,27):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=False)
-       print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
-
-
-
-
-
+       f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path + i3d_model, data_root,classes, debug=False)
+       print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
 
 
 
