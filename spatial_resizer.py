@@ -118,7 +118,7 @@ class TransformerWithResizer(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizerV2(3,32,(112,112), num_resblocks=1 )
+    resizer_network = TransformerWithResizer(3,32,(112,112), num_resblocks=1 )
     summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     # c = nn.Conv3d(3, 16, kernel_size=(1,7,7), stride=(1,1,1), padding=(0, 3, 3))
     # c = ConvUnit(3, 16, kernel_shape = (1,7,7), stride=(1,1,1))
