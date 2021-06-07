@@ -44,7 +44,7 @@ def run(data_root, model_input_shape, virat_model_path,batch_size,save_model='',
     print("declared model")
     i3d = load_params_from_file(i3d, virat_model_path, device)
     #load the resizer_model
-    resizer = TransformerWithResizer(3, 32, (112,112), in_res=56)
+    resizer = TransformerWithResizer(3, 32, (112,112), in_res=56, num_resblocks=2)
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
     #resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
 
@@ -137,7 +137,7 @@ def main():
     model_input_shape = (112, 112)
     virat_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt'
     batch_size =36
-    save_model = '/virat-vr/models/pytorch-i3d/combined_resizer_56_all_first'
+    save_model = '/virat-vr/models/pytorch-i3d/combined_resizer_56_2res_all_first'
     num_epochs=50
     run(data_root, model_input_shape, virat_model_path, batch_size, save_model, num_epochs=num_epochs)
 
