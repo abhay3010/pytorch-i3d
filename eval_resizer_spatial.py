@@ -50,7 +50,7 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
     #     ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
     # )
-    resizer = TransformerWithResizer(3, 32, (112,112), in_res=56)
+    resizer = TransformerWithResizer(3, 32, (112,112), in_res=56, num_resblocks=2)
     # resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
@@ -108,9 +108,9 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
-    prefix = 'combined_resizer_56_all_first'
+    prefix = 'combined_resizer_56_2res_all_first'
     model_list = list()
-    for epoch in range(20,27):
+    for epoch in range(0,27):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
        f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=False)
