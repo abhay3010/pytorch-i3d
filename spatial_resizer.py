@@ -42,14 +42,14 @@ class TransformerWithResizer(nn.Module):
         if not self.skip:
             self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=32, kernel_shape=[7, 7, 7],  norm=None)
             #revisit size of this unit as it is inconsitent between paper and diagram
-            self.c2 = ConvUnit(in_channels=32, kernel_shape = [1,1,1], output_channels=32)
+            self.c2 = ConvUnit(in_channels=32, kernel_shape = [1,1,1], output_channels=16)
             self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
-            self.residual_blocks = make_residuals(num_resblocks, 32)
-            self.c3 = ConvUnit(in_channels=32, kernel_shape=[3,3,3], output_channels=32, lru=False)
-            self.c4 = ConvUnit(in_channels=32, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
+            self.residual_blocks = make_residuals(num_resblocks, 16)
+            self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
+            self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        theta = self.get_theta(x)
-        x = self.apply_theta(theta, x)
+        # theta = self.get_theta(x)
+        # x = self.apply_theta(theta, x)
 
         #print("input shape", x.shape)
         residual = self.skip_resizer(x)
@@ -78,8 +78,8 @@ class TransformerWithResizer(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            # theta = self.get_theta(out)
-            # out = self.apply_theta(theta, out)
+            theta = self.get_theta(out)
+            out = self.apply_theta(theta, out)
             return out
 
     def get_theta(self, x):

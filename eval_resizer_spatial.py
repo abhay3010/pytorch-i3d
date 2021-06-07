@@ -55,7 +55,7 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
-    i3d = InceptionI3d(26,mode="32x112", in_channels=3)
+    i3d = InceptionI3d(26,mode=v_mode, in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()
     for k, v in state_dict.items():
