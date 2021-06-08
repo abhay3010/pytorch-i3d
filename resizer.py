@@ -546,7 +546,20 @@ class BranchedResizerV2(nn.Module):
             self.b1 = ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks, init_shape=[3,7,7])
             self.b2 = ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks, init_shape=[3,5,5])
             self.b3 = ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks, init_shape=[3,3,3])
-            
+
+class BranchedResizerV3(nn.Module):
+    def __init__(self, in_channels,n_frames, scale_shape,num_resblocks=1, skip=False,nblocks=2):
+        self.in_channels = in_channels
+        self.r = num_resblocks
+        self.scale_shape = scale_shape
+        self.nframes = n_frames
+        self.skip = skip
+        super(BranchedResizerV3, self).__init__()
+        self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
+        if not self.skip:
+            self.b1 = ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks, init_shape=[3,7,7])
+            self.b2 = ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks, init_shape=[3,5,5])
+            self.b3 = ResizerBranch(in_channels, n_frames, scale_shape, num_resblocks, init_shape=[3,3,3])            
         
 
 

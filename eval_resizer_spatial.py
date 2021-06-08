@@ -100,10 +100,10 @@ def eval(resizer_model, model_path, root, classes_file,v_mode="32x112", debug=Fa
     act_np = np.asarray(trues)
     if debug:
         cf = multilabel_confusion_matrix(trues, predictions)
-        np.save('d-predictions.npy', pred_np)
-        np.save('d-actuals.npy', act_np)
-        np.save('d-logits.npy', np.asarray(p_logits))
-        np.save('d-confusion.npy', cf)
+        np.save('predictions.npy', pred_np)
+        np.save('actuals.npy', act_np)
+        np.save('logits.npy', np.asarray(p_logits))
+        np.save('confusion.npy', cf)
 
     return f1_macro, f1_micro, accuracy, f1_samples
 
