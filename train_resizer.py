@@ -33,7 +33,7 @@ from resizer import *
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, i3d_model_path, batch_size, model_input_shape=112,  data_input_shape=28, save_model='', init_lr = 0.001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
+def run(data_root, i3d_model_path, batch_size, model_input_shape=112,  data_input_shape=56, save_model='', init_lr = 0.001 ,num_epochs=10,v_mode='32x112', classes_file='classes.txt'):
     #load the virat model. Freeze its layers. (check how to do so)
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
@@ -43,7 +43,8 @@ def run(data_root, i3d_model_path, batch_size, model_input_shape=112,  data_inpu
     i3d = load_params_from_file(i3d, i3d_model_path, device)
     #load the resizer_model
     # resizer = BranchedResizerV2(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=1)
-    resizer = ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), (model_input_shape, model_input_shape), num_resblocks=3)
+    # resizer = ResizerMainNetworkV4_2D(3, int(v_mode.split('x')[0]), (model_input_shape, model_input_shape), num_resblocks=3)
+    resizer = BranchedResizerV2(3,int(v_mode.split('x')[0]),(model_input_shape, model_input_shape))
     #load the virat dataset
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
@@ -62,9 +63,9 @@ def run(data_root, i3d_model_path, batch_size, model_input_shape=112,  data_inpu
         resizer = nn.DataParallel(resizer)
     lr = init_lr
     num_steps_per_update = 2    
-    for name, param in i3d.named_parameters():
-        if "logits" not in name:
-            param.requires_grad= False
+    # for name, param in i3d.named_parameters():
+    #     if "logits" not in name:
+    #         param.requires_grad= False
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
     #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
 
@@ -134,10 +135,11 @@ def main():
     model_input_shape = 112
     i3d_model_path = '/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt'
     batch_size = 32
-    save_model = '/virat-vr/models/pytorch-i3d/resizerv42d_v2_32_28_3res_'
+    save_model = '/virat-vr/models/pytorch-i3d/branched_resizer_v2_56_'
+    data_input_shape = 56
 
     num_epochs=50
-    run(data_root,i3d_model_path, batch_size, save_model, model_input_shape=model_input_shape,num_epochs=num_epochs)
+    run(data_root,i3d_model_path, batch_size, save_model, model_input_shape=model_input_shape, data_input_shape=data_input_shape, num_epochs=num_epochs)
 
 if __name__ == '__main__':
     main()
