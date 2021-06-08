@@ -139,7 +139,7 @@ def main():
     data_input_shape = 56
 
     num_epochs=50
-    run(data_root,i3d_model_path, batch_size, save_model, model_input_shape=model_input_shape, data_input_shape=data_input_shape, num_epochs=num_epochs)
+    run(data_root,i3d_model_path, batch_size, model_input_shape=model_input_shape,save_model=save_model, data_input_shape=data_input_shape, num_epochs=num_epochs)
 
 if __name__ == '__main__':
     main()
