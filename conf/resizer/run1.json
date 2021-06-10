@@ -1,8 +1,0 @@
-{
-    "data_root":"/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt",
-    "model_input_shape":112,
-    "i3d_model_path":"/virat-vr/models/pytorch-i3d/i3d_inp28_002400.pt",
-    "batch_size":32,
-    "num_epochs":50,
-    ""
-}

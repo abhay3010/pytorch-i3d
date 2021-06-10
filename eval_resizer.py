@@ -207,13 +207,5 @@ def get_fname(labels, reverse_map):
     
     return name
     
-    
-
-
-
-
-
-
-
 if __name__ == '__main__':
     sample_resizer_output()

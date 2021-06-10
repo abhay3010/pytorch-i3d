@@ -4,10 +4,7 @@
 from collections import OrderedDict
 import torch
 #Hacky: Will need to be fixed later
-def load_params_from_file(model, params_file, device):
-    print("loading params from file", params_file)
-    print("loading device", device)
-    print("ignoring device")
+def load_i3d_from_file(model, params_file, device, freeze_i3d):
     state_dict = torch.load(params_file, device)
     
     new_dict = OrderedDict()
@@ -15,9 +12,13 @@ def load_params_from_file(model, params_file, device):
         if k.startswith("module."):
             new_dict[k[7:]] = v
         else:
-            print(k)
             new_dict[k] = v
     model.load_state_dict(new_dict)
+    if freeze_i3d:
+        for name, param in model.named_parameters():
+            if "logits" not in name:
+                param.requires_grad = False
+    
     return model
 
 def load_module_params_from_file(model, params_file, device):

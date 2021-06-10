@@ -33,15 +33,15 @@ from torchsummary import summary
 
 
 
-def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb',init_model='models/converted_i3d_rgb_charades.pt', root='/ssd/Charades_v1_rgb', classes_file="classes.txt",
- batch_size=8*5, save_model='', start_from=None):
+def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb',init_model='models/rgb_charades.pt', data_root='/ssd/Charades_v1_rgb', classes_file="classes.txt",
+ batch_size=8*5, save_path='', start_from=None):
     
     # setup dataset remember to change the crop size here.
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     train_transforms = transforms.Compose([ videotransforms.RandomHorizontalFlip(),
     ])
 
-    dataset = Dataset(root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True, downscale=False, sample=False)
+    dataset = Dataset(data_root, "train",classes_file, num_frames=num_frames, transforms=train_transforms, shuffle=True, downscale=False, sample=False)
     train, val = dataset.get_train_validation_split(test_perc=0.1)
     val_dataset = torch.utils.data.Subset(dataset, val)
     train_dataset = torch.utils.data.Subset(dataset, train)
@@ -50,7 +50,6 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=True, num_workers=4, pin_memory=True)    
 
     dataloaders = {'train': dataloader, 'val': val_dataloader}
-    datasets = {'train': dataset, 'val': val_dataset}
 
     
     # setup the model
@@ -142,7 +141,7 @@ def run(init_lr=0.1, max_steps=64e3,i3d_mode='32x112', num_frames=32, mode='rgb'
                         # save model                        
                         tot_loss  = 0.
                         if steps %100 == 0:
-                            torch.save(i3d.state_dict(), save_model+str(steps).zfill(6)+'.pt')
+                            torch.save(i3d.state_dict(), save_path+str(steps).zfill(6)+'.pt')
             if phase == 'val':
                 print ('{}  Loss: {:.4f} '.format(phase, (tot_loss*num_steps_per_update)/num_iter))
     
@@ -161,7 +160,7 @@ def main():
     # max_steps = 320000.0
     # save_model=''
     # start_from = None
-    run(init_lr=0.0001, root=root, i3d_mode='32x112', num_frames=32, max_steps=max_steps,save_model=save_model, batch_size=42, start_from=start_from)
+    run(init_lr=0.0001, data_root=root, i3d_mode='32x112', num_frames=32, max_steps=max_steps,save_path=save_model, batch_size=42, start_from=start_from)
 
 def mode_summary():
     model = i3d = InceptionI3d(26, in_channels=3)
