@@ -41,15 +41,13 @@ def validate_config(config):
     if config['model'] == 'i3d':
         return
 
-    elif config['model'] == 'resizer':
+    elif config['model'] in ['resizer', 'spatial_resizer'] :
         resizer_required_params = ['model_input_shape', 'data_input_shape', 'num_resblocks', 'i3d_model_path']
         for c in resizer_required_params:
             if c not in config['params']:
                 raise ValueError("Key {0} missing in config".format(c))
 
         return
-    elif config['model'] == 'spatial_resizer':
-        pass
     else:
         raise ValueError("Unrecognized model {0}".format(config['model']))
     
