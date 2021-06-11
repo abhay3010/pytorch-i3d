@@ -34,11 +34,11 @@ from i3d import InceptionI3d
 
 from virat_dataset import Virat as Dataset
 
-def eval(model_path, root, classes_file, mode,n_frames):
+def eval(model_path, root, classes_file, mode,n_frames=32, batch_size=20,num_workers=6 ):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file, transforms=None, num_frames=n_frames,downscale=False)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=20, shuffle=False, num_workers=6)   
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers)   
     i3d = InceptionI3d(26,mode=mode, in_channels=3)
     state_dict = torch.load(model_path)
     new_dict = dict()
@@ -46,7 +46,6 @@ def eval(model_path, root, classes_file, mode,n_frames):
         if k.startswith("module."):
             new_dict[k[7:]] = v
         else:
-            print(k)
             new_dict[k] = v
     i3d.load_state_dict(new_dict)
     i3d.to(device)
@@ -69,11 +68,24 @@ def eval(model_path, root, classes_file, mode,n_frames):
     #print(trues, predictions)
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
+    f1_sample = f1_score(trues, predictions, average='sample')
+
     accuracy = accuracy_score(trues, predictions)
     
 
-    print(f1_macro, f1_micro, accuracy)
-    return f1_macro, f1_micro, accuracy
+    print(f1_macro, f1_micro, accuracy, f1_sample)
+    return f1_macro, f1_micro, accuracy, f1_sample
+
+def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes="classes.txt", i3d_mode="32x112", num_frames=32, num_workers=6, batch_size=12 ):
+    model_list = list()
+    for epoch in epoch_list:
+        model_list.append(model_prefix+str(epoch).zfill(6)+'.pt')
+    for model in model_list:
+        print(model)
+
+        f1_macro, f1_micro, accuracy, f1_sample = eval(model_path+model, data_root,classes,i3d_mode, num_frames, batch_size=batch_size, num_workers=num_workers )
+        print ("{0} , f1_macro : {1}, f1_micro {2}, f1 sample {4}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_sample))
+
 
 def main():
     model_list = ['i3d_inp112_001200.pt', 'i3d_inp112_001300.pt', 'i3d_inp112_001400.pt', 'i3d_inp112_001500.pt', 'i3d_inp112_001600.pt'
@@ -85,7 +97,9 @@ def main():
     ]
     
     for model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt", "32x112", 32)
-       print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
+       f1_macro, f1_micro, accuracy, f1_sample = eval('/virat-vr/models/pytorch-i3d/'+model, "/mnt/data/TinyVIRAT/", "classes.txt", "32x112", 32)
+       print ("{0} , f1_macro : {1}, f1_micro {2}, f1 sample {4}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_sample))
+
 if __name__ == '__main__':
+
     main()  

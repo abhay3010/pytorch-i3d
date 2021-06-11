@@ -1,6 +1,8 @@
 import pathlib
 import sys
 import posix
+
+from torch._C import Value
 from train_i3d_virat import run as train_i3d
 from train_resizer import run as train_resizer
 from train_resizer_spatial import run as train_spatial_resizer
@@ -13,6 +15,8 @@ def train(config):
         train_resizer(**config["params"])
     elif config['model'] == 'spatial_resizer':
         train_spatial_resizer(**config["params"] )
+    else:
+        ValueError("Unknown model type {0}".format(config['model']))
 
 
 

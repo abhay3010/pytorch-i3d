@@ -27,10 +27,7 @@ from sklearn.metrics import f1_score
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import multilabel_confusion_matrix
 import numpy as np
-
-
-import numpy as np
-
+from train_resizer import get_resizer_model
 from i3d import InceptionI3d
 from resizer import *
 
@@ -39,12 +36,11 @@ from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 from spatial_transformer import SpatialTransformer
 
-def eval(resizer_model, model_path, root, classes_file, debug=False):
+def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-
-    val_dataset = Dataset(root, "test",classes_file,num_frames=32, resize=True,resize_shape=(28,28), transforms=None)
-    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=16, shuffle=False, num_workers=5, pin_memory=True) 
-    resizer = ResizerMainNetworkV4_3D(3, 32, (112, 112), skip=False, num_resblocks=3)
+    val_dataset = Dataset(root, "test",classes_file,num_frames=num_frames, resize=True,resize_shape=(resize_shape,resize_shape), transforms=None)
+    val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True) 
+    resizer = get_resizer_model(model_type, i3d_mode, model_input_shape, num_resblocks=num_resblocks)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
    
@@ -69,7 +65,6 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
     p_logits = list()
 
     count = 0
-    print("Beginning evaluation for resizer model ", resizer_model, "code model ", model_path)
     for batch, labels in val_dataloader:
         count+=1
         inputs = Variable(batch.to(device))
@@ -86,41 +81,23 @@ def eval(resizer_model, model_path, root, classes_file, debug=False):
 
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
+    f1_sample = f1_score(trues, predictions, average='sample')
     accuracy = accuracy_score(trues, predictions)    
 
-    print(f1_macro, f1_micro, accuracy)
+    print(f1_macro, f1_micro, accuracy, f1_sample)
     if debug:
         pred_np = np.asarray(predictions)
         act_np = np.asarray(trues)
         cf = multilabel_confusion_matrix(trues, predictions)
-        np.save('predictions.npy', pred_np)
-        np.save('actuals.npy', act_np)
-        np.save('logits.npy', np.asarray(p_logits))
-        np.save('confusion.npy', cf)
-        val_dataset = Dataset(root, "train",classes_file,num_frames=32, resize=False, transforms=None)
-        _,val = val_dataset.get_train_validation_split(0.3)
-        subset = torch.utils.data.Subset(val_dataset, val)
-        val_loader = torch.utils.data.DataLoader(subset, batch_size=2, shuffle=False, num_workers=2, pin_memory=True, collate_fn=collate_tensors)
-        predictions = list()
-        trues = list()
-        p_logits = list()
-        for batch, labels in val_loader:
-            count+=1
-            inputs = Variable(batch.to(device))
-            out = resizer(inputs)
-            v = torch.sigmoid(i3d(out))
-            for y_t, y_p in zip(labels, v):
-                p = np.array([1 if z >=0.5 else 0 for z in y_p])
-                predictions.append(p)
-                trues.append(y_t.numpy()) 
-                p_logits.append(y_p.cpu().detach().numpy())
-        pred_np = np.asarray(predictions)
-        act_np = np.asarray(trues) 
-        np.save('val_predictions.npy', pred_np)
-        np.save('val_actuals.npy', act_np)
+        np.save(predictions, pred_np)
+        np.save(actuals, act_np)
+        np.save(logits, np.asarray(p_logits))
+        np.save(confusion, cf)
 
 
-    return f1_macro, f1_micro, accuracy
+    return f1_macro, f1_micro, accuracy, f1_sample
+
+
 
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
@@ -129,9 +106,19 @@ def main():
     for epoch in range(3, 25):
         model_list.append((prefix+str(epoch).zfill(6)+'.pt', prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
-       f1_macro, f1_micro, accuracy = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=False)
-       print ("{0} , f1_macro : {1}, f1_micro {2}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy))
+       f1_macro, f1_micro, accuracy, f1_sample = eval('/virat-vr/models/pytorch-i3d/'+ model, '/virat-vr/models/pytorch-i3d/'+ i3d_model, "/mnt/data/TinyVIRAT/", "classes.txt", debug=False)
+       print ("{0} , f1_macro : {1}, f1_micro {2}, f1_sample {4}, Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_sample))
 
+def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_file, model_type='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
+    model_list = list()
+    for epoch in epoch_list:
+        model_list.append((model_prefix+str(epoch).zfill(6)+'.pt', model_prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
+    for model, i3d_model in model_list:
+        f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file,model_type=model_type, 
+        num_frames=num_frames, resize_shape=resize_shape, model_input_shape=model_input_shape, num_workers=num_workers, batch_size=batch_size,
+        i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion=confusion, predictions=predictions, actuals=actuals, logits=logits)
+        print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
+    
 
 def test_resizer():
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
