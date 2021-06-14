@@ -24,4 +24,4 @@ cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/f
 cp /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_110.jpg /mnt/data/TinyVIRAT/videos/test/VIRAT_S_040000_00_000000_000036/3413_frames/frame_111.jpg
 cd $2
 git pull
-python $1
+python $1 $3
