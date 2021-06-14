@@ -15,9 +15,9 @@ opt = {
         "model_input_shape":112, # final shape being output by the resizer and being fed to the i3d model
         "num_resblocks": 3, # the number of residual blocks being used in the model
         "confusion":"confusion.npy", #the filename with which to save the confusion matrix for the test set 
-        "predictions":"predictions.npy", #the filename with which to save the confusion matrix for the test set 
-        "actuals":"actuals.npy", #the filename with which to save the confusion matrix for the test set 
-        "logits":"logits.npy" #the filename with which to save the confusion matrix for the test set 
+        "predictions":"predictions.npy", #the filename with which to save thepreductions for the test set 
+        "actuals":"actuals.npy", #the filename with which to save the actual labels for the test set 
+        "logits":"logits.npy" #the filename with which to save the logits for the test set 
     }
 
 }
