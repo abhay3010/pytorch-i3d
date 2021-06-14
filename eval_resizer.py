@@ -41,11 +41,11 @@ def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_fra
     val_dataset = Dataset(root, "test",classes_file,num_frames=num_frames, resize=True,resize_shape=(resize_shape,resize_shape), transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True) 
     resizer = get_resizer_model(model_type, i3d_mode, model_input_shape, num_resblocks=num_resblocks)
-    resizer.load_state_dict(torch.load(resizer_model))
+    resizer.load_state_dict(torch.load(resizer_model, map_location=device))
     resizer.to(device)
    
     i3d = InceptionI3d(26,mode="32x112", in_channels=3)
-    state_dict = torch.load(model_path)
+    state_dict = torch.load(model_path, map_location=device)
     new_dict = dict()
     for k, v in state_dict.items():
         if k.startswith("module."):

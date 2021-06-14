@@ -118,6 +118,8 @@ def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_fil
         print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
 
 
+
+
 def main():
     #i3d_model = "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt"
     prefix = 'combined_resizer_56_wider_all_last_in_32'
