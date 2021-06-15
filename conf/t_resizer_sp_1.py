@@ -2,7 +2,7 @@ opt = {
     "model":'spatial_resizer',
     "params":{
     "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset, 
-    "save_path": "/virat-vr/models/pytorch-i3d/resizer_sp_2_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
+    "save_path": "/virat-vr/models/pytorch-i3d/resizer_sp_1_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
     # "data_root": "TinyVIRAT/",
     "num_epochs": 50, #number of epochs to train for
@@ -11,7 +11,7 @@ opt = {
     "classes_file":"classes.txt", # the map of classes to indices used by the Dataset to translate the classes to 1-hot vectors
     "i3d_mode":"32x112", #i3d config num_framesxinput_resolution can vary as (16,32,64)x(112,224)
     "model_input_shape":112, # the shape that the i3d model expects from the resizer
-    "data_input_shape":56, # the input resolution (data_input_shape x data_input_shape) that the resizer gets from the data loader
+    "data_input_shape":112, # the input resolution (data_input_shape x data_input_shape) that the resizer gets from the data loader
     "num_resblocks":1, # number of residual blocks in the resizer
     "i3d_model_path": "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt", # the initial model path for i3d
     "batch_size":32, # the batch size to be used 
