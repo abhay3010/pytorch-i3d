@@ -10,18 +10,18 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "eval_1" ]
+          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "test_spatial_1" ]
           resources:
             limits:
               nvidia.com/gpu: 4
-              memory: "12Gi"
+              memory: "14Gi"
               cpu: "4"
-              ephemeral-storage: 10Gi
+              ephemeral-storage: 20Gi
             requests:
               nvidia.com/gpu: 4
-              memory: "10Gi"
+              memory: "12Gi"
               cpu: "3" 
-              ephemeral-storage: 10Gi
+              ephemeral-storage: 20Gi
           volumeMounts:
             - mountPath: /virat-vr
               name: virat-vr 

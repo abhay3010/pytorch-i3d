@@ -89,10 +89,10 @@ def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_fra
         pred_np = np.asarray(predictions)
         act_np = np.asarray(trues)
         cf = multilabel_confusion_matrix(trues, predictions)
-        np.save(predictions, pred_np)
-        np.save(actuals, act_np)
-        np.save(logits, np.asarray(p_logits))
-        np.save(confusion, cf)
+        np.save(predictions_file, pred_np)
+        np.save(actuals_file, act_np)
+        np.save(logits_file, np.asarray(p_logits))
+        np.save(confusion_file, cf)
 
 
     return f1_macro, f1_micro, accuracy, f1_sample
