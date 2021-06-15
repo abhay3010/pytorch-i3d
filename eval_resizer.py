@@ -116,7 +116,7 @@ def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_fil
     for model, i3d_model in model_list:
         f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file,model_type=model_type, 
         num_frames=num_frames, resize_shape=resize_shape, model_input_shape=model_input_shape, num_workers=num_workers, batch_size=batch_size,
-        i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion_file=confusion, predictions_file=predictions, actual_files=actuals, logits_file=logits)
+        i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion_file=confusion, predictions_file=predictions, actuals_file=actuals, logits_file=logits)
         print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
     
 
