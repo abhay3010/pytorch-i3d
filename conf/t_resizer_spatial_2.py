@@ -10,8 +10,8 @@ opt = {
     "init_lr":0.001, #initial learning rate, 
     "classes_file":"classes.txt", # the map of classes to indices used by the Dataset to translate the classes to 1-hot vectors
     "i3d_mode":"32x112", #i3d config num_framesxinput_resolution can vary as (16,32,64)x(112,224)
-    "model_input_shape":28, # the shape that the i3d model expects from the resizer
-    "data_input_shape":112, # the input resolution (data_input_shape x data_input_shape) that the resizer gets from the data loader
+    "model_input_shape":112, # the shape that the i3d model expects from the resizer
+    "data_input_shape":28, # the input resolution (data_input_shape x data_input_shape) that the resizer gets from the data loader
     "num_resblocks":2, # number of residual blocks in the resizer
     "i3d_model_path": "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt", # the initial model path for i3d
     "batch_size":32, # the batch size to be used 
