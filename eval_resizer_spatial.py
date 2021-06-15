@@ -40,7 +40,7 @@ from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 from spatial_resizer import *
 
-def eval(resizer_model, model_path, root, classes_file, num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
+def eval(resizer_model, model_path, root, classes_file, num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion_file="confusion.npy", predictions_file="predictions.npy", actuals_file="actuals.npy", logits_file="logits.npy"):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=num_frames, resize_shape=(resize_shape, resize_shape), transforms=None, shuffle=False)
@@ -100,10 +100,10 @@ def eval(resizer_model, model_path, root, classes_file, num_frames=32, resize_sh
     act_np = np.asarray(trues)
     if debug:
         cf = multilabel_confusion_matrix(trues, predictions)
-        np.save(predictions, pred_np)
-        np.save(actuals, act_np)
-        np.save(logits, np.asarray(p_logits))
-        np.save(confusion, cf)
+        np.save(predictions_file, pred_np)
+        np.save(actuals_file, act_np)
+        np.save(logits_file, np.asarray(p_logits))
+        np.save(confusion_file, cf)
 
     return f1_macro, f1_micro, accuracy, f1_samples
 
