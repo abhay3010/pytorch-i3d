@@ -10,7 +10,7 @@ def eval(config):
     config['params']['debug'] = True
     config['params']['epoch_list'] = [config['params']['epoch']]
     del config['params']['epoch']
-    for key in ['confusion_file', 'predictions_file', 'actuals_file', 'logits_file']:
+    for key in ['confusion', 'predictions', 'actuals', 'logits']:
         build_dir(config['params'][key])
     if config['model'] == 'resizer':
         eval_resizer(**config['params'])

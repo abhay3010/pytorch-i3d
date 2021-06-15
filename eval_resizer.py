@@ -36,7 +36,7 @@ from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 from spatial_transformer import SpatialTransformer
 
-def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
+def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion_file="confusion.npy", predictions_file="predictions.npy", actuals_file="actuals.npy", logits_file="logits.npy"):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     val_dataset = Dataset(root, "test",classes_file,num_frames=num_frames, resize=True,resize_shape=(resize_shape,resize_shape), transforms=None)
     val_dataloader = torch.utils.data.DataLoader(val_dataset, batch_size=batch_size, shuffle=False, num_workers=num_workers, pin_memory=True) 
@@ -116,7 +116,7 @@ def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_fil
     for model, i3d_model in model_list:
         f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file,model_type=model_type, 
         num_frames=num_frames, resize_shape=resize_shape, model_input_shape=model_input_shape, num_workers=num_workers, batch_size=batch_size,
-        i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion=confusion, predictions=predictions, actuals=actuals, logits=logits)
+        i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion_file=confusion, predictions_file=predictions, actual_files=actuals, logits_file=logits)
         print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
     
 
