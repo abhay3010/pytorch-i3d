@@ -16,7 +16,8 @@ opt = {
     "i3d_model_path": "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt", # the initial model path for i3d
     "batch_size":84, # the batch size to be used 
     "freeze_i3d":False, # set to True if we need to freeze all but the last layers of the i3d model
-    "num_workers":5 # the number of processes that the dataloader needs to spawn
+    "num_workers":5, # the number of processes that the dataloader needs to spawn, 
+    "num_steps_per_update":2
     
 
     }
