@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resizer-test-1res-job-version2-1
+  name: virat-vr-resizer-test-3res-job-version2-1
 spec:
   template:
     spec:
@@ -10,16 +10,16 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "test_spatial_1" ]
+          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "test_spatail_3" ]
           resources:
             limits:
               nvidia.com/gpu: 4
-              memory: "14Gi"
+              memory: "10Gi"
               cpu: "4"
               ephemeral-storage: 20Gi
             requests:
               nvidia.com/gpu: 4
-              memory: "12Gi"
+              memory: "8Gi"
               cpu: "3" 
               ephemeral-storage: 20Gi
           volumeMounts:
@@ -53,7 +53,7 @@ spec:
               - key: gpu-type
                 operator: In
                 values:
-                - "1080Ti"
+                - "2080Ti"
       volumes:
         - name: virat-vr
           persistentVolumeClaim:
