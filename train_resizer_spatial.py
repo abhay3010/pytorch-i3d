@@ -35,7 +35,7 @@ from spatial_resizer import *
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape,i3d_model_path,batch_size,num_frames=32, data_input_shape=56,save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', freeze_i3d=True, num_resblocks=1, num_workers=4):
+def run(data_root, model_input_shape,i3d_model_path,batch_size,num_frames=32, data_input_shape=56,save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', freeze_i3d=True, num_resblocks=1, num_workers=4,  num_steps_per_update = 8):
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print("torch device",device)
@@ -63,7 +63,7 @@ def run(data_root, model_input_shape,i3d_model_path,batch_size,num_frames=32, da
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 8    
+   
     # for name, param in i3d.named_parameters():
     #     if "logits" not in name:
     #         param.requires_grad= False

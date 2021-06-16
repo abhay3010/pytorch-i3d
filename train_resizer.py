@@ -33,7 +33,8 @@ from resizer import *
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, i3d_model_path, batch_size, num_frames=32, model_input_shape=112,  data_input_shape=56, save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', num_resblocks=1, model_type='2d', freeze_i3d=True, num_workers=4):
+def run(data_root, i3d_model_path, batch_size, num_frames=32, model_input_shape=112,  data_input_shape=56, save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', num_resblocks=1, model_type='2d', freeze_i3d=True, num_workers=4,     num_steps_per_update = 2    
+):
     #load the virat model. Freeze its layers. (check how to do so)
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     #print("torch device",device)
@@ -61,7 +62,6 @@ def run(data_root, i3d_model_path, batch_size, num_frames=32, model_input_shape=
         i3d = nn.DataParallel(i3d)
         resizer = nn.DataParallel(resizer)
     lr = init_lr
-    num_steps_per_update = 2    
     optimizer = optim.Adam(list(resizer.parameters()) + list(i3d.parameters()), lr=lr)
     #scheduler = optim.lr_scheduler.ReduceLROnPlateau(optimizer, mode='min', factor=0.1, patience=2, threshold=0.0001, verbose=True)
 
