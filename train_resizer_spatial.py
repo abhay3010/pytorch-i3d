@@ -3,6 +3,7 @@ import os
 #os.environ["CUDA_VISIBLE_DEVICES"]='0,1,2,3'
 import sys
 import argparse
+from numpy.core.fromnumeric import resize
 
 # parser = argparse.ArgumentParser()
 # parser.add_argument('-mode', type=str, help='rgb or flow')
@@ -24,7 +25,7 @@ from torchvision import datasets, transforms
 import videotransforms
 from model_utils import *
 from virat_dataset import collate_tensors
-from spatial_transformer import SpatialTransformer
+from spatial_transformer import SpatialTransformer, SpatialTransformer3D
 
 
 import numpy as np
@@ -35,7 +36,7 @@ from spatial_resizer import *
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape,i3d_model_path,batch_size,num_frames=32, data_input_shape=56,save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', freeze_i3d=True, num_resblocks=1, num_workers=4,  num_steps_per_update = 8):
+def run(data_root, model_input_shape,i3d_model_path,batch_size,mode='2d', num_frames=32, data_input_shape=56,save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', freeze_i3d=True, num_resblocks=1, num_workers=4,  num_steps_per_update = 8):
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print("torch device",device)
@@ -43,6 +44,8 @@ def run(data_root, model_input_shape,i3d_model_path,batch_size,num_frames=32, da
     print("declared model")
     i3d = load_i3d_from_file(i3d, i3d_model_path, device, freeze_i3d)
     resizer = TransformerWithResizer(3, num_frames, (model_input_shape, model_input_shape), in_res=data_input_shape, num_resblocks=num_resblocks)
+    if mode == '3d':
+        resizer = TransformerWithResizer3D(3, num_frames, (model_input_shape, model_input_shape), in_res=data_input_shape, num_resblocks=num_resblocks)
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
     #resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
 

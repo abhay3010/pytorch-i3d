@@ -41,7 +41,7 @@ from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 from spatial_resizer import *
 
-def eval(resizer_model, model_path, root, classes_file, num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion_file="confusion.npy", predictions_file="predictions.npy", actuals_file="actuals.npy", logits_file="logits.npy"):
+def eval(resizer_model, model_path, root, classes_file, mode='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion_file="confusion.npy", predictions_file="predictions.npy", actuals_file="actuals.npy", logits_file="logits.npy"):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
     val_dataset = Dataset(root, "test",classes_file,num_frames=num_frames, resize_shape=(resize_shape, resize_shape), transforms=None, shuffle=False)
@@ -52,6 +52,8 @@ def eval(resizer_model, model_path, root, classes_file, num_frames=32, resize_sh
         
     # )
     resizer = TransformerWithResizer(3, num_frames, (model_input_shape,model_input_shape), in_res=resize_shape, num_resblocks=num_resblocks)
+    if mode == '3d':
+        resizer = TransformerWithResizer3D(3, num_frames, (model_input_shape,model_input_shape), in_res=resize_shape, num_resblocks=num_resblocks)
     # resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)
@@ -108,12 +110,12 @@ def eval(resizer_model, model_path, root, classes_file, num_frames=32, resize_sh
 
     return f1_macro, f1_micro, accuracy, f1_samples
 
-def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_file, num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
+def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_file, mode='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
     model_list = list()
     for epoch in epoch_list:
         model_list.append((model_prefix+str(epoch).zfill(6)+'.pt', model_prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
     for model, i3d_model in model_list:
-        f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file, 
+        f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file, mode=mode
         num_frames=num_frames, resize_shape=resize_shape, model_input_shape=model_input_shape, num_workers=num_workers, batch_size=batch_size,
         i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion_file=confusion, predictions_file=predictions, actuals_file=actuals, logits_file=logits)
         print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
