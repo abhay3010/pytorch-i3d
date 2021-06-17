@@ -117,93 +117,93 @@ class TransformerWithResizer(nn.Module):
         return o
 
 
-# class TransformerWithResizer3D(nn.Module):
-#     def __init__(self, in_channels,n_frames, scale_shape,in_res=112, num_resblocks=1, skip=False):
-#         super(TransformerWithResizer3D, self).__init__()
-#         self.in_channels = in_channels
-#         self.r = num_resblocks
-#         self.scale_shape = scale_shape
-#         self.in_res = in_res
-#         self.nframes = n_frames
-#         self.skip = skip
+class TransformerWithResizer3D(nn.Module):
+    def __init__(self, in_channels,n_frames, scale_shape,in_res=112, num_resblocks=1, skip=False):
+        super(TransformerWithResizer3D, self).__init__()
+        self.in_channels = in_channels
+        self.r = num_resblocks
+        self.scale_shape = scale_shape
+        self.in_res = in_res
+        self.nframes = n_frames
+        self.skip = skip
         
-#         self.localization = nn.Sequential(
-#         nn.Conv3d(self.in_channels, 16, kernel_size=[5,5,5], stride=[1, 1,1],padding=2),
-#         nn.MaxPool3d(3, stride=2, padding=1),
-#         nn.BatchNorm3d(16),
-#         nn.Tanh(),
-#         nn.Conv3d(16, 8, kernel_size = 3, padding=1),
-#         nn.MaxPool3d(2, stride=2, padding=[0,0,0]),
-#         nn.BatchNorm3d(8),
-#         nn.Tanh())
-#         self.fc_loc = nn.Sequential(
-#             nn.Linear(int(8*((in_res/4)**2))*(int(n_frames/4)), 32), 
-#             nn.Tanh(),
-#             nn.Linear(32, 4*3)
-#         )
-#         self.fc_loc[2].weight.data.zero_()
-#         self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 0,  1, 0, 0, 0, 0, 1, 0], dtype=torch.float))
+        self.localization = nn.Sequential(
+        nn.Conv3d(self.in_channels, 16, kernel_size=[5,5,5], stride=[1, 1,1],padding=2),
+        nn.MaxPool3d(3, stride=2, padding=1),
+        nn.BatchNorm3d(16),
+        nn.Tanh(),
+        nn.Conv3d(16, 8, kernel_size = 3, padding=1),
+        nn.MaxPool3d(2, stride=2, padding=[0,0,0]),
+        nn.BatchNorm3d(8),
+        nn.Tanh())
+        self.fc_loc = nn.Sequential(
+            nn.Linear(int(8*((in_res/4)**2))*(int(n_frames/4)), 32), 
+            nn.Tanh(),
+            nn.Linear(32, 4*3)
+        )
+        self.fc_loc[2].weight.data.zero_()
+        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 0,  1, 0, 0, 0, 0, 1, 0], dtype=torch.float))
         
-#         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
-#         if not self.skip:
-#             self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[7, 7, 7],  norm=None)
-#             #revisit size of this unit as it is inconsitent between paper and diagram
-#             self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
-#             self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
-#             self.residual_blocks = make_residuals(num_resblocks, 16)
-#             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
-#             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
-#     def forward(self, x):
-#         # theta = self.get_theta(x)
-#         # x = self.apply_theta(theta, x)
+        self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
+        if not self.skip:
+            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[7, 7, 7],  norm=None)
+            #revisit size of this unit as it is inconsitent between paper and diagram
+            self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
+            self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
+            self.residual_blocks = make_residuals(num_resblocks, 16)
+            self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
+            self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
+    def forward(self, x):
+        # theta = self.get_theta(x)
+        # x = self.apply_theta(theta, x)
 
-#         #print("input shape", x.shape)
-#         residual = self.skip_resizer(x)
-#         #print(residual.shape)
-#         #theta = self.get_theta(residual)
+        #print("input shape", x.shape)
+        residual = self.skip_resizer(x)
+        #print(residual.shape)
+        #theta = self.get_theta(residual)
         
-#         if self.skip:
-#             return residual
-#         else:
+        if self.skip:
+            return residual
+        else:
 
-#         # print("resizer_shape", out.shape)
-#             out = self.c1(x)
-#             # print("conv shape", out.s
+        # print("resizer_shape", out.shape)
+            out = self.c1(x)
+            # print("conv shape", out.s
 
-#             out = self.c2(out)
-#             # print("conv2 shape", out.shape)
-# =            
-#             out =  self.resizer_first(out)
+            out = self.c2(out)
+            # print("conv2 shape", out.shape)
+=            
+            out =  self.resizer_first(out)
             
-#             # print("in resizer shape", out.shape)
-#             residual_skip = out
-#             out = self.residual_blocks(out)
-#             out = self.c3(out)
-#             out+=residual_skip
-#             # print(out.shape)        
-#             out = self.c4(out)
-#             #print(out.shape)
-#             out+=residual
-#             # print("out", out.shape)
-#             # theta = self.get_theta(out)
-#             out = self.apply_theta(theta, out)
-#             return out
+            # print("in resizer shape", out.shape)
+            residual_skip = out
+            out = self.residual_blocks(out)
+            out = self.c3(out)
+            out+=residual_skip
+            # print(out.shape)        
+            out = self.c4(out)
+            #print(out.shape)
+            out+=residual
+            # print("out", out.shape)
+            # theta = self.get_theta(out)
+            out = self.apply_theta(theta, out)
+            return out
 
-#     def get_theta(self, x):
-#         print(x.shape)
-#         xs =  self.localization(x)
-#         print(xs.shape)
-#         xs = xs.view([-1,8 * (int(self.in_res/4)**2) * int(self.nframes/4)])
-#         print(xs.shape)
-#         theta = self.fc_loc(xs)
-#         theta = theta.view(-1,3,4)
-#         if random.uniform(0,1) <=0.03: 
-#             print("theta", theta.detach().cpu().numpy()[0])
-#         return theta
-#     def apply_theta(self, theta, x):
-#         grid = F.affine_grid(theta, x.size(),align_corners=False)
-#         x = F.grid_sample(x, grid, align_corners=False)
-#         return x
+    def get_theta(self, x):
+        print(x.shape)
+        xs =  self.localization(x)
+        print(xs.shape)
+        xs = xs.view([-1,8 * (int(self.in_res/4)**2) * int(self.nframes/4)])
+        print(xs.shape)
+        theta = self.fc_loc(xs)
+        theta = theta.view(-1,3,4)
+        if random.uniform(0,1) <=0.03: 
+            print("theta", theta.detach().cpu().numpy()[0])
+        return theta
+    def apply_theta(self, theta, x):
+        grid = F.affine_grid(theta, x.size(),align_corners=False)
+        x = F.grid_sample(x, grid, align_corners=False)
+        return x
 
     
 
