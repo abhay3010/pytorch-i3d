@@ -35,6 +35,7 @@ from virat_dataset import Virat as Dataset
 from torchsummary import summary
 from virat_dataset import collate_tensors, load_rgb_frames
 from spatial_transformer import SpatialTransformer
+from spatial_resizer import *
 
 def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion_file="confusion.npy", predictions_file="predictions.npy", actuals_file="actuals.npy", logits_file="logits.npy"):
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
@@ -138,7 +139,7 @@ def test_resizer():
 def sample_resizer_output():
     root = './TinyVIRAT/'
     classes_file = "classes.txt"
-    resizer_model = 'eval_models/spatial_2d_2dr_56_000016.pt'
+    resizer_model = 'eval_models/resizer_spatial_3_56_000014.pt'
     val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None)
     _,val = val_dataset.get_train_validation_split(0.007)
     print(len(val))
@@ -149,12 +150,12 @@ def sample_resizer_output():
     new_val_dataset_ = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None, sample=False)
     
     val_dataloader = torch.utils.data.DataLoader(val_dataset_sampled, batch_size=1, shuffle=False, num_workers=4, pin_memory=True, collate_fn=collate_tensors)
-    resizer =ResizerMainNetworkV4_2D(3, 32, (112, 112), skip=False, num_resblocks=1)
-    resizer = nn.Sequential(
-        SpatialTransformer(3, in_time=32, in_res=56),
-        ResizerMainNetworkV4_2D(3, 32, (112,112),num_resblocks=1)
+    resizer =TransformerWithResizer(3, 32, (112, 112), skip=False, num_resblocks=3)
+    # resizer = nn.Sequential(
+    #     SpatialTransformer(3, in_time=32, in_res=56),
+    #     ResizerMainNetworkV4_2D(3, 32, (112,112),num_resblocks=1)
         
-    )
+    # )
     resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
     resizer.load_state_dict(torch.load(resizer_model, map_location=device))
@@ -176,7 +177,7 @@ def sample_resizer_output():
         fname = get_fname(label, reverse_map)
         # print(permuted_view.size(0))
         for i in range(permuted_view.size(0)):
-            save_image(permuted_view[i], "resized_frames_new/{2}_test_{0}_frame{1}_28_test_2d.png".format(index, i, fname))
+            save_image(permuted_view[i], "resized_frames_new/{2}_test_{0}_frame{1}_spatial_56_3res_test.png".format(index, i, fname))
             #save_image(permuted_view_n[i], "resized_frames_new/{2}_test_{0}_frame{1}_normal.png".format(index, i, fname))
         index+=1
 def get_fname(labels, reverse_map):
