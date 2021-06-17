@@ -171,8 +171,7 @@ class TransformerWithResizer3D(nn.Module):
             # print("conv shape", out.s
 
             out = self.c2(out)
-            # print("conv2 shape", out.shape)
-=            
+            # print("conv2 shape", out.shape)          
             out =  self.resizer_first(out)
             
             # print("in resizer shape", out.shape)
@@ -186,7 +185,7 @@ class TransformerWithResizer3D(nn.Module):
             out+=residual
             # print("out", out.shape)
             # theta = self.get_theta(out)
-            out = self.apply_theta(theta, out)
+            # out = self.apply_theta(theta, out)
             return out
 
     def get_theta(self, x):
