@@ -124,16 +124,16 @@ class TransformerWithResizer3D(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv3d(self.in_channels, 16, kernel_size=[5,5,5], stride=[1,1],padding=2),
+        nn.Conv3d(self.in_channels, 16, kernel_size=[5,5,5], stride=[1, 1,1],padding=2),
         nn.MaxPool3d(3, stride=2, padding=1),
         nn.BatchNorm3d(16),
         nn.Tanh(),
-        nn.Conv2d(16, 8, kernel_size = 3, padding=1),
-        nn.MaxPool3d(2, stride=2, padding=[0,0]),
+        nn.Conv3d(16, 8, kernel_size = 3, padding=1),
+        nn.MaxPool3d(2, stride=2, padding=[0,0,0]),
         nn.BatchNorm3d(8),
         nn.Tanh())
         self.fc_loc = nn.Sequential(
-            nn.Linear(int(8*((in_res/4)**2)), 32), 
+            nn.Linear(int(8*((in_res/4)**2))*(int(n_frames/4)), 32), 
             nn.Tanh(),
             nn.Linear(32, 4*3)
         )
@@ -150,8 +150,8 @@ class TransformerWithResizer3D(nn.Module):
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        # theta = self.get_theta(x)
-        # x = self.apply_theta(theta, x)
+        theta = self.get_theta(x)
+        x = self.apply_theta(theta, x)
 
         #print("input shape", x.shape)
         residual = self.skip_resizer(x)
@@ -180,12 +180,16 @@ class TransformerWithResizer3D(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            theta = self.get_theta(out)
-            out = self.apply_theta(theta, out)
+            # theta = self.get_theta(out)
+            # out = self.apply_theta(theta, out)
             return out
 
     def get_theta(self, x):
+        print(x.shape)
         xs =  self.localization(x)
+        print(xs.shape)
+        xs = xs.view([-1,8 * (int(self.in_res/4)**2) * int(self.nframes/4)])
+        print(xs.shape)
         theta = self.fc_loc(xs)
         theta = theta.view(-1,3,4)
         if random.uniform(0,1) <=0.03: 
