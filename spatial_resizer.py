@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels, 16, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(self.in_channels*self.nframes, 16, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(16),
         nn.Tanh(),
@@ -40,16 +40,16 @@ class TransformerWithResizer(nn.Module):
         
         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
         if not self.skip:
-            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[7, 7, 7],  norm=None)
+            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=32, kernel_shape=[7, 7, 7],  norm=None)
             #revisit size of this unit as it is inconsitent between paper and diagram
-            self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
+            self.c2 = ConvUnit(in_channels=32, kernel_shape = [1,1,1], output_channels=16)
             self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
             self.residual_blocks = make_residuals(num_resblocks, 16)
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        # theta = self.get_theta(x)
-        # x = self.apply_theta(theta, x)
+        theta = self.get_theta(x)
+        x = self.apply_theta(theta, x)
 
         #print("input shape", x.shape)
         residual = self.skip_resizer(x)
@@ -66,7 +66,7 @@ class TransformerWithResizer(nn.Module):
 
             out = self.c2(out)
             # print("conv2 shape", out.shape)
-            theta = self.get_theta(x)
+            
             out =  self.resizer_first(out)
             
             # print("in resizer shape", out.shape)
@@ -91,7 +91,8 @@ class TransformerWithResizer(nn.Module):
         h = x.shape[3]
         w = x.shape[4]
         # print(b,c,t,h,w)
-        x_view = x.view(-1,c,h,w)
+        x_view = x.view(-1,c*t,h,w)
+        print(x_view.shape)
         xs =  self.localization(x_view)
         #print(xs.shape)
         xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
@@ -107,7 +108,7 @@ class TransformerWithResizer(nn.Module):
         h = x.shape[3]
         w = x.shape[4]
         #print(theta.shape)
-        x_view = x.view(-1,c,h,w)
+        x_view = x.view(-1,c*t,h,w)
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
