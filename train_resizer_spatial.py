@@ -104,7 +104,7 @@ def run(data_root, model_input_shape,i3d_model_path,batch_size,mode='2d', num_fr
                 loss = class_loss/num_steps_per_update
                 tot_loss += loss.item()
                 loss.backward()
-                print("Gradient received by fully connected layer", resizer.fc_loc[2].weight.grad)
+                print("Gradient received by fully connected layer", resizer.modeult.fc_loc[2].weight.grad)
                 if num_iter == num_steps_per_update and phase == 'train':
                     num_iter = 0
                     optimizer.step()
