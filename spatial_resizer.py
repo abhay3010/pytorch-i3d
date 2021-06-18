@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(16*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(32),
         nn.Tanh(),
@@ -74,7 +74,12 @@ class TransformerWithResizer(nn.Module):
             
             # print("in resizer shape", out.shape)
             residual_skip = out
+            print(out.shape)
+            theta = self.get_theta(out)
+            print(theta.shape)
             out = self.residual_blocks(out)
+            print(out.shape)
+            out = self.apply_theta(theta, out)
             out = self.c3(out)
             out+=residual_skip
             # print(out.shape)        
@@ -82,8 +87,8 @@ class TransformerWithResizer(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            theta = self.get_theta(out)
-            out = self.apply_theta(theta, out)
+            # theta = self.get_theta(out)
+            # out = self.apply_theta(theta, out)
             return out
 
     def get_theta(self, x):
@@ -94,15 +99,18 @@ class TransformerWithResizer(nn.Module):
         h = x.shape[3]
         w = x.shape[4]
         # print(b,c,t,h,w)
-        x_view = x.view(-1,c*t,h,w)
-        #print(x_view.shape)
+        x_view = x.view(b,c*t,h,w)
+        # print("shape into localization", x_view.shape)
         xs =  self.localization(x_view)
+        # print("shape after localization", xs.shape)
+
         #print(xs.shape)
-        xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
+        xs = xs.view([b, -1,int(8*((self.in_res/4)**2)) ])
+        print(xs.shape)
         theta = self.fc_loc(xs)
         theta = theta.view(-1,2,3)
-        # if random.uniform(0,1) <=0.04: 
-        print("theta", theta.detach().cpu().numpy()[0])
+        if random.uniform(0,1) <=0.04: 
+            print("theta", theta.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
         return theta
     def apply_theta(self, theta, x):
