@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(16*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(self.in_channels*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(32),
         nn.Tanh(),
@@ -48,8 +48,8 @@ class TransformerWithResizer(nn.Module):
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        # theta = self.get_theta(x)
-        # x = self.apply_theta(theta, x)
+        theta = self.get_theta(x)
+        x = self.apply_theta(theta, x)
 
         #print("input shape", x.shape)
         residual = self.skip_resizer(x)
@@ -66,8 +66,8 @@ class TransformerWithResizer(nn.Module):
 
             out = self.c2(out)
             # print("conv2 shape", out.shape)
-            theta = self.get_theta(out)
-            out = self.apply_theta(theta, out)
+            # theta = self.get_theta(out)
+            # out = self.apply_theta(theta, out)
             out =  self.resizer_first(out)
             # theta = self.get_theta(out)
             
