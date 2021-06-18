@@ -66,9 +66,10 @@ class TransformerWithResizer(nn.Module):
 
             out = self.c2(out)
             # print("conv2 shape", out.shape)
-            theta = self.get_theta(out)
+            
             
             out =  self.resizer_first(out)
+            theta = self.get_theta(out)
             
             
             # print("in resizer shape", out.shape)
@@ -102,6 +103,7 @@ class TransformerWithResizer(nn.Module):
         theta = theta.view(-1,2,3)
         if random.uniform(0,1) <=0.04: 
             print("theta", theta.detach().cpu().numpy()[0])
+            print("theta shape", theta.shape)
         return theta
     def apply_theta(self, theta, x):
         c = x.shape[1]
@@ -115,6 +117,17 @@ class TransformerWithResizer(nn.Module):
         x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
         return o
+
+
+
+
+
+
+
+
+
+
+
 
 
 class TransformerWithResizer3D(nn.Module):
