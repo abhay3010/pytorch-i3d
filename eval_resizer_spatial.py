@@ -51,9 +51,9 @@ def eval(resizer_model, model_path, root, classes_file, mode='2d', num_frames=32
     #     ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), (112,112),num_resblocks=1)
         
     # )
-    resizer = TransformerWithResizer(3, num_frames, (model_input_shape,model_input_shape), in_res=model_input_shape, num_resblocks=num_resblocks)
+    resizer = TransformerWithResizer(3, num_frames, (model_input_shape,model_input_shape), in_res=resize_shape, num_resblocks=num_resblocks)
     if mode == '3d':
-        resizer = TransformerWithResizer3D(3, num_frames, (model_input_shape,model_input_shape), in_res=model_input_shape, num_resblocks=num_resblocks)
+        resizer = TransformerWithResizer3D(3, num_frames, (model_input_shape,model_input_shape), in_res=resize_shape, num_resblocks=num_resblocks)
     # resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
     resizer.load_state_dict(torch.load(resizer_model))
     resizer.to(device)

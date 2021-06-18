@@ -146,10 +146,10 @@ class TransformerWithResizer3D(nn.Module):
         self.fc_loc = nn.Sequential(
             nn.Linear(int(8*((in_res/4)**2))*(int(n_frames/4)), 32), 
             nn.Tanh(),
-            nn.Linear(32, 4*3)
+            nn.Linear(32, 3*2)
         )
         self.fc_loc[2].weight.data.zero_()
-        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 0,  1, 0, 0, 0, 0, 1, 0], dtype=torch.float))
+        self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
         
         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
         if not self.skip:
@@ -191,8 +191,8 @@ class TransformerWithResizer3D(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            # theta = self.get_theta(out)
-            # out = self.apply_theta(theta, out)
+            theta = self.get_theta(out)
+            out = self.apply_theta(theta, out)
             return out
 
     def get_theta(self, x):
@@ -202,19 +202,26 @@ class TransformerWithResizer3D(nn.Module):
         xs = xs.view([-1,8 * (int(self.in_res/4)**2) * int(self.nframes/4)])
         print(xs.shape)
         theta = self.fc_loc(xs)
-        theta = theta.view(-1,3,4)
+        theta = theta.view(-1,2,3)
         if random.uniform(0,1) <=0.03: 
             print("theta", theta.detach().cpu().numpy()[0])
         return theta
     def apply_theta(self, theta, x):
-        grid = F.affine_grid(theta, x.size(),align_corners=False)
-        x = F.grid_sample(x, grid, align_corners=False)
+        c = x.shape[1]
+        b = x.shape[0]
+        t = x.shape[2]
+        h = x.shape[3]
+        w = x.shape[4]
+        #print(theta.shape)
+        x_view = x.view(b,c*t,h,w)
+        grid = F.affine_grid(theta, x_view.size(),align_corners=False)
+        x = F.grid_sample(x_view, grid, align_corners=False)
         return x
 
     
 
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=28, num_resblocks=1 )
+    resizer_network = TransformerWithResizer3D(3,32,(112,112),in_res=112, num_resblocks=1 )
     summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     
 
