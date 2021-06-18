@@ -1,7 +1,7 @@
 opt = {
     "model":'resizer',
     "params":{
-    "mode":"3d",    
+    "model_type":"3d",    
     "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset, 
     "save_path": "/virat-vr/models/pytorch-i3d/resizer_3d_1_unfrozen", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
