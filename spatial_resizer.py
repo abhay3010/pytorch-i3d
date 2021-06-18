@@ -83,13 +83,13 @@ class TransformerWithResizer(nn.Module):
         w = x.shape[4]
         # print(b,c,t,h,w)
         x_view = x.view(-1,c,h,w)
-        print("shape into localization", x_view.shape)
+        #print("shape into localization", x_view.shape)
         xs =  self.localization(x_view)
-        print("shape after localization", xs.shape)
+        #print("shape after localization", xs.shape)
 
-        print(xs.shape)
+        #print(xs.shape)
         xs = xs.view([ -1,int(8*((self.in_res/4)**2)) ])
-        print("shape into localization", xs.shape)
+        #print("shape into localization", xs.shape)
         theta1 = self.fc_loc(xs)
         theta1 = theta1.view(-1,2,3)
         theta2 = self.fc_loc2(xs)
