@@ -161,7 +161,7 @@ class TransformerWithResizer3D(nn.Module):
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        # theta = self.get_theta(x)
+        theta = self.get_theta(x)
         # x = self.apply_theta(theta, x)
 
         #print("input shape", x.shape)
@@ -191,7 +191,7 @@ class TransformerWithResizer3D(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            theta = self.get_theta(out)
+            # theta = self.get_theta(out)
             out = self.apply_theta(theta, out)
             return out
 
@@ -221,7 +221,7 @@ class TransformerWithResizer3D(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer3D(3,32,(112,112),in_res=112, num_resblocks=1 )
+    resizer_network = TransformerWithResizer3D(3,32,(112,112),in_res=28, num_resblocks=1 )
     summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     
 
