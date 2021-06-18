@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(self.in_channels, 32, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(32),
         nn.Tanh(),
@@ -82,14 +82,14 @@ class TransformerWithResizer(nn.Module):
         h = x.shape[3]
         w = x.shape[4]
         # print(b,c,t,h,w)
-        x_view = x.view(b,c*t,h,w)
-        # print("shape into localization", x_view.shape)
+        x_view = x.view(-1,c,h,w)
+        print("shape into localization", x_view.shape)
         xs =  self.localization(x_view)
-        # print("shape after localization", xs.shape)
+        print("shape after localization", xs.shape)
 
-        #print(xs.shape)
-        xs = xs.view([b, -1,int(8*((self.in_res/4)**2)) ])
-        #print(xs.shape)
+        print(xs.shape)
+        xs = xs.view([ -1,int(8*((self.in_res/4)**2)) ])
+        print("shape into localization", xs.shape)
         theta1 = self.fc_loc(xs)
         theta1 = theta1.view(-1,2,3)
         theta2 = self.fc_loc2(xs)
@@ -105,8 +105,8 @@ class TransformerWithResizer(nn.Module):
         t = x.shape[2]
         h = x.shape[3]
         w = x.shape[4]
-        #print(theta.shape)
-        x_view = x.view(-1,c*t,h,w)
+        print(theta.shape)
+        x_view = x.view(-1,c,h,w)
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
@@ -196,8 +196,15 @@ class TransformerWithResizer3D(nn.Module):
             return out
 
     def get_theta(self, x):
+        c = x.shape[1]
+        b = x.shape[0]
+        t = x.shape[2]
+        h = x.shape[3]
+        w = x.shape[4]
         #print(x.shape)
-        xs =  self.localization(x)
+        x_view = x.view(-1, c, h, w)
+        xs =  self.localization(x_view)
+        
         #print(xs.shape)
         xs = xs.view([-1,8 * (int(self.in_res/4)**2) * int(self.nframes/4)])
         #print(xs.shape)
@@ -213,7 +220,7 @@ class TransformerWithResizer3D(nn.Module):
         h = x.shape[3]
         w = x.shape[4]
         #print(theta.shape)
-        x_view = x.view(b,c*t,h,w)
+        x_view = x.view(-1,c,h,w)
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x = F.grid_sample(x_view, grid, align_corners=False)
         o = x.view(b,c,t,h,w)
@@ -222,7 +229,7 @@ class TransformerWithResizer3D(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer3D(3,32,(112,112),in_res=28, num_resblocks=1 )
+    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=28, num_resblocks=1 )
     summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     
 

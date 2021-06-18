@@ -2,7 +2,7 @@ opt = {
     "model":'spatial_resizer',
     "params":{
     "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset, 
-    "save_path": "/virat-vr-models/resizer_spatial_3d_1_56_first_last_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
+    "save_path": "/virat-vr-models/resizer_spatial_corrected_1_56_two_branch_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
     # "data_root": "TinyVIRAT/",
     "num_epochs": 50, #number of epochs to train for
@@ -18,7 +18,7 @@ opt = {
     "freeze_i3d":False, # set to True if we need to freeze all but the last layers of the i3d model
     "num_workers":5, # the number of processes that the dataloader needs to spawn, 
     "num_steps_per_update":1,
-    "mode":'3d'
+    "mode":'2d'
     
 
     }
