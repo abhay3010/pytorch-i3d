@@ -48,7 +48,7 @@ class TransformerWithResizer(nn.Module):
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        # theta = self.get_theta(x)
+        theta = self.get_theta(x)
         #x = self.apply_theta(theta, x)
 
         #print("input shape", x.shape)
@@ -82,7 +82,7 @@ class TransformerWithResizer(nn.Module):
             #print(out.shape)
             out+=residual
             # print("out", out.shape)
-            theta = self.get_theta(out)
+            # theta = self.get_theta(out)
             out = self.apply_theta(theta, out)
             return out
 
@@ -101,9 +101,9 @@ class TransformerWithResizer(nn.Module):
         xs = xs.view([-1,int(8*((self.in_res/4)**2)) ])
         theta = self.fc_loc(xs)
         theta = theta.view(-1,2,3)
-        if random.uniform(0,1) <=0.04: 
-            print("theta", theta.detach().cpu().numpy()[0])
-            print("theta shape", theta.shape)
+        # if random.uniform(0,1) <=0.04: 
+        print("theta", theta.detach().cpu().numpy()[0])
+            #print("theta shape", theta.shape)
         return theta
     def apply_theta(self, theta, x):
         c = x.shape[1]

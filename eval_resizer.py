@@ -83,7 +83,8 @@ def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_fra
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
     f1_sample = f1_score(trues, predictions, average='sample')
-    accuracy = accuracy_score(trues, predictions)    
+    accuracy = accuracy_score(trues, predictions)
+    cf = multilabel_confusion_matrix(trues, predictions)    
 
     print(f1_macro, f1_micro, accuracy, f1_sample)
     if debug:
@@ -96,7 +97,7 @@ def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_fra
         np.save(confusion_file, cf)
 
 
-    return f1_macro, f1_micro, accuracy, f1_sample
+    return f1_macro, f1_micro, accuracy, f1_sample, cf
 
 
 
@@ -114,11 +115,19 @@ def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_fil
     model_list = list()
     for epoch in epoch_list:
         model_list.append((model_prefix+str(epoch).zfill(6)+'.pt', model_prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
+    max_f1_macro = 0
+    confusion_matrix = None
     for model, i3d_model in model_list:
-        f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file,model_type=model_type, 
+        f1_macro, f1_micro, accuracy, f1_samples, cf = eval(model_path + model, model_path+ i3d_model, data_root, classes_file,model_type=model_type, 
         num_frames=num_frames, resize_shape=resize_shape, model_input_shape=model_input_shape, num_workers=num_workers, batch_size=batch_size,
         i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion_file=confusion, predictions_file=predictions, actuals_file=actuals, logits_file=logits)
         print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
+        if max_f1_macro < f1_macro:
+            max_f1_macro = f1_macro
+            confusion_matrix = cf
+        np.save(confusion, confusion_matrix)
+
+    
     
 
 def test_resizer():
@@ -139,7 +148,7 @@ def test_resizer():
 def sample_resizer_output():
     root = './TinyVIRAT/'
     classes_file = "classes.txt"
-    resizer_model = 'eval_models/resizer_spatial_1_56_first_000017.pt'
+    resizer_model = 'eval_models/resizer_spatial_1_56_first_last_unfrozen000020.pt'
     val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None)
     _,val = val_dataset.get_train_validation_split(0.007)
     print(len(val))
@@ -177,7 +186,7 @@ def sample_resizer_output():
         fname = get_fname(label, reverse_map)
         # print(permuted_view.size(0))
         for i in range(permuted_view.size(0)):
-            save_image(permuted_view[i], "resized_frames_new/{2}_test_{0}_frame{1}_spatial_56_1res_test.png".format(index, i, fname))
+            save_image(permuted_view[i], "resized_frames_new/{2}_test_{0}_frame{1}_spatial_56_1res_firstlast_test.png".format(index, i, fname))
             #save_image(permuted_view_n[i], "resized_frames_new/{2}_test_{0}_frame{1}_normal.png".format(index, i, fname))
         index+=1
 def get_fname(labels, reverse_map):
