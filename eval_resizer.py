@@ -82,7 +82,7 @@ def eval(resizer_model, model_path, root, classes_file, model_type='2d', num_fra
 
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
-    f1_sample = f1_score(trues, predictions, average='sample')
+    f1_sample = f1_score(trues, predictions, average='samples')
     accuracy = accuracy_score(trues, predictions)
     cf = multilabel_confusion_matrix(trues, predictions)    
 
