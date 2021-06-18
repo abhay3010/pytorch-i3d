@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resizer-1res-3d-job-version2-1
+  name: virat-vr-resizer-1res-3d-inres-job-version2-1
 spec:
   template:
     spec:
@@ -29,7 +29,7 @@ spec:
               name: dshm
             - mountPath: /mnt/data
               name: data
-             - mountPath: /virat-vr-models
+            - mountPath: /virat-vr-models
               name: virat-vr-models 
       initContainers:
         - name : init-data
