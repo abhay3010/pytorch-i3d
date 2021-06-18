@@ -7,7 +7,7 @@ opt = {
     # "data_root": "TinyVIRAT/",
     "num_epochs": 50, #number of epochs to train for
     "num_frames":32, #number of frames the model takes as input
-    "init_lr":0.02, #initial learning rate, 
+    "init_lr":0.003, #initial learning rate, 
     "classes_file":"classes.txt", # the map of classes to indices used by the Dataset to translate the classes to 1-hot vectors
     "i3d_mode":"32x112", #i3d config num_framesxinput_resolution can vary as (16,32,64)x(112,224)
     "model_input_shape":112, # the shape that the i3d model expects from the resizer
