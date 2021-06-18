@@ -96,7 +96,8 @@ def eval(resizer_model, model_path, root, classes_file, mode='2d', num_frames=32
     f1_macro = f1_score(trues, predictions, average='macro')
     f1_micro = f1_score(trues, predictions, average='micro')
     accuracy = accuracy_score(trues, predictions)
-    f1_samples = f1_score(trues, predictions, average = "samples")    
+    f1_samples = f1_score(trues, predictions, average = "samples")   
+    cf = multilabel_confusion_matrix(trues, predictions) 
 
     print(f1_macro, f1_micro, accuracy, f1_samples)
     pred_np = np.asarray(predictions)
@@ -108,17 +109,24 @@ def eval(resizer_model, model_path, root, classes_file, mode='2d', num_frames=32
         np.save(logits_file, np.asarray(p_logits))
         np.save(confusion_file, cf)
 
-    return f1_macro, f1_micro, accuracy, f1_samples
+    return f1_macro, f1_micro, accuracy, f1_samples, cf
 
 def eval_model_list(model_prefix, epoch_list, model_path, data_root, classes_file, mode='2d', num_frames=32, resize_shape=28, model_input_shape=112, num_workers=5, batch_size=16, i3d_mode='32x112',num_resblocks=1, debug=False, confusion="confusion.npy", predictions="predictions.npy", actuals="actuals.npy", logits="logits.npy"):
     model_list = list()
     for epoch in epoch_list:
         model_list.append((model_prefix+str(epoch).zfill(6)+'.pt', model_prefix+ 'i3d'+str(epoch).zfill(6)+'.pt'))
+    max_f1_macro = 0
+    confusion_matrix = None
+
     for model, i3d_model in model_list:
-        f1_macro, f1_micro, accuracy, f1_samples = eval(model_path + model, model_path+ i3d_model, data_root, classes_file, mode=mode,
+        f1_macro, f1_micro, accuracy, f1_samples, cf = eval(model_path + model, model_path+ i3d_model, data_root, classes_file, mode=mode,
         num_frames=num_frames, resize_shape=resize_shape, model_input_shape=model_input_shape, num_workers=num_workers, batch_size=batch_size,
         i3d_mode=i3d_mode, num_resblocks=num_resblocks, debug=debug, confusion_file=confusion, predictions_file=predictions, actuals_file=actuals, logits_file=logits)
         print ("{0} , f1_macro : {1}, f1_micro {2}, f1_samples {4},  Accuracy {3}".format(model,f1_macro, f1_micro, accuracy, f1_samples))
+        if f1_macro > max_f1_macro:
+            max_f1_macro = f1_macro
+            confusion_matrix = cf
+    np.save(confusion, confusion_matrix)
 
 
 
