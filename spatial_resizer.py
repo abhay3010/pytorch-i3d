@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(16*self.nframes, 32, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(32),
         nn.Tanh(),
@@ -59,10 +59,10 @@ class TransformerWithResizer(nn.Module):
         if self.skip:
             return residual
         else:
-            theta1, theta2 = self.get_thetas(x)
             out = self.c1(x)
             out = self.c2(out)
-            
+            theta1, theta2 = self.get_thetas(out)
+
             residual = self.apply_theta(theta1, self.skip_resizer(x))
             out =  self.resizer_first(out)
             out = self.apply_theta(theta2, out)                
@@ -89,7 +89,7 @@ class TransformerWithResizer(nn.Module):
 
         #print(xs.shape)
         xs = xs.view([b, -1,int(8*((self.in_res/4)**2)) ])
-        print(xs.shape)
+        #print(xs.shape)
         theta1 = self.fc_loc(xs)
         theta1 = theta1.view(-1,2,3)
         theta2 = self.fc_loc2(xs)
