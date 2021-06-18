@@ -22,11 +22,11 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels, 32, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(self.in_channels, 16, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
-        nn.BatchNorm2d(32),
+        nn.BatchNorm2d(16),
         nn.Tanh(),
-        nn.Conv2d(32, 8, kernel_size = 3, padding=1),
+        nn.Conv2d(16, 8, kernel_size = 3, padding=1),
         nn.MaxPool2d(2, stride=2, padding=[0,0]),
         nn.BatchNorm2d(8),
         nn.Tanh())
@@ -42,8 +42,8 @@ class TransformerWithResizer(nn.Module):
         )
         self.fc_loc[2].weight.data.zero_()
         self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
-        self.fc_loc2[2].weight.data.zero_()
-        self.fc_loc2[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
+        # self.fc_loc2[2].weight.data.zero_()
+        # self.fc_loc2[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
         
         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
         if not self.skip:
@@ -59,22 +59,22 @@ class TransformerWithResizer(nn.Module):
         if self.skip:
             return residual
         else:
-            theta1, theta2 = self.get_thetas(x)
+            theta1= self.get_theta(x)
 
             out = self.c1(x)
             out = self.c2(out)
-            residual = self.apply_theta(theta1, self.skip_resizer(x))
+            residual = self.skip_resizer(x)
             out =  self.resizer_first(out)
-            out = self.apply_theta(theta2, out)                
             residual_skip = out
             out = self.residual_blocks(out)
             out = self.c3(out)
             out+=residual_skip
             out = self.c4(out)
             out+=residual
+            out = self.apply_theta(theta1, out)
             return out
 
-    def get_thetas(self, x):
+    def get_theta(self, x):
         #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
         c = x.shape[1]
         b = x.shape[0]
@@ -92,20 +92,20 @@ class TransformerWithResizer(nn.Module):
         #print("shape into localization", xs.shape)
         theta1 = self.fc_loc(xs)
         theta1 = theta1.view(-1,2,3)
-        theta2 = self.fc_loc2(xs)
-        theta2 = theta2.view(-1,2,3)
+        # theta2 = self.fc_loc2(xs)
+        # theta2 = theta2.view(-1,2,3)
         if random.uniform(0,1) <=0.04: 
             print("theta1", theta1.detach().cpu().numpy()[0])
-            print("theta2", theta2.detach().cpu().numpy()[0])
+            # print("theta2", theta2.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
-        return theta1, theta2
+        return theta1
     def apply_theta(self, theta, x):
         c = x.shape[1]
         b = x.shape[0]
         t = x.shape[2]
         h = x.shape[3]
         w = x.shape[4]
-        print(theta.shape)
+        #print(theta.shape)
         x_view = x.view(-1,c,h,w)
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x_view = F.grid_sample(x_view, grid, align_corners=False)
