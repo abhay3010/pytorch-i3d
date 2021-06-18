@@ -35,8 +35,15 @@ class TransformerWithResizer(nn.Module):
             nn.Tanh(),
             nn.Linear(32, 3*2)
         )
+        self.fc_loc2 = nn.Sequential(
+            nn.Linear(int(8*((in_res/4)**2)), 32), 
+            nn.Tanh(),
+            nn.Linear(32, 3*2)
+        )
         self.fc_loc[2].weight.data.zero_()
         self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
+        self.fc_loc2[2].weight.data.zero_()
+        self.fc_loc2[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
         
         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
         if not self.skip:
@@ -55,9 +62,9 @@ class TransformerWithResizer(nn.Module):
 
             out = self.c1(x)
             out = self.c2(out)
-            theta = self.get_theta(out)
-            residual = self.skip_resizer(self.apply_theta(theta, x))
-            out = self.apply_theta(theta, out)
+            theta1, theta2 = self.get_thetas(out)
+            residual = self.skip_resizer(self.apply_theta(theta1, x))
+            out = self.apply_theta(theta2, out)
             out =  self.resizer_first(out)                
             residual_skip = out
             out = self.residual_blocks(out)
@@ -67,7 +74,7 @@ class TransformerWithResizer(nn.Module):
             out+=residual
             return out
 
-    def get_theta(self, x):
+    def get_thetas(self, x):
         #Given input of shape CxTxHxW change to C*TxHxW and then apply the affine transformation
         c = x.shape[1]
         b = x.shape[0]
@@ -83,12 +90,15 @@ class TransformerWithResizer(nn.Module):
         #print(xs.shape)
         xs = xs.view([b, -1,int(8*((self.in_res/4)**2)) ])
         print(xs.shape)
-        theta = self.fc_loc(xs)
-        theta = theta.view(-1,2,3)
+        theta1 = self.fc_loc(xs)
+        theta1 = theta1.view(-1,2,3)
+        theta2 = self.fc_loc2(xs)
+        theta2 = theta2.view(-1,2,3)
         if random.uniform(0,1) <=0.04: 
-            print("theta", theta.detach().cpu().numpy()[0])
+            print("theta1", theta1.detach().cpu().numpy()[0])
+            print("theta2", theta2.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
-        return theta
+        return theta1, theta2
     def apply_theta(self, theta, x):
         c = x.shape[1]
         b = x.shape[0]
