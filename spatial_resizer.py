@@ -196,11 +196,11 @@ class TransformerWithResizer3D(nn.Module):
             return out
 
     def get_theta(self, x):
-        print(x.shape)
+        #print(x.shape)
         xs =  self.localization(x)
-        print(xs.shape)
+        #print(xs.shape)
         xs = xs.view([-1,8 * (int(self.in_res/4)**2) * int(self.nframes/4)])
-        print(xs.shape)
+        #print(xs.shape)
         theta = self.fc_loc(xs)
         theta = theta.view(-1,2,3)
         if random.uniform(0,1) <=0.03: 
@@ -216,7 +216,8 @@ class TransformerWithResizer3D(nn.Module):
         x_view = x.view(b,c*t,h,w)
         grid = F.affine_grid(theta, x_view.size(),align_corners=False)
         x = F.grid_sample(x_view, grid, align_corners=False)
-        return x
+        o = x.view(b,c,t,h,w)
+        return o
 
     
 

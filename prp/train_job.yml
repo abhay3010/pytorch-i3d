@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resizer-1res-3d-inres-job-version2-1
+  name: virat-vr-resizer-1res-3dsp-inres-job-version2-1
 spec:
   template:
     spec:
