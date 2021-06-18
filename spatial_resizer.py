@@ -48,47 +48,23 @@ class TransformerWithResizer(nn.Module):
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=16, lru=False)
             self.c4 = ConvUnit(in_channels=16, kernel_shape=[3,3,3], output_channels=self.in_channels, lru=False, norm=None)
     def forward(self, x):
-        # theta = self.get_theta(x)
-        #x = self.apply_theta(theta, x)
-
-        #print("input shape", x.shape)
-        residual = self.skip_resizer(x)
-        #print(residual.shape)
-        #theta = self.get_theta(residual)
-        
+        residual = self.skip_resizer(x)        
         if self.skip:
             return residual
         else:
 
-        # print("resizer_shape", out.shape)
             out = self.c1(x)
-            # print("conv shape", out.s
-
             out = self.c2(out)
-            # print("conv2 shape", out.shape)
-            # theta = self.get_theta(out)
-            # out = self.apply_theta(theta, out)
-            out =  self.resizer_first(out)
-            # theta = self.get_theta(out)
-            
-            
-            # print("in resizer shape", out.shape)
-            residual_skip = out
-            #print(out.shape)
             theta = self.get_theta(out)
-            #print(theta.shape)
-            out = self.residual_blocks(out)
-            #print(out.shape)
+            residual = self.skip_resizer(self.apply_theta(theta, x))
             out = self.apply_theta(theta, out)
+            out =  self.resizer_first(out)                
+            residual_skip = out
+            out = self.residual_blocks(out)
             out = self.c3(out)
             out+=residual_skip
-            # print(out.shape)        
             out = self.c4(out)
-            #print(out.shape)
             out+=residual
-            # print("out", out.shape)
-            # theta = self.get_theta(out)
-            # out = self.apply_theta(theta, out)
             return out
 
     def get_theta(self, x):
@@ -228,7 +204,7 @@ class TransformerWithResizer3D(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=112, num_resblocks=1 )
+    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=28, num_resblocks=1 )
     summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     
 
