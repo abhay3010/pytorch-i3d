@@ -62,6 +62,7 @@ class TransformerWithResizer(nn.Module):
 
         # print("resizer_shape", out.shape)
             out = self.c1(x)
+            theta = self.get_theta(out)
             # print("conv shape", out.s
 
             out = self.c2(out)
@@ -69,7 +70,7 @@ class TransformerWithResizer(nn.Module):
             
             
             out =  self.resizer_first(out)
-            theta = self.get_theta(out)
+            # theta = self.get_theta(out)
             
             
             # print("in resizer shape", out.shape)
