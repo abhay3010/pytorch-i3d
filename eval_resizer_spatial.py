@@ -65,7 +65,7 @@ def eval(resizer_model, model_path, root, classes_file, mode='2d', num_frames=32
         if k.startswith("module."):
             new_dict[k[7:]] = v
         else:
-            print(k)
+            #print(k)
             new_dict[k] = v
     i3d.load_state_dict(new_dict)
     i3d.to(device)
