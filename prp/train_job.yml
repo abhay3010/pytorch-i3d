@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-resizer-1res-3dsp-inres-job-version2-1
+  name: virat-vr-resizer-1res-3dsp-inres-frozen-job-version2-1
 spec:
   template:
     spec:
@@ -10,7 +10,7 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/train.py", "/virat-vr/code/pytorch-i3d/", "resizer_spatial_1_56_first" ]
+          args: [ "/virat-vr/code/pytorch-i3d/train.py", "/virat-vr/code/pytorch-i3d/", "resizer_spatial_frozen" ]
           resources:
             limits:
               nvidia.com/gpu: 4
