@@ -10,7 +10,7 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "spatial_new_1" ]
+          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "spatial_new_1_frozen" ]
           resources:
             limits:
               nvidia.com/gpu: 3
