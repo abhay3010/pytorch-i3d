@@ -60,8 +60,8 @@ class TransformerWithResizer(nn.Module):
             return residual
         else:
             theta1= self.get_theta(x)
-
-            out = self.c1(x)
+            out = self.apply_theta(theta1, x)
+            out = self.c1(out)
             out = self.c2(out)
             residual = self.skip_resizer(x)
             out =  self.resizer_first(out)
