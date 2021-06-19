@@ -2,7 +2,7 @@ opt = {
     "model":'spatial_resizer',
     "params":{
     "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset, 
-    "save_path": "/virat-vr-models/resizer_spatial_corrected_1_56_after_first_first_both_frozen_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
+    "save_path": "/virat-vr-models/resizer_spatial_corrected_1_56_after_first_last_frozen_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
     # "data_root": "TinyVIRAT/",
     "num_epochs": 50, #number of epochs to train for
