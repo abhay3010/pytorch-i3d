@@ -2,7 +2,7 @@ opt = {
     "model":"spatial_resizer", 
     "params":{
         "model_prefix":"resizer_spatial_corrected_1_56_first_last_aligned_", # the prefix used while training the model, 
-        "epoch_list": range(1, 10), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
+        "epoch_list": range(8, 20), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
         "model_path":"/virat-vr-models/", # directory where the models are saved (remember the trailing /)
         "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset
         "classes_file": "classes.txt", 
