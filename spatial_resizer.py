@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(self.in_channels, 16, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(32, 16, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(16),
         nn.Tanh(),
@@ -47,9 +47,9 @@ class TransformerWithResizer(nn.Module):
         
         self.skip_resizer =  ResizerBlock((self.nframes,)+self.scale_shape, False)
         if not self.skip:
-            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=16, kernel_shape=[1, 7, 7], norm=None)
+            self.c1 = ConvUnit(in_channels=self.in_channels, output_channels=32, kernel_shape=[1, 7, 7], norm=None)
             #revisit size of this unit as it is inconsitent between paper and diagram
-            self.c2 = ConvUnit(in_channels=16, kernel_shape = [1,1,1], output_channels=16)
+            self.c2 = ConvUnit(in_channels=32, kernel_shape = [1,1,1], output_channels=16)
             self.resizer_first = ResizerBlock((self.nframes,) + self.scale_shape, False)
             self.residual_blocks = make_residuals_2d(num_resblocks, 16)
             self.c3 = ConvUnit(in_channels=16, kernel_shape=[1,3,3], output_channels=16, lru=False)
@@ -60,8 +60,9 @@ class TransformerWithResizer(nn.Module):
         if self.skip:
             return residual
         else:
-            theta = self.get_theta(x)
+            
             out = self.c1(x)
+            theta = self.get_theta(out)
             
             out = self.c2(out)
             out =  self.resizer_first(out)
