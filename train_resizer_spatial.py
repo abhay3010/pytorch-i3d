@@ -44,8 +44,8 @@ def run(data_root, model_input_shape,i3d_model_path,batch_size,mode='2d', num_fr
     print("declared model")
     i3d = load_i3d_from_file(i3d, i3d_model_path, device, freeze_i3d)
     resizer = TransformerWithResizer(3, num_frames, (model_input_shape, model_input_shape), in_res=model_input_shape, num_resblocks=num_resblocks)
-    if mode == '3d':
-        resizer = TransformerWithResizer3D(3, num_frames, (model_input_shape, model_input_shape), in_res=model_input_shape, num_resblocks=num_resblocks)
+    if mode == 'segmented':
+        resizer = SegmentedResizer(3, num_frames, (model_input_shape, model_input_shape), in_res=data_input_shape, num_resblocks=num_resblocks)
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)
     #resizer = SpatialTransformer(3, in_time=int(v_mode.split('x')[0]), in_res=112)
 
