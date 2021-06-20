@@ -61,8 +61,6 @@ class TransformerWithResizer(nn.Module):
         else:
             
             out = self.c1(x)
-            theta = self.get_theta(out)
-
             out = self.c2(out)
             out =  self.resizer_first(out)
             residual_skip = out
@@ -71,6 +69,7 @@ class TransformerWithResizer(nn.Module):
             out+=residual_skip
             out = self.c4(out)
             out+=residual
+            theta = self.get_theta(out)
             out = self.apply_theta(theta, out)
             return out
 
@@ -95,7 +94,7 @@ class TransformerWithResizer(nn.Module):
         # theta2 = self.fc_loc2(xs)
         # theta2 = theta2.view(-1,2,3)
         if random.uniform(0,1) <=0.04: 
-            print("theta1", theta1.detach().cpu().numpy()[0])
+            print("theta", theta1.detach().cpu().numpy()[0])
             # print("theta2", theta2.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
         return theta1
