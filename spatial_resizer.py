@@ -71,7 +71,7 @@ class TransformerWithResizer(nn.Module):
             out = self.c4(out)
             out+=residual
             theta = self.get_theta(out)
-            print(theta.shape, out.shape)
+            #print(theta.shape, out.shape)
             out = self.apply_theta(theta, out)
             return out
 
