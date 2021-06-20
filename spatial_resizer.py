@@ -185,7 +185,7 @@ class SegmentedResizer(nn.Module):
             x11 = torch.cat((x,x1), 3)
             x22 = torch.cat((x2, x3), 3)
             x = torch.cat((x11, x22), 4)
-            out = self.c1(x11)
+            out = self.c1(x)
             out = self.c2(out)
             out =  self.resizer_first(out)
             residual_skip = out
