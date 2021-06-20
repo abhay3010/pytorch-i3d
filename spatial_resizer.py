@@ -22,7 +22,7 @@ class TransformerWithResizer(nn.Module):
         self.skip = skip
         
         self.localization = nn.Sequential(
-        nn.Conv2d(32, 16, kernel_size=[5,5], stride=[1,1],padding=2),
+        nn.Conv2d(self.in_channels, 16, kernel_size=[5,5], stride=[1,1],padding=2),
         nn.MaxPool2d(3, stride=2, padding=1),
         nn.BatchNorm2d(16),
         nn.Tanh(),
@@ -228,7 +228,7 @@ class TransformerWithResizer3D(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=28, num_resblocks=1 )
+    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=112, num_resblocks=1 )
     summary(resizer_network, (3, 32, 28, 28), batch_size=2)
     
 
