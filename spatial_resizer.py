@@ -185,6 +185,7 @@ class SegmentedResizer(nn.Module):
             x11 = torch.cat((x,x1), 3)
             x22 = torch.cat((x2, x3), 3)
             x = torch.cat((x11, x22), 4)
+            print(x.shape)
             out = self.c1(x)
             out = self.c2(out)
             out =  self.resizer_first(out)
@@ -226,7 +227,7 @@ class SegmentedResizer(nn.Module):
         if random.uniform(0,1) <=0.04: 
             print("theta1", theta1.detach().cpu().numpy()[0])
             print("theta2", theta2.detach().cpu().numpy()[0])
-            print("theta3", theta2.detach().cpu().numpy()[0])
+            print("theta3", theta3.detach().cpu().numpy()[0])
             # print("theta2", theta2.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
         return theta1, theta2, theta3
