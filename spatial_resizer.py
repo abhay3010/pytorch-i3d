@@ -225,8 +225,8 @@ class SegmentedResizer(nn.Module):
         # theta2 = theta2.view(-1,2,3)
         if random.uniform(0,1) <=0.04: 
             print("theta1", theta1.detach().cpu().numpy()[0])
-            print("theta2", theta1.detach().cpu().numpy()[0])
-            print("theta3", theta1.detach().cpu().numpy()[0])
+            print("theta2", theta2.detach().cpu().numpy()[0])
+            print("theta3", theta2.detach().cpu().numpy()[0])
             # print("theta2", theta2.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
         return theta1, theta2, theta3
