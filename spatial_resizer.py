@@ -72,7 +72,7 @@ class TransformerWithResizer(nn.Module):
             out = self.c3(out)
             out+=residual_skip
             out = self.c4(out)
-            out+=residual
+            out+=self.apply_theta(theta,residual)
             
             #print(theta.shape, out.shape)
             
