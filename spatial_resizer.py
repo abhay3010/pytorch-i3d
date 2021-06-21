@@ -63,11 +63,10 @@ class TransformerWithResizer(nn.Module):
         else:
             
             out = self.c1(x)
-            theta = self.get_theta(out)
-            out = self.apply_theta(theta, out)
-            
+            theta = self.get_theta(out)           
             out = self.c2(out)
             out =  self.resizer_first(out)
+            out = self.apply_theta(theta, out)
             residual_skip = out
             out = self.residual_blocks(out)
             out = self.c3(out)
