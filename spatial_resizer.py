@@ -81,7 +81,7 @@ class TransformerWithResizer(nn.Module):
                 out = self.apply_theta(theta, out)
             out = self.c4(out)
             # out+=self.apply_theta(theta,residual)
-            out+=residual
+            out+=self.apply_theta(theta, residual)
             #print(theta.shape, out.shape)
             
             return out
@@ -261,7 +261,7 @@ class SegmentedResizer(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=56, num_resblocks=1, apply_at='after_residual_skip' )
+    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=56, num_resblocks=1, apply_at='after_skip' )
     summary(resizer_network, (3, 32, 56, 56), batch_size=2)
     
 
