@@ -99,7 +99,7 @@ class TransformerWithResizer(nn.Module):
         scale = self.scalar(xs)
         # theta2 = self.fc_loc2(xs)
         # theta2 = theta2.view(-1,2,3)
-        print(scale.shape, theta1.shape)
+        #print(scale.shape, theta1.shape)
         theta1 = ((1 + scale).permute(1,0)* theta1.permute(1,2,0)).permute(2,0,1)
         if random.uniform(0,1) <=0.04: 
             print("theta", theta1.detach().cpu().numpy()[0])
