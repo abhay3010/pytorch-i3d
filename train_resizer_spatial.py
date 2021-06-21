@@ -36,14 +36,14 @@ from spatial_resizer import *
 
 from virat_dataset import Virat as Dataset
 
-def run(data_root, model_input_shape,i3d_model_path,batch_size,mode='2d', num_frames=32, data_input_shape=56,save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', freeze_i3d=True, num_resblocks=1, num_workers=4,  num_steps_per_update = 8):
+def run(data_root, model_input_shape,i3d_model_path,batch_size,mode='2d', num_frames=32, data_input_shape=56,save_path='', init_lr = 0.001 ,num_epochs=10,i3d_mode='32x112', classes_file='classes.txt', freeze_i3d=True, num_resblocks=1, num_workers=4, apply_at = 'before_skip', num_steps_per_update = 8):
     print("debug, starting job")
     device = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
     print("torch device",device)
     i3d = InceptionI3d(26,mode=i3d_mode, in_channels=3)
     print("declared model")
     i3d = load_i3d_from_file(i3d, i3d_model_path, device, freeze_i3d)
-    resizer = TransformerWithResizer(3, num_frames, (model_input_shape, model_input_shape), in_res=data_input_shape, num_resblocks=num_resblocks)
+    resizer = TransformerWithResizer(3, num_frames, (model_input_shape, model_input_shape), in_res=data_input_shape, num_resblocks=num_resblocks, apply_at=apply_at)
     if mode == 'segmented':
         resizer = SegmentedResizer(3, num_frames, (model_input_shape, model_input_shape), in_res=data_input_shape, num_resblocks=num_resblocks)
     # resizer = ResizerMainNetworkV4_3D(3, int(v_mode.split('x')[0]), model_input_shape,num_resblocks=2)

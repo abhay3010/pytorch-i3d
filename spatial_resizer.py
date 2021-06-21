@@ -12,7 +12,7 @@ import random
 #we need to sample at point 1 and apply at another point. And consider all strategies of doing so.
 
 class TransformerWithResizer(nn.Module):
-    def __init__(self, in_channels,n_frames, scale_shape,in_res=112, num_resblocks=1, skip=False):
+    def __init__(self, in_channels,n_frames, scale_shape,in_res=112, num_resblocks=1, skip=False, apply_at="before_skip"):
         super(TransformerWithResizer, self).__init__()
         self.in_channels = in_channels
         self.r = num_resblocks
@@ -20,6 +20,7 @@ class TransformerWithResizer(nn.Module):
         self.in_res = in_res
         self.nframes = n_frames
         self.skip = skip
+        self.apply_at = apply_at
         
         self.localization = nn.Sequential(
         nn.Conv2d(32, 16, kernel_size=[5,5], stride=[1,1],padding=2),
@@ -65,16 +66,22 @@ class TransformerWithResizer(nn.Module):
             out = self.c1(x)
             theta = self.get_theta(out)           
             out = self.c2(out)
+            if self.apply_at == 'before_skip':
+                out = self.apply_theta(theta, out)
             out =  self.resizer_first(out)
-            #out = self.apply_theta(theta, out)
+            if self.apply_at == 'after_skip':
+                out = self.apply_theta(theta, out)  
             residual_skip = out
             out = self.residual_blocks(out)
-            out = self.c3(out)
+            if self.apply_at == 'after_residual':
+                out = self.apply_theta(theta, out)
+            out = self.c3(out)    
             out+=residual_skip
+            if self.apply_at == 'after_residual_skip':
+                out = self.apply_theta(theta, out)
             out = self.c4(out)
             # out+=self.apply_theta(theta,residual)
             out+=residual
-            out = self.apply_theta(theta, out)
             #print(theta.shape, out.shape)
             
             return out
@@ -254,7 +261,7 @@ class SegmentedResizer(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=56, num_resblocks=1 )
+    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=56, num_resblocks=1, apply_at='after_residual_skip' )
     summary(resizer_network, (3, 32, 56, 56), batch_size=2)
     
 
