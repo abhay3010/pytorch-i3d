@@ -1,8 +1,8 @@
 opt = {
     "model":"spatial_resizer", 
     "params":{
-        "model_prefix":"resizer_spatial_2dcnn_after_first_first_scale_", # the prefix used while training the model, 
-        "epoch_list": range(8, 17), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
+        "model_prefix":"resizer_spatial_2dcnn_after_first_after_skip_scale_", # the prefix used while training the model, 
+        "epoch_list": range(0, 12), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
         "model_path":"/virat-vr-models/", # directory where the models are saved (remember the trailing /)
         "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset
         "classes_file": "classes.txt", 
@@ -12,8 +12,8 @@ opt = {
         "batch_size": 12, # batch size of the evaluation block, will depend on the gpu 
         "resize_shape":56, # initial shape being fed to the resizer model
         "model_input_shape":112, # final shape being output by the resizer and being fed to the i3d model
-        "num_resblocks": 1, # the number of residual blocks being used in the model
-        "confusion":"_corrected_after_2d_first__scale.npy",
+        "num_resblocks": 3, # the number of residual blocks being used in the model
+        "confusion":"_corrected_after_2d_first_after_skip.npy",
         "mode":"2d"
     }
 
