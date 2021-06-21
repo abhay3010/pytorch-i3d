@@ -2,7 +2,7 @@ opt = {
     "model":'spatial_resizer',
     "params":{
     "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset, 
-    "save_path": "/virat-vr-models/resizer_spatial_3dcnn_before_skip_dual_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
+    "save_path": "/virat-vr-models/resizer_spatial_3dcnn_before_skip_3res_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
     # "data_root": "TinyVIRAT/",
     "num_epochs": 50, #number of epochs to train for
@@ -14,7 +14,7 @@ opt = {
     "data_input_shape":56, # the input resolution (data_input_shape x data_input_shape) that the resizer gets from the data loader
     "num_resblocks":1, # number of residual blocks in the resizer
     "i3d_model_path": "/virat-vr/models/pytorch-i3d/v7_bilinear_32_112004400.pt", # the initial model path for i3d
-    "batch_size":42, # the batch size to be used 
+    "batch_size":36, # the batch size to be used 
     "freeze_i3d":False, # set to True if we need to freeze all but the last layers of the i3d model
     "num_workers":5, # the number of processes that the dataloader needs to spawn, 
     "num_steps_per_update":8,
