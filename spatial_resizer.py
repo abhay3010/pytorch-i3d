@@ -35,10 +35,11 @@ class TransformerWithResizer(nn.Module):
             nn.Tanh(),
             nn.Linear(32, 3*2)
         )
-        self.fc_loc2 = nn.Sequential(
+        self.scalar = nn.Sequential(
             nn.Linear(int(8*((in_res/4)**2)), 32), 
             nn.Tanh(),
-            nn.Linear(32, 3*2)
+            nn.Linear(32, 1), 
+            nn.Sigmoid()
         )
         self.fc_loc[2].weight.data.zero_()
         self.fc_loc[2].bias.data.copy_(torch.tensor([1, 0, 0, 0, 1, 0], dtype=torch.float))
@@ -95,8 +96,11 @@ class TransformerWithResizer(nn.Module):
         #print("shape into localization", xs.shape)
         theta1 = self.fc_loc(xs)
         theta1 = theta1.view(-1,2,3)
+        scale = self.scalar(xs)
         # theta2 = self.fc_loc2(xs)
         # theta2 = theta2.view(-1,2,3)
+        print(scale.shape, theta1.shape)
+        theta1 = ((1 + scale).permute(1,0)* theta1.permute(1,2,0)).permute(2,0,1)
         if random.uniform(0,1) <=0.04: 
             print("theta", theta1.detach().cpu().numpy()[0])
             # print("theta2", theta2.detach().cpu().numpy()[0])
