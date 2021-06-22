@@ -25,6 +25,8 @@ spec:
       name: dshm
     - mountPath: /mnt/data
       name: data
+    - mountPath: /virat-vr-models
+      name: virat-vr-models
   initContainers:
   - name : init-data
     image: gitlab-registry.nautilus.optiputer.net/prp/gsutil
@@ -54,6 +56,9 @@ spec:
   - name: virat-vr
     persistentVolumeClaim:
       claimName: virat-vr
+  - name: virat-vr-models
+    persistentVolumeClaim:
+      claimName: virat-vr-models
   - name: virat-vr-small
     persistentVolumeClaim:
       claimName: virat-vr-small

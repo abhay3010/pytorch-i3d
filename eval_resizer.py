@@ -178,7 +178,7 @@ def sample_resizer_output():
         for batch, label in val_dataloader:
 
             resized_image_sp = resizer(batch).squeeze(0)
-            thetas = resizer.get_theta_value(batch)
+            thetas, scales = resizer.get_theta_value(batch)
             print(thetas.shape, resized_image_sp.shape)
             # print("resizer shape", resized_image_sp.shape)
             resized_normal = new_val_dataset_[val[index]][0]
@@ -191,7 +191,7 @@ def sample_resizer_output():
             # print(permuted_view.size(0))
             for i in range(permuted_view.size(0)):
                 save_image(permuted_view[i], "resized_frames_new/{2}_test_{0}_frame{1}_spatial_56_3res_residual_skip.png".format(index, i, fname))
-                d.write("resized_frames_new/{2}_test_{0}_frame{1}_spatial_56_3res_residual_skip.png".format(index, i, fname)+ 'theta '+ str(thetas[i])+ '\n')
+                d.write("resized_frames_new/{2}_test_{0}_frame{1}_spatial_56_3res_residual_skip.png".format(index, i, fname)+ 'theta '+ str(thetas[i])+' ' + str(scales[i][0])+ '\n')
                 #save_image(permuted_view_n[i], "resized_frames_new/{2}_test_{0}_frame{1}_normal.png".format(index, i, fname))
             index+=1
 def get_fname(labels, reverse_map):

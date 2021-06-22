@@ -64,7 +64,7 @@ class TransformerWithResizer(nn.Module):
         else:
             
             out = self.c1(x)
-            theta = self.get_theta(out)           
+            theta,_ = self.get_theta(out)           
             out = self.c2(out)
             if self.apply_at == 'before_skip':
                 out = self.apply_theta(theta, out)
@@ -115,7 +115,7 @@ class TransformerWithResizer(nn.Module):
             print("theta", theta1.detach().cpu().numpy()[0])
             # print("theta2", theta2.detach().cpu().numpy()[0])
             #print("theta shape", theta.shape)
-        return theta1
+        return theta1, scale
     def apply_theta(self, theta, x):
         c = x.shape[1]
         b = x.shape[0]
@@ -130,8 +130,8 @@ class TransformerWithResizer(nn.Module):
         return o
     def get_theta_value(self, x):
         out = self.c1(x)
-        theta = self.get_theta(out) 
-        return theta
+        theta, scale = self.get_theta(out) 
+        return theta, scale
 
 
 
