@@ -2,7 +2,7 @@ opt = {
     "model":"spatial_resizer", 
     "params":{
         "model_prefix":"resizer_spatial_3dcnn_after_after_residual_3res_", # the prefix used while training the model, 
-        "epoch_list": range(0,8), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
+        "epoch_list": range(0,10), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
         "model_path":"/virat-vr-models/", # directory where the models are saved (remember the trailing /)
         "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset
         "classes_file": "classes.txt", 
@@ -15,7 +15,7 @@ opt = {
         "num_resblocks": 3, # the number of residual blocks being used in the model
         "confusion":"_corrected_after_3d_first_after_residual_3res.npy",
         "mode":"2d",
-        "apply_at":"after_residual_skip"
+        "apply_at":"after_residual"
     }
 
 }
