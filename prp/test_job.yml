@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-spatial-before-skip-v2-1
+  name: virat-vr-spatial-after-skip-v2-1
 spec:
   template:
     spec:
