@@ -128,6 +128,11 @@ class TransformerWithResizer(nn.Module):
         x_view = F.grid_sample(x_view, grid, align_corners=False)
         o = x_view.view(b,c,t,h,w)
         return o
+    def get_theta_value(self, x):
+        out = self.c1(x)
+        theta = self.get_theta(out) 
+        return theta
+
 
 
 
