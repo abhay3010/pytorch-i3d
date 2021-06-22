@@ -10,7 +10,7 @@ opt = {
         "num_frames": 32, #number of frames being given to the model at a time
         "num_workers": 4, # number of dataloader workers being used
         "batch_size": 56, # batch size of the evaluation block, will depend on the gpu 
-        "resize_shape":56, # initial shape being fed to the resizer model
+        "resize_shape":46, # initial shape being fed to the resizer model
         "model_input_shape":112, # final shape being output by the resizer and being fed to the i3d model
         "num_resblocks": 3, # the number of residual blocks being used in the model
         "confusion":"_corrected_after_3d_first_after_residual_skip_dual.npy",
