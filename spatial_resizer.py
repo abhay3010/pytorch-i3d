@@ -107,13 +107,12 @@ class TransformerWithResizer(nn.Module):
             if self.read_at == 4:
                 theta,_ = self.get_theta(out)
             if self.apply_at == 4:
-                out = self.apply_theta(out, theta)
+                out = self.apply_theta(theta, out)
             out = self.c3(out)
             if self.read_at == 5:
                 theta,_ = self.get_theta(out)
             if self.apply_at == 5:
-                out = self.apply_theta(out)    
-            out+=residual_skip
+                out = self.apply_theta(theta, out)git s
             if self.read_at == 6:
                 theta,_ = self.get_theta(out)
             if self.apply_at == 6:
@@ -314,7 +313,7 @@ class SegmentedResizer(nn.Module):
     
 
 def main():
-    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=56, num_resblocks=1, read_at = 7, apply_at=7 )
+    resizer_network = TransformerWithResizer(3,32,(112,112),in_res=56, num_resblocks=1, read_at =0, apply_at=4 )
     summary(resizer_network, (3, 32, 56, 56), batch_size=2)
     
 
