@@ -113,6 +113,7 @@ class TransformerWithResizer(nn.Module):
                 theta,_ = self.get_theta(out)
             if self.apply_at == 5:
                 out = self.apply_theta(theta, out)
+            out+=residual_skip
             if self.read_at == 6:
                 theta,_ = self.get_theta(out)
             if self.apply_at == 6:
