@@ -55,7 +55,7 @@ spec:
               - key: gpu-type
                 operator: In
                 values:
-                - "1080Ti"
+                - "2080Ti"
       volumes:
         - name: virat-vr
           persistentVolumeClaim:
