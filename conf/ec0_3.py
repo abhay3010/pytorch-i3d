@@ -9,7 +9,7 @@ opt = {
         "i3d_mode" : "32x112", # i3d mode same as in the i3d test files
         "num_frames": 32, #number of frames being given to the model at a time
         "num_workers": 4, # number of dataloader workers being used
-        "batch_size": 48, # batch size of the evaluation block, will depend on the gpu 
+        "batch_size": 64, # batch size of the evaluation block, will depend on the gpu 
         "resize_shape":56, # initial shape being fed to the resizer model
         "model_input_shape":112, # final shape being output by the resizer and being fed to the i3d model
         "num_resblocks": 3, # the number of residual blocks being used in the model
