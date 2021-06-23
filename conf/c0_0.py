@@ -18,10 +18,9 @@ opt = {
     "freeze_i3d":False, # set to True if we need to freeze all but the last layers of the i3d model
     "num_workers":5, # the number of processes that the dataloader needs to spawn, 
     "num_steps_per_update":8,
-    "mode":'2d', 
-    "apply_at":'before_skip'
-    
-
+    "mode":'2d',
+    "read_at":0, 
+    "apply_at":0
     }
 }
 def get():
