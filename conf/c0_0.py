@@ -5,9 +5,9 @@ opt = {
     "save_path": "/virat-vr-models/resizer_spatial_0_0_3res_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
     # "data_root": "TinyVIRAT/",
-    "num_epochs": 50, #number of epochs to train for
+    "num_epochs": 30, #number of epochs to train for
     "num_frames":32, #number of frames the model takes as input
-    "init_lr":0.001, #initial learning rate, 
+    "init_lr":0.0015, #initial learning rate, 
     "classes_file":"classes.txt", # the map of classes to indices used by the Dataset to translate the classes to 1-hot vectors
     "i3d_mode":"32x112", #i3d config num_framesxinput_resolution can vary as (16,32,64)x(112,224)
     "model_input_shape":112, # the shape that the i3d model expects from the resizer
