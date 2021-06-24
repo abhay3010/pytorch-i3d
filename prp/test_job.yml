@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-test-spatial-2-7-v2-1
+  name: virat-vr-test-spatial-2-8-v2-1
 spec:
   template:
     spec:
@@ -10,15 +10,15 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "ec2_7" ]
+          args: [ "/virat-vr/code/pytorch-i3d/test.py", "/virat-vr/code/pytorch-i3d/", "ec2_8" ]
           resources:
             limits:
-              nvidia.com/gpu: 3
+              nvidia.com/gpu: 4
               memory: "10Gi"
               cpu: "3"
               ephemeral-storage: 10Gi
             requests:
-              nvidia.com/gpu: 3
+              nvidia.com/gpu: 4
               memory: "8Gi"
               cpu: "2500m" 
               ephemeral-storage: 10Gi
