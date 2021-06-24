@@ -1,7 +1,7 @@
 opt = {
     "model":"spatial_resizer", 
     "params":{
-        "model_prefix":"resizer_spatial_5_8_3res_", # the prefix used while training the model, 
+        "model_prefix":"resizer_spatial_6_6_3res_", # the prefix used while training the model, 
         "epoch_list": range(0,30), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
         "model_path":"/virat-vr-r-models/", # directory where the models are saved (remember the trailing /)
         "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset
@@ -13,10 +13,10 @@ opt = {
         "resize_shape":56, # initial shape being fed to the resizer model
         "model_input_shape":112, # final shape being output by the resizer and being fed to the i3d model
         "num_resblocks": 3, # the number of residual blocks being used in the model
-        "confusion":"_corrected_after_5_8.npy",
+        "confusion":"_corrected_after_6_6.npy",
         "mode":"2d",
-        "read_at":5,
-        "apply_at":8
+        "read_at":6,
+        "apply_at":6
 
     }
 
