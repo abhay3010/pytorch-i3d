@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-spatial-3-7-3res-2-1
+  name: virat-vr-spatial-3-7-correctted-3res-2-1
 spec:
   template:
     spec:
