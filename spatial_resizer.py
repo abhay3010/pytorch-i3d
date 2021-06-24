@@ -27,7 +27,7 @@ class TransformerWithResizer(nn.Module):
         self.l_channels = 3
         if self.read_at == 1:
             self.l_channels = 32
-        elif self.read_at in [0,7]:
+        elif self.read_at in [0,7,8]:
             self.l_channels = 3
         else:
             self.l_channels = 16
