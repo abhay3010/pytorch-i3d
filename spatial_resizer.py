@@ -175,8 +175,57 @@ class TransformerWithResizer(nn.Module):
         o = x_view.view(b,c,t,h,w)
         return o
     def get_theta_value(self, x):
+        residual = self.skip_resizer(x)        
+        theta = None
+        if self.read_at == 0:
+            theta,scale = self.get_theta(x)
+        if self.apply_at == 0:
+            x = self.apply_theta(theta, x)    
         out = self.c1(x)
-        theta, scale = self.get_theta(out) 
+        if self.read_at == 1:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 1:
+            out = self.apply_theta(theta, out)
+        out = self.c2(out)
+        if self.read_at == 2:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 2:
+            out = self.apply_theta(theta, out)
+        out =  self.resizer_first(out)
+        if self.read_at == 3:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 3:
+            out = self.apply_theta(theta, out) 
+        residual_skip = out
+        out = self.residual_blocks(out)
+        if self.read_at == 4:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 4:
+            out = self.apply_theta(theta, out)
+        out = self.c3(out)
+        if self.read_at == 5:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 5:
+            out = self.apply_theta(theta, out)
+        out= out + residual_skip
+        if self.read_at == 6:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 6:
+            out = self.apply_theta(theta, out)
+        out = self.c4(out)
+        if self.read_at == 7:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 7:
+            out = self.apply_theta(theta, out)
+    
+        # out+=self.apply_theta(theta,residual)
+        out = out + residual
+        if self.read_at == 8:
+            theta,scale = self.get_theta(out)
+        if self.apply_at == 8:
+            out = self.apply_theta(theta, out)
+        #print(theta.shape, out.shape)
+        
         return theta, scale
 
 

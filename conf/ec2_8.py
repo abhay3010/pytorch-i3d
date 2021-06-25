@@ -13,7 +13,7 @@ opt = {
         "resize_shape":56, # initial shape being fed to the resizer model
         "model_input_shape":112, # final shape being output by the resizer and being fed to the i3d model
         "num_resblocks": 3, # the number of residual blocks being used in the model
-        "confusion":"_corrected_after_2_7.npy",
+        "confusion":"_corrected_after_2_8.npy",
         "mode":"2d",
         "read_at":2,
         "apply_at":8
