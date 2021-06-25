@@ -2,6 +2,7 @@ TinyVIRAT*
 resized_frames
 resized_frames_new
 final_frames
+eval_frames
 TinyVIRAT.zip
 eval_models/
 .devcontainer/

@@ -149,8 +149,8 @@ def test_resizer():
 def sample_resizer_output():
     root = './TinyVIRAT/'
     classes_file = "classes.txt"
-    resizer_model = 'eval_models/resizer_spatial_2dcnn_end_3res_000025.pt'
-    val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None)
+    resizer_model = 'eval_models/resizerv43d_28_32_000017.pt'
+    val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(28,28), transforms=None)
     _,val = val_dataset.get_train_validation_split(0.007)
     print(len(val))
     val_dataset_sampled = torch.utils.data.Subset(val_dataset, val)
@@ -160,7 +160,8 @@ def sample_resizer_output():
     new_val_dataset_ = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None, sample=False)
     
     val_dataloader = torch.utils.data.DataLoader(val_dataset_sampled, batch_size=1, shuffle=False, num_workers=4, pin_memory=True)
-    resizer = TransformerWithResizer(3, 32, (112, 112),in_res=56, skip=False, num_resblocks=3, apply_at='end')
+    #resizer = TransformerWithResizer(3, 32, (112, 112),in_res=56, skip=False, num_resblocks=3, apply_at='end')
+    resizer = ResizerMainNetworkV4_3D(3, 32, (112,112),num_resblocks=1)
     # resizer = nn.Sequential(
     #     SpatialTransformer(3, in_time=32, in_res=56),
     #     ResizerMainNetworkV4_2D(3, 32, (112,112),num_resblocks=1)
@@ -174,12 +175,12 @@ def sample_resizer_output():
     resizer_skip.to(device)
     index = 0
     reverse_map = {v:k for k,v in val_dataset.labels_map.items()}
-    with open('./final_frames/end_theta_per_frame.txt', 'w+') as d:
+    with open('./eval_frames/dummy.txt', 'w+') as d:
         for batch, label in val_dataloader:
 
             resized_image_sp = resizer(batch).squeeze(0)
-            thetas, scales = resizer.get_theta_value(batch)
-            print(thetas.shape, resized_image_sp.shape)
+            #thetas, scales = resizer.get_theta_value(batch)
+            #print(thetas.shape, resized_image_sp.shape)
             # print("resizer shape", resized_image_sp.shape)
             resized_normal = new_val_dataset_[val[index]][0]
             # print("resized normal shape", resized_normal.shape)
@@ -190,9 +191,9 @@ def sample_resizer_output():
             fname = get_fname(label, reverse_map)
             # print(permuted_view.size(0))
             for i in range(permuted_view.size(0)):
-                frame_name = "final_frames/{2}_test_{0}_frame{1}_4_end.png".format(index, i, fname)
+                frame_name = "eval_frames/{2}_test_{0}_frame{1}_28_3d.png".format(index, i, fname)
                 save_image(permuted_view[i], frame_name)
-                d.write(frame_name + ' theta '+ str(thetas[i])+' ' + str(scales[i][0])+ '\n')
+                #d.write(frame_name + ' theta '+ str(thetas[i])+' ' + str(scales[i][0])+ '\n')
                 #save_image(permuted_view_n[i], "resized_frames_new/{2}_test_{0}_frame{1}_normal.png".format(index, i, fname))
             index+=1
 def get_fname(labels, reverse_map):

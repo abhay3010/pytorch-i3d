@@ -1,7 +1,7 @@
 opt = {
     "model":"spatial_resizer", 
     "params":{
-        "model_prefix":"resizer_spatial_2_7_3res_", # the prefix used while training the model, 
+        "model_prefix":"resizer_spatial_2_8_3res_", # the prefix used while training the model, 
         "epoch_list": range(0,30), # the epochs for which the model needs to be evaluated, currently epoch 3 and 10
         "model_path":"/virat-vr-r-models/", # directory where the models are saved (remember the trailing /)
         "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset
@@ -16,7 +16,7 @@ opt = {
         "confusion":"_corrected_after_2_7.npy",
         "mode":"2d",
         "read_at":2,
-        "apply_at":7
+        "apply_at":8
 
     }
 
