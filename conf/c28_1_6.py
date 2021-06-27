@@ -2,7 +2,7 @@ opt = {
     "model":'spatial_resizer',
     "params":{
     "data_root":"/mnt/data/TinyVIRAT/", # root folder to the tinyVIRAT dataset, 
-    "save_path": "/virat-vr-r-models/resizer_spatial_28_1_4_3res_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
+    "save_path": "/virat-vr-r-models/resizer_spatial_28_1_6_3res_", # prefix of the model being trained. Saved after every epoch, with the epoch id added 
     # "save_path": "virat_vr/sample_model_",
     # "data_root": "TinyVIRAT/",
     "num_epochs": 30, #number of epochs to train for
@@ -20,7 +20,7 @@ opt = {
     "num_steps_per_update":8,
     "mode":'2d',
     "read_at":1, 
-    "apply_at":4
+    "apply_at":6
     }
 }
 def get():
