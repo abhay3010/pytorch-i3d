@@ -150,19 +150,22 @@ def test_resizer():
 def sample_resizer_output():
     root = './TinyVIRAT/'
     classes_file = "classes.txt"
-    resizer_model = 'eval_models/resizerv43d_28_32_000017.pt'
-    val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None)
+    resizer_model = 'eval_models/resizerv42d_v2_32_112_000017.pt'
+    val_dataset = Dataset(root,"test", classes_file, resize=True, resize_shape=(112,112), transforms=None)
     _,val = val_dataset.get_train_validation_split(0.007)
-    print(len(val))
-    val_dataset_sampled = torch.utils.data.Subset(val_dataset, val)
+    # print(len(val))
+    val_in = [23, 18, 48, 33, 47, 45, 13, 39, 48, 35, 39, 46]
+    s = [val[k] for k in val_in]
+
+    val_dataset_sampled = torch.utils.data.Subset(val_dataset, s)
 
     x = val_dataset[3]
     print(x[0].shape)
     new_val_dataset_ = Dataset(root,"test", classes_file, resize=True, resize_shape=(56,56), transforms=None, sample=False)
     
     val_dataloader = torch.utils.data.DataLoader(val_dataset_sampled, batch_size=1, shuffle=False, num_workers=4, pin_memory=True)
-    # resizer = TransformerWithResizer(3, 32, (112, 112),in_res=56, skip=False, num_resblocks=3, apply_at='end')
-    #resizer = ResizerMainNetworkV4_3D(3, 32, (112,112),num_resblocks=1)
+    #resizer = TransformerWithResizer(3, 32, (112, 112),in_res=56, skip=False, num_resblocks=3, apply_at='end')
+    resizer = ResizerMainNetworkV4_2D(3, 32, (112,112),num_resblocks=1)
     # resizer = nn.Sequential(
     #     SpatialTransformer(3, in_time=32, in_res=56),
     #     ResizerMainNetworkV4_2D(3, 32, (112,112),num_resblocks=1)
@@ -170,40 +173,42 @@ def sample_resizer_output():
     # )
     resizer_skip = ResizerMainNetworkV2(3,32,(112,112), skip=True)
     device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
-    # resizer.load_state_dict(torch.load(resizer_model, map_location=device))
+    resizer.load_state_dict(torch.load(resizer_model, map_location=device))
     
     # resizer.to(device)
     resizer_skip.to(device)
     index = 0
     reverse_map = {v:k for k,v in val_dataset.labels_map.items()}
-    for config in get_config():
-        print(config)
-        content_fname = './paper_frames/debug_{0}_{1}.txt'.format(config['read_at'], config['apply_at'])
-        print(config['read_at'], config['apply_at'])
-        resizer = TransformerWithResizer(3, 32, (112, 112),in_res=56, skip=False, num_resblocks=3, read_at=config['read_at'], apply_at=config['apply_at'])
-        resizer.load_state_dict(torch.load('eval_models/spatial_models/'+config['model'], map_location=device))
-        with open(content_fname, 'w+') as d:
-            index = 0
-            for batch, label in val_dataloader:
+    torch.set_grad_enabled(False)
+    #for config in get_config():
+        #print(config)
+    content_fname = './last_frames/debug_{0}_{1}.txt'.format('na','na')
+    #print(config['read_at'], config['apply_at'])
+    #resizer = TransformerWithResizer(3, 32, (112, 112),in_res=56, skip=False, num_resblocks=3, read_at=config['read_at'], apply_at=config['apply_at'])
+    #resizer.load_state_dict(torch.load('eval_models/spatial_models/'+config['model'], map_location=device))
+    with open(content_fname, 'w+') as d:
+        index = 0
+        for batch, label in val_dataloader:
 
-                resized_image_sp = resizer(batch).squeeze(0)
-                thetas, scales = resizer.get_theta_value(batch)
-                #print(thetas.shape, resized_image_sp.shape)
-                # print("resizer shape", resized_image_sp.shape)
-                #resized_normal = new_val_dataset_[val[index]][0]
-                # print("resized normal shape", resized_normal.shape)
-                permuted_view = (resized_image_sp.permute(1,0,2,3) + 1)/2
-                #permuted_view_n = (resized_normal.permute(1,0,2,3) +1)/2
-                # print("permuted view shape", permuted_view.shape)
-                # print("permuted view n shape", permuted_view_n.shape)
-                fname = get_fname(label, reverse_map)
-                # print(permuted_view.size(0))
-                for i in range(permuted_view.size(0)):
-                    frame_name = "paper_frames/{2}_test_{0}_frame_{1}_28_sp_{3}_{4}.png".format(index, i, fname, config['read_at'], config['apply_at'])
-                    save_image(permuted_view[i], frame_name)
-                    d.write(frame_name + ' theta '+ str(thetas[i])+' ' + str(scales[i][0])+ '\n')
-                    #save_image(permuted_view_n[i], "resized_frames_new/{2}_test_{0}_frame{1}_normal.png".format(index, i, fname))
-                index+=1
+            resized_image_sp = resizer(batch).squeeze(0)
+            #thetas, scales = resizer.get_theta_value(batch)
+            #print(thetas.shape, resized_image_sp.shape)
+            # print("resizer shape", resized_image_sp.shape)
+            #resized_normal = new_val_dataset_[val[index]][0]
+            # print("resized normal shape", resized_normal.shape)
+            permuted_view = (resized_image_sp.permute(1,0,2,3) + 1)/2
+            #permuted_view_n = (resized_normal.permute(1,0,2,3) +1)/2
+            # print("permuted view shape", permuted_view.shape)
+            # print("permuted view n shape", permuted_view_n.shape)
+            fname = get_fname(label, reverse_map)
+            # print(permuted_view.size(0))
+            for i in range(permuted_view.size(0)):
+                #print(index)
+                frame_name = "last_frames/{2}_test_{0}_frame_{1}_28_2d.png".format(val_in[index], i, fname)
+                save_image(permuted_view[i], frame_name)
+                #d.write(frame_name + ' theta '+ str(thetas[i])+' ' + str(scales[i][0])+ '\n')
+                #save_image(permuted_view_n[i], "resized_frames_new/{2}_test_{0}_frame{1}_normal.png".format(index, i, fname))
+            index+=1
 def get_fname(labels, reverse_map):
     labels_np = labels.numpy()
     args = np.where(labels_np == 1)
