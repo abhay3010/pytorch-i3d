@@ -1,7 +1,7 @@
 apiVersion: batch/v1
 kind: Job
 metadata:
-  name: virat-vr-spatial-3-5-3res-2-1
+  name: virat-vr-spatial-3-8-3res-2-1
 spec:
   template:
     spec:
@@ -10,7 +10,7 @@ spec:
           image:  gitlab-registry.nautilus.optiputer.net/abhay3010/test-prooject
           imagePullPolicy: Always 
           command: ["/virat-vr/code/pytorch-i3d/setup.sh"]
-          args: [ "/virat-vr/code/pytorch-i3d/train.py", "/virat-vr/code/pytorch-i3d/", "c28_3_5" ]
+          args: [ "/virat-vr/code/pytorch-i3d/train.py", "/virat-vr/code/pytorch-i3d/", "c28_3_8" ]
           resources:
             limits:
               nvidia.com/gpu: 4
@@ -55,14 +55,14 @@ spec:
               - key: gpu-type
                 operator: In
                 values:
-                - "1080Ti"
+                - "2080Ti"
       volumes:
         - name: virat-vr
           persistentVolumeClaim:
             claimName: virat-vr
         - name: virat-vr-r-models
           persistentVolumeClaim:
-            claimName: virat-vr-r-models
+            claimName: virat-vr-final-models
         - name: virat-vr-small
           persistentVolumeClaim:
             claimName: virat-vr-small
